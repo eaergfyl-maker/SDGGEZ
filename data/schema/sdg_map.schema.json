@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "sdg_map.json",
+  "type": "object",
+  "required": ["sdgs"],
+  "properties": {
+    "sdgs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sdg", "name", "targets", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "sdg": {"type": "integer", "minimum": 1, "maximum": 17},
+          "name": {"type": "string"},
+          "targets": {"type": "array", "items": {"type": "string", "pattern": "^[0-9]{1,2}\\.[0-9a-z]+$"}},
+          "reason": {"type": "string"}
+        }
+      }
+    }
+  }
+}

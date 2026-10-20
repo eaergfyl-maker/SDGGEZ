@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "personas.json",
+  "type": "object",
+  "required": ["personas"],
+  "properties": {
+    "personas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "synthetic", "current_role", "skills", "hours_per_week"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+          "name": {"type": "string"},
+          "synthetic": {"const": true},
+          "current_role": {"type": "string"},
+          "skills": {"type": "array", "items": {"type": "string"}},
+          "hours_per_week": {"type": "number", "exclusiveMinimum": 0}
+        }
+      }
+    }
+  }
+}

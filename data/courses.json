@@ -1,0 +1,17 @@
+{
+  "_note": "Owned by Member 5. ONLY real courses that someone opened and checked. Set verified=true after checking. Unverified entries are shown with a warning and never presented as fact. The example below is a placeholder and must be replaced.",
+  "courses": [
+    {
+      "id": "example_placeholder",
+      "title": "PLACEHOLDER - replace with a real course",
+      "provider": "TBD",
+      "url": null,
+      "hours": null,
+      "cost_myr": null,
+      "skills": ["ai_tools"],
+      "funding_note": null,
+      "verified": false,
+      "checked_on": null
+    }
+  ]
+}

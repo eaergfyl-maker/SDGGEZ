@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Future-Ready RPG</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Future-Ready RPG</h1>
+    <span id="mock-badge" class="badge warn" hidden>Mock data: not real trends</span>
+    <span id="as-of" class="muted"></span>
+  </header>
+
+  <main>
+    <!-- Member 5: intake panel -->
+    <section id="intake" class="card"></section>
+
+    <!-- Member 4: skill tree and game -->
+    <section class="card">
+      <div class="row">
+        <span class="muted">Disruption scenario</span>
+        <div id="scenario" class="seg">
+          <button data-s="slow">Slow</button>
+          <button data-s="moderate" class="on">Moderate</button>
+          <button data-s="fast">Fast</button>
+        </div>
+      </div>
+      <svg id="tree" role="img" aria-label="Skill tree"></svg>
+      <div class="stats">
+        <div><span>Level</span><b id="level">1</b></div>
+        <div><span>Skills trained</span><b id="trained">0</b></div>
+        <div><span>SDG badges</span><b id="badges">0</b></div>
+      </div>
+      <div id="detail" class="detail muted">Select a node to see details.</div>
+    </section>
+
+    <!-- Member 5: radar and pathway panels -->
+    <section id="radar" class="card"></section>
+    <section id="pathway" class="card"></section>
+  </main>
+
+  <footer class="muted">
+    Personas are synthetic. Every number cites its source and date. Job data: Remotive. Research data: arXiv.
+    This tool supports your career decisions; you make them.
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

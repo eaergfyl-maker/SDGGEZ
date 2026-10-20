@@ -1,0 +1,16 @@
+{
+  "_note": "MOCK VALUES FOR DEVELOPMENT ONLY. Not real data. Replaced by the skill_trends table once ingestion runs. The API marks these with is_mock=true and the UI shows a badge.",
+  "source": "MOCK",
+  "as_of": "2026-10-20",
+  "trends": {
+    "communication": {"research_growth": null, "demand_growth": 2, "outlook": null},
+    "empathy": {"research_growth": null, "demand_growth": 4, "outlook": null},
+    "case_handling": {"research_growth": null, "demand_growth": -14, "outlook": null},
+    "crm_tools": {"research_growth": null, "demand_growth": -6, "outlook": null},
+    "ai_tools": {"research_growth": 40, "demand_growth": 35, "outlook": null},
+    "data_literacy": {"research_growth": null, "demand_growth": 27, "outlook": null},
+    "prompting": {"research_growth": 50, "demand_growth": 38, "outlook": null},
+    "chatbot_qa": {"research_growth": 30, "demand_growth": 31, "outlook": null},
+    "ops_analytics": {"research_growth": 20, "demand_growth": 40, "outlook": null}
+  }
+}

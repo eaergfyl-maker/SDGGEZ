@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "courses.json",
+  "type": "object",
+  "required": ["courses"],
+  "properties": {
+    "courses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "provider", "url", "hours", "cost_myr", "skills", "verified", "checked_on"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+          "title": {"type": "string"},
+          "provider": {"type": "string"},
+          "url": {"type": ["string", "null"]},
+          "hours": {"type": ["number", "null"], "minimum": 0},
+          "cost_myr": {"type": ["number", "null"], "minimum": 0},
+          "skills": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "funding_note": {"type": ["string", "null"]},
+          "verified": {"type": "boolean"},
+          "checked_on": {"type": ["string", "null"]}
+        },
+        "if": {"properties": {"verified": {"const": true}}},
+        "then": {
+          "properties": {
+            "url": {"type": "string"},
+            "hours": {"type": "number"},
+            "cost_myr": {"type": "number"},
+            "checked_on": {"type": "string"}
+          }
+        }
+      }
+    }
+  }
+}

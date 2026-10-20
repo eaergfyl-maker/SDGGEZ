@@ -1,0 +1,14 @@
+{
+  "_note": "Starter set owned by Member 3. Grow to ~40-60 skills. IDs freeze on 21 Oct.",
+  "skills": [
+    {"id": "communication", "name": "Communication", "prereqs": [], "keywords": ["communication", "written communication"], "arxiv_query": null, "sdg": [8]},
+    {"id": "empathy", "name": "Empathy", "prereqs": [], "keywords": ["empathy", "customer care"], "arxiv_query": null, "sdg": [3, 10]},
+    {"id": "case_handling", "name": "Case handling", "prereqs": [], "keywords": ["ticket handling", "case management", "customer support"], "arxiv_query": null, "sdg": [8]},
+    {"id": "crm_tools", "name": "CRM tools", "prereqs": [], "keywords": ["crm", "salesforce", "zendesk", "hubspot"], "arxiv_query": null, "sdg": [9]},
+    {"id": "ai_tools", "name": "AI tools use", "prereqs": ["communication", "empathy"], "keywords": ["ai tools", "chatgpt", "copilot", "generative ai"], "arxiv_query": "all:\"generative AI\"", "sdg": [9]},
+    {"id": "data_literacy", "name": "Data literacy", "prereqs": ["case_handling", "crm_tools"], "keywords": ["data analysis", "excel", "sql", "dashboards"], "arxiv_query": null, "sdg": [4, 9]},
+    {"id": "prompting", "name": "Prompting", "prereqs": ["crm_tools"], "keywords": ["prompt engineering", "prompting", "llm"], "arxiv_query": "all:\"prompt engineering\"", "sdg": [4]},
+    {"id": "chatbot_qa", "name": "Chatbot QA", "prereqs": ["ai_tools", "prompting"], "keywords": ["conversational ai", "chatbot", "bot testing"], "arxiv_query": "all:\"conversational agent\"", "sdg": [9, 16]},
+    {"id": "ops_analytics", "name": "Ops analytics", "prereqs": ["data_literacy", "prompting"], "keywords": ["operations analytics", "process automation", "power bi", "tableau"], "arxiv_query": "all:\"process mining\"", "sdg": [8, 9]}
+  ]
+}

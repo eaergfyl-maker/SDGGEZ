@@ -1,0 +1,13 @@
+{
+  "_note": "Synthetic personas only. Never real people or real CVs.",
+  "personas": [
+    {
+      "id": "aisyah",
+      "name": "Aisyah",
+      "synthetic": true,
+      "current_role": "Customer service executive",
+      "skills": ["communication", "empathy", "case_handling", "crm_tools"],
+      "hours_per_week": 6
+    }
+  ]
+}

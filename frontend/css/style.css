@@ -1,0 +1,63 @@
+:root {
+  --bg: #f7f6f2;
+  --card: #ffffff;
+  --text: #1f1e1b;
+  --muted: #6b6a64;
+  --border: #dedcd3;
+  --mastered: #1d9e75;
+  --available: #ba7517;
+  --locked: #b4b2a9;
+  --role: #534ab7;
+  --warn-bg: #faeeda;
+  --warn-text: #633806;
+  --accent: #185fa5;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1b1b19;
+    --card: #262624;
+    --text: #ecebe6;
+    --muted: #a3a29b;
+    --border: #3d3d3a;
+    --locked: #5f5e5a;
+    --role: #7f77dd;
+    --warn-bg: #633806;
+    --warn-text: #faeeda;
+    --accent: #85b7eb;
+  }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 system-ui, sans-serif; }
+main { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+.top { max-width: 900px; margin: 0 auto; padding: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+h1 { font-size: 20px; font-weight: 600; margin: 0; }
+h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 0 0 16px; }
+.muted { color: var(--muted); font-size: 13px; }
+.badge { font-size: 12px; padding: 2px 8px; border-radius: 6px; }
+.badge.warn { background: var(--warn-bg); color: var(--warn-text); }
+.tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--border); margin: 0 4px 4px 0; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+button { font: inherit; font-size: 13px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; }
+button.on { border-color: var(--accent); color: var(--accent); }
+.seg { display: flex; gap: 4px; }
+#tree { width: 100%; height: auto; display: block; }
+#tree .node { cursor: pointer; }
+#tree .node text { font-size: 13px; fill: #fff; pointer-events: none; }
+#tree .mastered rect { fill: var(--mastered); }
+#tree .available rect { fill: var(--available); }
+#tree .locked rect { fill: var(--locked); }
+#tree .role rect { fill: var(--role); }
+#tree .role.locked rect { fill: var(--locked); }
+#tree .selected rect { stroke: var(--text); stroke-width: 2; }
+#tree line { stroke: var(--locked); stroke-width: 1; }
+#tree line.lit { stroke: var(--mastered); stroke-width: 2; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 12px 0; }
+.stats div { background: var(--bg); border-radius: 8px; padding: 8px 12px; }
+.stats span { display: block; font-size: 12px; color: var(--muted); }
+.stats b { font-size: 18px; font-weight: 600; }
+.detail { min-height: 80px; }
+.story { border-left: 3px solid var(--accent); padding-left: 12px; margin: 8px 0; font-style: italic; }
+footer { max-width: 900px; margin: 0 auto; padding: 16px; }
+ol { padding-left: 20px; }

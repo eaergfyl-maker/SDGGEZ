@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "skills.json",
+  "type": "object",
+  "required": ["skills"],
+  "properties": {
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "prereqs", "keywords", "sdg"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+          "name": {"type": "string", "maxLength": 16},
+          "prereqs": {"type": "array", "items": {"type": "string"}},
+          "keywords": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "arxiv_query": {"type": ["string", "null"]},
+          "sdg": {"type": "array", "items": {"type": "integer", "minimum": 1, "maximum": 17}, "minItems": 1}
+        }
+      }
+    }
+  }
+}
