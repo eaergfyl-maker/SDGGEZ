@@ -56,3 +56,26 @@ def test_story_missing_is_empty_and_path_is_safe(client):
 
 def test_frontend_served(client):
     assert "Future-Ready RPG" in client.get("/").text
+
+
+def test_tree_defaults_to_persona_family(client):
+    body = client.get("/api/tree", params={"persona": "aisyah"}).json()
+    assert body["family"] == "service-ai"
+    roles = {n["id"] for n in body["nodes"] if n["kind"] == "role"}
+    assert "qa_analyst" in roles and "solar_pv_technician" not in roles
+
+
+def test_tree_family_all_and_unknown(client):
+    every = client.get("/api/tree", params={"family": "all"}).json()
+    from backend.app import data_loader
+    assert every["family"] == "all"
+    assert {n["id"] for n in every["nodes"] if n["kind"] == "role"} == set(data_loader.roles_by_id())
+    assert client.get("/api/tree", params={"family": "nope"}).status_code == 404
+
+
+def test_every_persona_tree_loads(client):
+    for p in client.get("/api/personas").json():
+        body = client.get("/api/tree", params={"persona": p["id"]}).json()
+        states = {n["id"]: n["state"] for n in body["nodes"]}
+        assert body["family"] == p["family"]
+        assert all(states.get(s) == "mastered" for s in p["skills"])

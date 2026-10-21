@@ -1,33 +1,658 @@
 {
-  "_note": "Starter set owned by Member 3. Grow to ~15-25 roles. 'requires' are the skills that unlock the role node; 'skills' carry importance weights (1-3) for the match score.",
+  "_note": "Owned by Member 3. 'family' groups roles into one skill tree. 'requires' are the gate skills that unlock the role node; 'skills' carry importance (3 core, 2 important, 1 helpful) for the match score. 'based_on' is the O*NET occupation used as reference (match: direct or closest).",
+  "families": [
+    {
+      "id": "service-ai",
+      "name": "Customer service to AI-enabled work"
+    },
+    {
+      "id": "data",
+      "name": "Data and analytics"
+    },
+    {
+      "id": "industry",
+      "name": "Smart manufacturing"
+    },
+    {
+      "id": "green-energy",
+      "name": "Clean energy"
+    }
+  ],
   "roles": [
+    {
+      "id": "it_support_specialist",
+      "name": "IT support specialist",
+      "short_name": "IT support",
+      "family": "service-ai",
+      "requires": [
+        "tech_support"
+      ],
+      "skills": [
+        {
+          "skill": "tech_support",
+          "importance": 3
+        },
+        {
+          "skill": "case_handling",
+          "importance": 3
+        },
+        {
+          "skill": "communication",
+          "importance": 2
+        },
+        {
+          "skill": "empathy",
+          "importance": 2
+        },
+        {
+          "skill": "crm_tools",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        8,
+        9
+      ],
+      "based_on": {
+        "onet_code": "15-1232.00",
+        "onet_title": "Computer User Support Specialists",
+        "match": "direct"
+      }
+    },
     {
       "id": "qa_analyst",
       "name": "Conversational-AI QA analyst",
       "short_name": "QA analyst",
-      "requires": ["chatbot_qa"],
-      "skills": [
-        {"skill": "communication", "importance": 2},
-        {"skill": "empathy", "importance": 1},
-        {"skill": "ai_tools", "importance": 3},
-        {"skill": "prompting", "importance": 3},
-        {"skill": "chatbot_qa", "importance": 3}
+      "family": "service-ai",
+      "requires": [
+        "chatbot_qa"
       ],
-      "sdg": [8, 9]
+      "skills": [
+        {
+          "skill": "ai_tools",
+          "importance": 3
+        },
+        {
+          "skill": "prompting",
+          "importance": 3
+        },
+        {
+          "skill": "chatbot_qa",
+          "importance": 3
+        },
+        {
+          "skill": "communication",
+          "importance": 2
+        },
+        {
+          "skill": "responsible_ai",
+          "importance": 2
+        },
+        {
+          "skill": "empathy",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        8,
+        9,
+        16
+      ],
+      "based_on": {
+        "onet_code": "15-1253.00",
+        "onet_title": "Software Quality Assurance Analysts and Testers",
+        "match": "closest"
+      }
     },
     {
       "id": "ai_ops_lead",
       "name": "AI operations specialist",
       "short_name": "AI ops lead",
-      "requires": ["ops_analytics"],
-      "skills": [
-        {"skill": "case_handling", "importance": 1},
-        {"skill": "crm_tools", "importance": 2},
-        {"skill": "data_literacy", "importance": 3},
-        {"skill": "prompting", "importance": 2},
-        {"skill": "ops_analytics", "importance": 3}
+      "family": "service-ai",
+      "requires": [
+        "ops_analytics"
       ],
-      "sdg": [8, 9]
+      "skills": [
+        {
+          "skill": "ops_analytics",
+          "importance": 3
+        },
+        {
+          "skill": "data_literacy",
+          "importance": 3
+        },
+        {
+          "skill": "prompting",
+          "importance": 2
+        },
+        {
+          "skill": "crm_tools",
+          "importance": 2
+        },
+        {
+          "skill": "case_handling",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        8,
+        9
+      ],
+      "based_on": {
+        "onet_code": "15-1211.00",
+        "onet_title": "Computer Systems Analysts",
+        "match": "closest"
+      }
+    },
+    {
+      "id": "automation_specialist",
+      "name": "Process automation specialist",
+      "short_name": "Automation spec",
+      "family": "service-ai",
+      "requires": [
+        "process_automation"
+      ],
+      "skills": [
+        {
+          "skill": "process_automation",
+          "importance": 3
+        },
+        {
+          "skill": "ai_tools",
+          "importance": 2
+        },
+        {
+          "skill": "data_literacy",
+          "importance": 2
+        },
+        {
+          "skill": "spreadsheets",
+          "importance": 2
+        },
+        {
+          "skill": "communication",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        8,
+        9
+      ],
+      "based_on": {
+        "onet_code": "13-1111.00",
+        "onet_title": "Management Analysts",
+        "match": "closest"
+      }
+    },
+    {
+      "id": "cx_insights_analyst",
+      "name": "Customer insights analyst",
+      "short_name": "CX insights",
+      "family": "service-ai",
+      "requires": [
+        "ops_analytics"
+      ],
+      "skills": [
+        {
+          "skill": "ops_analytics",
+          "importance": 3
+        },
+        {
+          "skill": "data_literacy",
+          "importance": 3
+        },
+        {
+          "skill": "empathy",
+          "importance": 2
+        },
+        {
+          "skill": "communication",
+          "importance": 2
+        },
+        {
+          "skill": "crm_tools",
+          "importance": 2
+        }
+      ],
+      "sdg": [
+        8
+      ],
+      "based_on": {
+        "onet_code": "13-1161.00",
+        "onet_title": "Market Research Analysts and Marketing Specialists",
+        "match": "closest"
+      }
+    },
+    {
+      "id": "data_analyst",
+      "name": "Business intelligence analyst",
+      "short_name": "BI analyst",
+      "family": "data",
+      "requires": [
+        "data_viz",
+        "sql"
+      ],
+      "skills": [
+        {
+          "skill": "sql",
+          "importance": 3
+        },
+        {
+          "skill": "data_viz",
+          "importance": 3
+        },
+        {
+          "skill": "data_literacy",
+          "importance": 3
+        },
+        {
+          "skill": "statistics",
+          "importance": 2
+        },
+        {
+          "skill": "spreadsheets",
+          "importance": 2
+        },
+        {
+          "skill": "communication",
+          "importance": 2
+        }
+      ],
+      "sdg": [
+        8,
+        9
+      ],
+      "based_on": {
+        "onet_code": "15-2051.01",
+        "onet_title": "Business Intelligence Analysts",
+        "match": "direct"
+      }
+    },
+    {
+      "id": "esg_analyst",
+      "name": "ESG and sustainability analyst",
+      "short_name": "ESG analyst",
+      "family": "data",
+      "requires": [
+        "esg_reporting"
+      ],
+      "skills": [
+        {
+          "skill": "esg_reporting",
+          "importance": 3
+        },
+        {
+          "skill": "data_viz",
+          "importance": 2
+        },
+        {
+          "skill": "bookkeeping",
+          "importance": 2
+        },
+        {
+          "skill": "spreadsheets",
+          "importance": 2
+        },
+        {
+          "skill": "communication",
+          "importance": 2
+        }
+      ],
+      "sdg": [
+        12,
+        13
+      ],
+      "based_on": {
+        "onet_code": "13-1199.05",
+        "onet_title": "Sustainability Specialists",
+        "match": "direct"
+      }
+    },
+    {
+      "id": "junior_data_scientist",
+      "name": "Junior data scientist",
+      "short_name": "Data scientist",
+      "family": "data",
+      "requires": [
+        "ml_basics"
+      ],
+      "skills": [
+        {
+          "skill": "ml_basics",
+          "importance": 3
+        },
+        {
+          "skill": "python_basics",
+          "importance": 3
+        },
+        {
+          "skill": "statistics",
+          "importance": 3
+        },
+        {
+          "skill": "sql",
+          "importance": 2
+        },
+        {
+          "skill": "data_viz",
+          "importance": 2
+        },
+        {
+          "skill": "ai_tools",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        9
+      ],
+      "based_on": {
+        "onet_code": "15-2051.00",
+        "onet_title": "Data Scientists",
+        "match": "direct"
+      }
+    },
+    {
+      "id": "automation_technician",
+      "name": "Robotics and automation technician",
+      "short_name": "Robotics tech",
+      "family": "industry",
+      "requires": [
+        "robotics_ops"
+      ],
+      "skills": [
+        {
+          "skill": "robotics_ops",
+          "importance": 3
+        },
+        {
+          "skill": "plc_basics",
+          "importance": 3
+        },
+        {
+          "skill": "safety_procedures",
+          "importance": 2
+        },
+        {
+          "skill": "machine_operation",
+          "importance": 2
+        },
+        {
+          "skill": "sensor_iot",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        9
+      ],
+      "based_on": {
+        "onet_code": "17-3024.01",
+        "onet_title": "Robotics Technicians",
+        "match": "direct"
+      }
+    },
+    {
+      "id": "process_improvement_tech",
+      "name": "Process improvement technician",
+      "short_name": "Process improver",
+      "family": "industry",
+      "requires": [
+        "spc_quality"
+      ],
+      "skills": [
+        {
+          "skill": "spc_quality",
+          "importance": 3
+        },
+        {
+          "skill": "lean_methods",
+          "importance": 3
+        },
+        {
+          "skill": "data_literacy",
+          "importance": 2
+        },
+        {
+          "skill": "quality_checks",
+          "importance": 2
+        },
+        {
+          "skill": "communication",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        9,
+        12
+      ],
+      "based_on": {
+        "onet_code": "17-3026.00",
+        "onet_title": "Industrial Engineering Technologists and Technicians",
+        "match": "direct"
+      }
+    },
+    {
+      "id": "maintenance_technician",
+      "name": "Predictive maintenance technician",
+      "short_name": "Maintenance tech",
+      "family": "industry",
+      "requires": [
+        "predictive_maintenance"
+      ],
+      "skills": [
+        {
+          "skill": "predictive_maintenance",
+          "importance": 3
+        },
+        {
+          "skill": "preventive_maintenance",
+          "importance": 3
+        },
+        {
+          "skill": "sensor_iot",
+          "importance": 2
+        },
+        {
+          "skill": "safety_procedures",
+          "importance": 2
+        },
+        {
+          "skill": "data_literacy",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        9,
+        12
+      ],
+      "based_on": {
+        "onet_code": "49-9041.00",
+        "onet_title": "Industrial Machinery Mechanics",
+        "match": "closest"
+      }
+    },
+    {
+      "id": "vision_qc_technician",
+      "name": "Automated inspection technician",
+      "short_name": "Inspection tech",
+      "family": "industry",
+      "requires": [
+        "machine_vision_qc"
+      ],
+      "skills": [
+        {
+          "skill": "machine_vision_qc",
+          "importance": 3
+        },
+        {
+          "skill": "spc_quality",
+          "importance": 2
+        },
+        {
+          "skill": "quality_checks",
+          "importance": 2
+        },
+        {
+          "skill": "sensor_iot",
+          "importance": 2
+        }
+      ],
+      "sdg": [
+        9,
+        12
+      ],
+      "based_on": {
+        "onet_code": "19-4099.01",
+        "onet_title": "Quality Control Analysts",
+        "match": "closest"
+      }
+    },
+    {
+      "id": "solar_pv_technician",
+      "name": "Solar PV technician",
+      "short_name": "Solar PV tech",
+      "family": "green-energy",
+      "requires": [
+        "solar_pv_install"
+      ],
+      "skills": [
+        {
+          "skill": "solar_pv_install",
+          "importance": 3
+        },
+        {
+          "skill": "electrical_wiring",
+          "importance": 3
+        },
+        {
+          "skill": "safety_procedures",
+          "importance": 3
+        },
+        {
+          "skill": "technical_drawing",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        7,
+        13
+      ],
+      "based_on": {
+        "onet_code": "47-2231.00",
+        "onet_title": "Solar Photovoltaic Installers",
+        "match": "direct"
+      }
+    },
+    {
+      "id": "solar_designer",
+      "name": "Solar PV system designer",
+      "short_name": "Solar designer",
+      "family": "green-energy",
+      "requires": [
+        "pv_system_design"
+      ],
+      "skills": [
+        {
+          "skill": "pv_system_design",
+          "importance": 3
+        },
+        {
+          "skill": "technical_drawing",
+          "importance": 3
+        },
+        {
+          "skill": "solar_pv_install",
+          "importance": 2
+        },
+        {
+          "skill": "communication",
+          "importance": 1
+        }
+      ],
+      "sdg": [
+        7,
+        13
+      ],
+      "based_on": {
+        "onet_code": "17-2199.11",
+        "onet_title": "Solar Energy Systems Engineers",
+        "match": "closest"
+      }
+    },
+    {
+      "id": "energy_efficiency_analyst",
+      "name": "Energy efficiency analyst",
+      "short_name": "Energy analyst",
+      "family": "green-energy",
+      "requires": [
+        "energy_monitoring"
+      ],
+      "skills": [
+        {
+          "skill": "energy_monitoring",
+          "importance": 3
+        },
+        {
+          "skill": "energy_auditing",
+          "importance": 3
+        },
+        {
+          "skill": "data_literacy",
+          "importance": 2
+        },
+        {
+          "skill": "spreadsheets",
+          "importance": 2
+        },
+        {
+          "skill": "communication",
+          "importance": 2
+        }
+      ],
+      "sdg": [
+        7,
+        13
+      ],
+      "based_on": {
+        "onet_code": "47-4011.01",
+        "onet_title": "Energy Auditors",
+        "match": "closest"
+      }
+    },
+    {
+      "id": "ev_charger_technician",
+      "name": "EV charging technician",
+      "short_name": "EV charging tech",
+      "family": "green-energy",
+      "requires": [
+        "ev_charging"
+      ],
+      "skills": [
+        {
+          "skill": "ev_charging",
+          "importance": 3
+        },
+        {
+          "skill": "electrical_wiring",
+          "importance": 3
+        },
+        {
+          "skill": "battery_storage",
+          "importance": 2
+        },
+        {
+          "skill": "safety_procedures",
+          "importance": 2
+        }
+      ],
+      "sdg": [
+        7,
+        11
+      ],
+      "based_on": {
+        "onet_code": "47-2111.00",
+        "onet_title": "Electricians",
+        "match": "closest"
+      }
     }
   ]
 }

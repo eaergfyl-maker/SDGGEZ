@@ -75,6 +75,14 @@ def reference_errors():
             if item["skill"] not in known:
                 errors.append(f"role {r['id']}: unknown skill {item['skill']}")
 
+    families = {f["id"] for f in load("roles")["families"]}
+    for r in roles:
+        if r["family"] not in families:
+            errors.append(f"role {r['id']}: unknown family {r['family']}")
+    for p in load("personas")["personas"]:
+        if p["family"] not in families:
+            errors.append(f"persona {p['id']}: unknown family {p['family']}")
+
     for c in load("courses")["courses"]:
         for sid in c["skills"]:
             if sid not in known:

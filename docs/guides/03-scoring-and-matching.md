@@ -133,10 +133,12 @@ The frontend spreads each tier's nodes evenly across 680 px and each node is 124
 more than 10.
 
 Fix (agree this with Member 4 and Member 1 on Wednesday, then record in `DECISIONS.md`):
-1. Add a `family` field to roles and skills (for example `customer-ops`, `data`, `ai-quality`)
-   in the schema `data/schema/*.json`, and
-2. Let `/api/tree` take a `family` (or a target role) and return only the relevant subtree.
-3. Keep each tree to about 15 to 25 nodes, at most 5 per tier.
+1. Add a `family` field to roles (done 2026-10-21: `service-ai`, `data`, `industry`,
+   `green-energy`). A family's skills are derived from its roles plus all prerequisites, so
+   skills need no family field and cannot disagree with the roles.
+2. `/api/tree` takes `family` (or `all`) and defaults to the persona's family (done).
+3. Keep each tree to about 15 to 25 nodes, at most 5 per tier. `test_data.py` fails if a
+   family breaks this.
 
 The user then sees the path for their persona, which is also a better story than a wall of
 nodes. A schema change is a contract change: write it in `DECISIONS.md` first.

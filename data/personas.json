@@ -1,13 +1,81 @@
 {
-  "_note": "Synthetic personas only. Never real people or real CVs.",
+  "_note": "Synthetic personas only. Never real people or real CVs. 'based_on' is the O*NET occupation for the current job.",
   "personas": [
     {
       "id": "aisyah",
       "name": "Aisyah",
       "synthetic": true,
       "current_role": "Customer service executive",
-      "skills": ["communication", "empathy", "case_handling", "crm_tools"],
-      "hours_per_week": 6
+      "family": "service-ai",
+      "skills": [
+        "communication",
+        "empathy",
+        "case_handling",
+        "crm_tools"
+      ],
+      "hours_per_week": 6,
+      "based_on": {
+        "onet_code": "43-4051.00",
+        "onet_title": "Customer Service Representatives",
+        "match": "direct"
+      }
+    },
+    {
+      "id": "arjun",
+      "name": "Arjun",
+      "synthetic": true,
+      "current_role": "Accounting graduate in a first job as accounts clerk",
+      "family": "data",
+      "skills": [
+        "bookkeeping",
+        "spreadsheets",
+        "statistics",
+        "communication"
+      ],
+      "hours_per_week": 10,
+      "based_on": {
+        "onet_code": "43-3031.00",
+        "onet_title": "Bookkeeping, Accounting, and Auditing Clerks",
+        "match": "direct"
+      }
+    },
+    {
+      "id": "mei_ling",
+      "name": "Mei Ling",
+      "synthetic": true,
+      "current_role": "Electronics production operator",
+      "family": "industry",
+      "skills": [
+        "machine_operation",
+        "quality_checks",
+        "safety_procedures",
+        "communication"
+      ],
+      "hours_per_week": 5,
+      "based_on": {
+        "onet_code": "51-2022.00",
+        "onet_title": "Electrical and Electronic Equipment Assemblers",
+        "match": "direct"
+      }
+    },
+    {
+      "id": "hafiz",
+      "name": "Hafiz",
+      "synthetic": true,
+      "current_role": "Electrician",
+      "family": "green-energy",
+      "skills": [
+        "electrical_wiring",
+        "safety_procedures",
+        "technical_drawing",
+        "communication"
+      ],
+      "hours_per_week": 8,
+      "based_on": {
+        "onet_code": "47-2111.00",
+        "onet_title": "Electricians",
+        "match": "direct"
+      }
     }
   ]
 }

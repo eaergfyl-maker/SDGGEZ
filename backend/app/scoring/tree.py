@@ -25,6 +25,24 @@ def skill_tiers(skills: list[dict]) -> dict[str, int]:
     return tiers
 
 
+def family_subset(skills: list[dict], roles: list[dict], family: str) -> tuple[list[dict], list[dict]]:
+    """The roles in one family plus every skill they use, including all prerequisites.
+
+    Keeps each tree small enough to draw (at most 5 nodes per tier; a data test checks it).
+    """
+    fam_roles = [r for r in roles if r["family"] == family]
+    by_id = {s["id"]: s for s in skills}
+    todo = {i["skill"] for r in fam_roles for i in r["skills"]}
+    todo |= {sid for r in fam_roles for sid in r["requires"]}
+    needed: set[str] = set()
+    while todo:
+        sid = todo.pop()
+        if sid not in needed:
+            needed.add(sid)
+            todo |= set(by_id[sid]["prereqs"])
+    return [s for s in skills if s["id"] in needed], fam_roles
+
+
 def _state(owned: set[str], node_id: str, needs: list[str]) -> str:
     if node_id in owned:
         return "mastered"
