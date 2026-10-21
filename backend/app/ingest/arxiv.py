@@ -1,8 +1,14 @@
 """Monthly arXiv paper counts per skill (AI-advancement signal). Owner: Member 2.
 
-Uses the public arXiv API. Read its terms of use before running, and keep the pause between
-requests. Only skills with an "arxiv_query" in data/skills.json are fetched.
+Uses the public arXiv API (read its terms of use; it asks for one request every 3 seconds).
+Only skills with an "arxiv_query" in data/skills.json are fetched.
+
+Status 2026-10-21: the plain query worked from one machine, but the date-range query below
+returned HTTP 429 (rate limited) from another, so it has NOT been confirmed end to end. Test it
+first with scripts/probe_sources.py. The fetch below backs off on 429, saves what it has, and
+resumes on the next run instead of starting again.
 """
+import logging
 import time
 from datetime import date, datetime, timezone
 
@@ -11,8 +17,16 @@ import httpx
 
 from .. import config
 
+log = logging.getLogger(__name__)
+
 API = "https://export.arxiv.org/api/query"
 PAUSE_SECONDS = 3.0
+RETRY_BASE_SECONDS = 20.0
+MAX_ATTEMPTS = 3
+
+
+class RateLimited(Exception):
+    """arXiv kept answering 429 after backing off."""
 
 
 def previous_months(n: int, today: date | None = None) -> list[tuple[int, int]]:
@@ -37,15 +51,25 @@ def _month_bounds(year: int, month: int) -> tuple[str, str]:
 
 def count_for_month(client: httpx.Client, query: str, year: int, month: int) -> int:
     start, end = _month_bounds(year, month)
-    params = {"search_query": f"({query}) AND submittedDate:[{start} TO {end}]", "max_results": 0}
-    resp = client.get(API, params=params, timeout=30)
-    resp.raise_for_status()
-    feed = feedparser.parse(resp.text)
-    return int(feed.feed.get("opensearch_totalresults", 0))
+    params = {"search_query": f"({query}) AND submittedDate:[{start} TO {end}]", "max_results": 1}
+    for attempt in range(MAX_ATTEMPTS):
+        resp = client.get(API, params=params, timeout=30)
+        if resp.status_code == 429:
+            wait = RETRY_BASE_SECONDS * 2 ** attempt
+            log.warning("arXiv 429, waiting %.0fs (attempt %d/%d)", wait, attempt + 1, MAX_ATTEMPTS)
+            time.sleep(wait)
+            continue
+        resp.raise_for_status()
+        feed = feedparser.parse(resp.text)
+        return int(feed.feed.get("opensearch_totalresults", 0))
+    raise RateLimited(f"arXiv rate limited {query!r} {year}-{month:02d}")
 
 
 def fetch_monthly_counts(conn, skills: list[dict], months: int = 24) -> int:
-    """Fill arxiv_counts for every skill with a query. Returns the number of rows written."""
+    """Fill arxiv_counts for every skill with a query. Returns rows written.
+
+    Months already stored are skipped, so after a rate-limit stop you can simply run it again.
+    """
     now = datetime.now(timezone.utc).isoformat()
     written = 0
     with httpx.Client(headers={"User-Agent": config.USER_AGENT}) as client:
@@ -53,14 +77,21 @@ def fetch_monthly_counts(conn, skills: list[dict], months: int = 24) -> int:
             if not s.get("arxiv_query"):
                 continue
             for y, m in previous_months(months):
-                n = count_for_month(client, s["arxiv_query"], y, m)
-                conn.execute(
-                    "INSERT OR REPLACE INTO arxiv_counts VALUES (?, ?, ?, ?, ?)",
-                    (s["id"], f"{y:04d}-{m:02d}", n, s["arxiv_query"], now),
-                )
+                month = f"{y:04d}-{m:02d}"
+                if conn.execute("SELECT 1 FROM arxiv_counts WHERE skill_id = ? AND month = ?",
+                                (s["id"], month)).fetchone():
+                    continue
+                try:
+                    n = count_for_month(client, s["arxiv_query"], y, m)
+                except RateLimited as err:
+                    log.warning("stopping arXiv fetch: %s", err)
+                    conn.commit()
+                    return written
+                conn.execute("INSERT OR REPLACE INTO arxiv_counts VALUES (?, ?, ?, ?, ?)",
+                             (s["id"], month, n, s["arxiv_query"], now))
+                conn.commit()
                 written += 1
                 time.sleep(PAUSE_SECONDS)
-    conn.commit()
     return written
 
 

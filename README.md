@@ -45,7 +45,7 @@ Import this repo from GitHub. `.replit` runs the same uvicorn command. Put secre
 | `story/` | story files (parked for now) | later |
 | `docs/` | team, tasks, decisions, sources | everyone |
 
-See `docs/TEAM.md`, `docs/TASKS.md`, and `CONTRIBUTING.md`.
+See `docs/TEAM.md`, `docs/TASKS.md`, `CONTRIBUTING.md`, and the role guides in `docs/guides/`.
 
 ## Rules we follow
 - Public or synthetic data only. No real CVs or personal data.

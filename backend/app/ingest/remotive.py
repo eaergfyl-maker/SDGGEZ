@@ -1,16 +1,19 @@
-"""Job postings from the Remotive public API (job-market signal). Owner: Member 2.
+"""Job postings from the Remotive public API (small supplementary signal). Owner: Member 2.
 
-Remotive's terms (checked 2026-10-20): link back to Remotive and name it as the source,
-about 4 requests per day at most, jobs are delayed 24h, and do not resubmit listings to other
-job sites. We store postings only to compute aggregate skill-mention trends.
+Checked 2026-10-21: the public endpoint returns only the latest ~10 postings no matter what
+limit or category is passed, so it is far too thin to measure a trend on its own. We keep it as
+an extra source and for attribution.
+
+Remotive's terms: link back to Remotive and name it as the source, about 4 requests per day at
+most, jobs are delayed 24h, and do not resubmit listings to other job sites.
 """
 import json
 import time
-from datetime import datetime, timezone
 
 import httpx
 
 from .. import config
+from .common import insert_postings
 
 API = "https://remotive.com/api/remote-jobs"
 CACHE_FILE = config.CACHE_DIR / "remotive.json"
@@ -18,10 +21,8 @@ MIN_SECONDS_BETWEEN_FETCHES = 6 * 60 * 60  # keeps us at or under 4 requests a d
 
 
 def fetch(force: bool = False) -> list[dict]:
-    """Return postings, from cache unless the cache is older than the minimum interval."""
     if CACHE_FILE.exists() and not force:
-        age = time.time() - CACHE_FILE.stat().st_mtime
-        if age < MIN_SECONDS_BETWEEN_FETCHES:
+        if time.time() - CACHE_FILE.stat().st_mtime < MIN_SECONDS_BETWEEN_FETCHES:
             return json.loads(CACHE_FILE.read_text(encoding="utf-8"))["jobs"]
     resp = httpx.get(API, headers={"User-Agent": config.USER_AGENT}, timeout=60)
     resp.raise_for_status()
@@ -31,22 +32,15 @@ def fetch(force: bool = False) -> list[dict]:
 
 
 def store(conn, jobs: list[dict]) -> int:
-    """Insert new postings. Returns how many were new."""
-    now = datetime.now(timezone.utc).isoformat()
-    before = conn.total_changes
-    for j in jobs:
-        conn.execute(
-            "INSERT OR IGNORE INTO postings VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            (
-                f"remotive:{j['id']}",
-                "remotive",
-                j.get("title", ""),
-                json.dumps(j.get("tags", [])),
-                j.get("description", ""),
-                j.get("url", ""),
-                j.get("publication_date", ""),
-                now,
-            ),
-        )
-    conn.commit()
-    return conn.total_changes - before
+    return insert_postings(conn, [
+        {
+            "id": f"remotive:{j['id']}",
+            "source": "remotive",
+            "title": j.get("title", ""),
+            "tags": j.get("tags", []),
+            "description": j.get("description", ""),
+            "url": j.get("url", ""),
+            "published_at": j["publication_date"],
+        }
+        for j in jobs
+    ])

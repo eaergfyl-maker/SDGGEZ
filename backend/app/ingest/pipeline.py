@@ -1,16 +1,21 @@
 """Run ingestion and save a snapshot of skill trends. Owner: Member 2.
 
-    python -m backend.app.ingest.pipeline               # use cached job data if fresh
-    python -m backend.app.ingest.pipeline --arxiv       # also refresh arXiv counts (slow)
+    python -m backend.app.ingest.pipeline               # job postings only (cached)
+    python -m backend.app.ingest.pipeline --arxiv       # also fetch arXiv counts (slow, resumable)
+    python -m backend.app.ingest.pipeline --no-jobs     # recompute from what is already stored
 
 Every snapshot row records where each number came from, so the UI can cite it.
 """
 import argparse
 import json
+import logging
 from datetime import datetime, timezone
 
-from .. import data_loader, db
-from . import arxiv, mentions, remotive
+from .. import config, data_loader, db
+from . import arbeitnow, arxiv, mentions, remotive
+
+log = logging.getLogger(__name__)
+JOB_SOURCES = (("arbeitnow", arbeitnow), ("remotive", remotive))
 
 
 def run(conn, refresh_arxiv: bool = False, refresh_jobs: bool = True, note: str = "") -> int:
@@ -18,7 +23,12 @@ def run(conn, refresh_arxiv: bool = False, refresh_jobs: bool = True, note: str 
     if refresh_arxiv:
         arxiv.fetch_monthly_counts(conn, skills)
     if refresh_jobs:
-        remotive.store(conn, remotive.fetch())
+        for name, source in JOB_SOURCES:
+            try:
+                new = source.store(conn, source.fetch())
+                log.info("%s: %d new postings", name, new)
+            except Exception as err:  # one source being down must not stop the snapshot
+                log.warning("%s failed, continuing without it: %s", name, err)
 
     created = datetime.now(timezone.utc).isoformat()
     snap_id = conn.execute(
@@ -28,11 +38,15 @@ def run(conn, refresh_arxiv: bool = False, refresh_jobs: bool = True, note: str 
     for s in skills:
         counts = arxiv.load_counts(conn, s["id"])
         research = arxiv.research_growth(counts)
-        demand, demand_details = mentions.demand_growth(conn, s["keywords"])
+        demand, demand_details = mentions.demand_growth(
+            conn, s["keywords"], window_days=config.DEMAND_WINDOW_DAYS)
         sources = {
             "research": {"name": "arXiv API", "months": len(counts),
                          "latest_month": max(counts) if counts else None},
-            "demand": {"name": "Remotive API", **demand_details},
+            "demand": {"name": "Arbeitnow + Remotive job postings",
+                       "caveat": ("mostly German/European postings; about one week of history; the older window "
+                                  "only holds postings still live today"),
+                       **demand_details},
             "outlook": None,
         }
         conn.execute(
@@ -68,8 +82,9 @@ def diff_last_two(conn) -> list[dict]:
 
 
 def main():
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     parser = argparse.ArgumentParser()
-    parser.add_argument("--arxiv", action="store_true", help="refresh arXiv counts (slow)")
+    parser.add_argument("--arxiv", action="store_true", help="fetch arXiv counts (slow, resumable)")
     parser.add_argument("--no-jobs", action="store_true", help="skip fetching job postings")
     parser.add_argument("--note", default="")
     args = parser.parse_args()
