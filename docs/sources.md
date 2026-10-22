@@ -30,3 +30,6 @@ Every dataset, API, report, and course provider we use. This feeds the Tech Decl
 | Simplilearn SkillUp | Course provider | https://www.simplilearn.com/learn-data-analytics-for-beginners-skillup | Free course, no licence terms beyond platform ToS | 2026-10-22 | Data analytics course, free, certificate; hours (2) computed by summing the page's own listed lesson lengths (~2.2h total), since the FAQ states no fixed duration |
 
 | Alison | Course provider | https://alison.com/course/working-as-an-it-support-technician | Free, CPD-accredited, platform ToS apply | 2026-10-22 | IT support technician course, provider states "3-4 Hours" range, used upper bound (4) per our honesty rule |
+
+| — | Gap (not a source) | — | — | 2026-10-22 | No clean, verified free course found for chatbot_qa — options checked were paid/instructor-led (QA.com) or not ddQA-specific (general ChatGPT usage courses on Alison). Flagged for team / revisit if time allows. |
+
