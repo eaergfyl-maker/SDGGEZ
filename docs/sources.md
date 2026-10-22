@@ -33,3 +33,6 @@ Every dataset, API, report, and course provider we use. This feeds the Tech Decl
 
 | — | Gap (not a source) | — | — | 2026-10-22 | No clean, verified free course found for chatbot_qa — options checked were paid/instructor-led (QA.com) or not ddQA-specific (general ChatGPT usage courses on Alison). Flagged for team / revisit if time allows. |
 
+| Simplilearn SkillUp | Course provider | https://www.simplilearn.com/learn-uipath-course-skillup | Free course, no licence terms beyond platform ToS | 2026-10-22 | UiPath RPA course, free, certificate; page states both "4 Hours" (course info) and "3 hours" (FAQ) — used upper bound (4) per our honesty rule |
+
+| Alison | Course provider | https://alison.com/course/introduction-to-responsible-ai-use-and-design | Free, CPD-accredited, platform ToS apply | 2026-10-22 | Responsible AI course, provider states "1-2h" range, used upper bound (2) per our honesty rule |

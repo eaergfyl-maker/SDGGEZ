@@ -96,6 +96,30 @@
       "funding_note": null,
       "verified": true,
       "checked_on": "2026-10-22"
+    },
+    {
+      "id": "simplilearn_uipath_rpa",
+      "title": "Learn UiPath: Master RPA with Our Comprehensive Course",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/learn-uipath-course-skillup",
+      "hours": 4,
+      "cost_myr": 0,
+      "skills": ["process_automation"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "alison_responsible_ai",
+      "title": "Introduction to Responsible AI Use and Design",
+      "provider": "Alison",
+      "url": "https://alison.com/course/introduction-to-responsible-ai-use-and-design",
+      "hours": 2,
+      "cost_myr": 0,
+      "skills": ["responsible_ai"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
     }
   ]
 }
