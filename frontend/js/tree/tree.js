@@ -1,10 +1,29 @@
 // Skill tree rendering and game logic. Owner: Member 4.
 import { api } from "../api.js";
-import { emit, state } from "../state.js";
+import { emit, state, saveOwned, clearOwned } from "../state.js";
 
 const BASE_W = 680, NODE_W = 124, MIN_NODE_W = 70, NODE_GAP = 8;
 const NODE_H = 36, ROW_H = 90, PAD = 30;
 const svg = document.getElementById("tree");
+
+// XP is a view over course data. Use a clear fallback until course hours are wired in.
+const XP_FALLBACK = 10;
+const XP_PER_LEVEL = 20;
+
+function xpFor(id) {
+  const value = state.skillXp?.[id];
+  return Number.isFinite(value) && value > 0 ? value : XP_FALLBACK;
+}
+
+function progress(owned) {
+  const trainedIds = [...owned].filter((id) => !state.startingSkills.has(id));
+  const xp = trainedIds.reduce((sum, id) => sum + xpFor(id), 0);
+  return {
+    trained: trainedIds.length,
+    level: 1 + Math.floor(xp / XP_PER_LEVEL),
+    into: xp % XP_PER_LEVEL,
+  };
+}
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -64,10 +83,17 @@ export function renderTree(tree) {
   });
   svg.innerHTML = edges.join("") + nodes.join("");
 
-  const trained = [...owned].filter((id) => !state.startingSkills.has(id)).length;
+  const { trained, level, into } = progress(owned);
   const sdgs = new Set(tree.nodes.filter((n) => n.state === "mastered").flatMap((n) => n.sdg));
   document.getElementById("trained").textContent = trained;
-  document.getElementById("level").textContent = 1 + trained;
+  document.getElementById("level").textContent = level;
+  const bar = document.getElementById("xp-bar");
+  if (bar) {
+    bar.max = XP_PER_LEVEL;
+    bar.value = into;
+  }
+  const xpText = document.getElementById("xp-text");
+  if (xpText) xpText.textContent = `${into} / ${XP_PER_LEVEL} XP to level ${level + 1}`;
   document.getElementById("badges").textContent = sdgs.size;
 }
 
@@ -104,6 +130,14 @@ async function showDetail(node) {
 
 async function train(id) {
   state.owned.add(id);
+  saveOwned();
+  await refreshTree();
+}
+
+async function resetProgress() {
+  if (!window.confirm("Reset your progress? Trained skills will be cleared.")) return;
+  clearOwned();
+  state.owned = new Set(state.startingSkills);
   await refreshTree();
 }
 
@@ -139,6 +173,8 @@ svg.addEventListener("keydown", (e) => {
   e.preventDefault();
   g.dispatchEvent(new MouseEvent("click", { bubbles: true }));
 });
+
+document.getElementById("reset")?.addEventListener("click", resetProgress);
 
 document.getElementById("scenario").addEventListener("click", (e) => {
   const s = e.target.dataset.s;
