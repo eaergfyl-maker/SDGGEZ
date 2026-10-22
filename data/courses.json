@@ -48,6 +48,30 @@
       "funding_note": null,
       "verified": true,
       "checked_on": "2026-10-22"
+    },
+    {
+      "id": "simplilearn_intro_to_ai",
+      "title": "Introduction to Artificial Intelligence",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/learn-ai-basics-skillup",
+      "hours": 2,
+      "cost_myr": 0,
+      "skills": ["ai_tools"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "anthropic_claude_code_101",
+      "title": "Claude Code 101",
+      "provider": "Anthropic (Claude Academy)",
+      "url": "https://anthropic-partners.skilljar.com/claude-code-101",
+      "hours": 1.5,
+      "cost_myr": 0,
+      "skills": ["ai_tools"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
     }
   ]
 }
