@@ -2,16 +2,28 @@
   "_note": "Owned by Member 5. ONLY real courses that someone opened and checked. Set verified=true after checking. Unverified entries are shown with a warning and never presented as fact. The example below is a placeholder and must be replaced.",
   "courses": [
     {
-      "id": "example_placeholder",
-      "title": "PLACEHOLDER - replace with a real course",
-      "provider": "TBD",
-      "url": null,
-      "hours": null,
-      "cost_myr": null,
-      "skills": ["ai_tools"],
+      "id": "simplilearn_google_sheets",
+      "title": "Free Google Sheets Course: Spreadsheet Proficiency",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/free-google-sheets-course-skillup",
+      "hours": 1,
+      "cost_myr": 0,
+      "skills": ["spreadsheets"],
       "funding_note": null,
-      "verified": false,
-      "checked_on": null
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "alison_understanding_spreadsheets",
+      "title": "Understanding Spreadsheets",
+      "provider": "Alison",
+      "url": "https://alison.com/course/understanding-spreadsheets",
+      "hours": 3,
+      "cost_myr": 0,
+      "skills": ["spreadsheets"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
     }
   ]
 }
