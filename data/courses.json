@@ -36,6 +36,18 @@
       "funding_note": null,
       "verified": true,
       "checked_on": "2026-10-22"
+    },
+    {
+       "id": "simplilearn_prompt_engineering",
+      "title": "Introduction to Prompt Engineering Fundamentals",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/prompt-engineering-free-course-skillup",
+      "hours": 1,
+      "cost_myr": 0,
+      "skills": ["prompting"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
     }
   ]
 }
