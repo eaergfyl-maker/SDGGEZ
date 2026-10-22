@@ -24,6 +24,18 @@
       "funding_note": null,
       "verified": true,
       "checked_on": "2026-10-22"
+    },
+    {
+      "id": "tableau_data_literacy_for_all",
+      "title": "Data Literacy for All",
+      "provider": "Tableau",
+      "url": "https://www.tableau.com/learn/data-literacy",
+      "hours": 5,
+      "cost_myr": 0,
+      "skills": ["data_literacy"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
     }
   ]
 }
