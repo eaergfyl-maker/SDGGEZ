@@ -1,4 +1,4 @@
-modules = ["python-3.11"]
+modules = ["python-3.12", "nodejs-20", "web"]
 run = "uvicorn backend.app.main:app --host 0.0.0.0 --port 8000"
 
 [deployment]
@@ -7,3 +7,6 @@ run = ["sh", "-c", "uvicorn backend.app.main:app --host 0.0.0.0 --port 8000"]
 [[ports]]
 localPort = 8000
 externalPort = 80
+
+[nix]
+channel = "stable-25_05"
