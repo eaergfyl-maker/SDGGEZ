@@ -72,6 +72,18 @@
       "funding_note": null,
       "verified": true,
       "checked_on": "2026-10-22"
+    },
+    {
+      "id": "simplilearn_intro_to_data_analytics",
+      "title": "Introduction to Data Analytics",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/learn-data-analytics-for-beginners-skillup",
+      "hours": 2,
+      "cost_myr": 0,
+      "skills": ["ops_analytics"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
     }
   ]
 }
