@@ -6,31 +6,30 @@ const BASE_W = 680, NODE_W = 124, MIN_NODE_W = 70, NODE_GAP = 8;
 const NODE_H = 36, ROW_H = 90, PAD = 30;
 const svg = document.getElementById("tree");
 
-// XP is a view over course data. Use a clear fallback until course hours are wired in.
+// [xp] XP is a view over real data. Until course hours from /api/pathway are wired in
+// (state.skillXp = { skillId: hours }), every trained skill is worth the fallback.
 const XP_FALLBACK = 10;
 const XP_PER_LEVEL = 20;
 
 function xpFor(id) {
-  const value = state.skillXp?.[id];
-  return Number.isFinite(value) && value > 0 ? value : XP_FALLBACK;
+  const v = state.skillXp && state.skillXp[id];
+  return Number.isFinite(v) && v > 0 ? v : XP_FALLBACK;
 }
 
 function progress(owned) {
   const trainedIds = [...owned].filter((id) => !state.startingSkills.has(id));
   const xp = trainedIds.reduce((sum, id) => sum + xpFor(id), 0);
-  return {
-    trained: trainedIds.length,
-    level: 1 + Math.floor(xp / XP_PER_LEVEL),
-    into: xp % XP_PER_LEVEL,
-  };
+  return { trained: trainedIds.length, xp, level: 1 + Math.floor(xp / XP_PER_LEVEL), into: xp % XP_PER_LEVEL };
 }
 
 function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+// [a11y] non-colour cue per state, so state is not shown by colour alone
 const MARKS = { mastered: "✓ ", available: "▸ ", locked: "🔒 " };
 
+// [layout] shorten a label so it fits a narrow node; full name stays in aria-label and <title>
 function fit(label, nodeW) {
   const max = Math.max(4, Math.floor(nodeW / 7.5));
   return label.length > max ? label.slice(0, max - 1) + "…" : label;
@@ -41,14 +40,14 @@ function layout(nodes) {
   const byTier = {};
   nodes.forEach((n) => (byTier[n.tier] ||= []).push(n));
 
-  // Widen the canvas if a tier is too crowded even at the minimum node width
+  // [layout] widen the canvas if a tier is too crowded even at the minimum node width
   const widest = Math.max(...Object.values(byTier).map((l) => l.length));
   const W = Math.max(BASE_W, widest * (MIN_NODE_W + NODE_GAP));
 
   const pos = {};
   for (const [tier, list] of Object.entries(byTier)) {
     const gap = W / list.length;
-    // Shrink node width instead of overlapping
+    // [layout] shrink node width instead of overlapping
     const nodeW = Math.max(MIN_NODE_W, Math.min(NODE_W, gap - NODE_GAP));
     list.forEach((n, i) => {
       pos[n.id] = { x: gap * i + gap / 2, y: PAD + (maxTier - tier) * ROW_H + NODE_H / 2, w: nodeW };
@@ -58,6 +57,7 @@ function layout(nodes) {
 }
 
 export function renderTree(tree) {
+  // [safety] empty tree: show a message instead of crashing on Math.max()
   if (!tree || !tree.nodes || !tree.nodes.length) {
     svg.innerHTML = "";
     return;
@@ -67,7 +67,7 @@ export function renderTree(tree) {
   const owned = state.owned;
   const edges = tree.edges.map((e) => {
     const a = pos[e.from], b = pos[e.to];
-    if (!a || !b) return ""; 
+    if (!a || !b) return ""; // edge points at a node the API filtered out
     const lit = owned.has(e.from) ? "lit" : "";
     return `<line class="${lit}" x1="${a.x}" y1="${a.y - NODE_H / 2}" x2="${b.x}" y2="${b.y + NODE_H / 2}"/>`;
   });
@@ -88,13 +88,44 @@ export function renderTree(tree) {
   document.getElementById("trained").textContent = trained;
   document.getElementById("level").textContent = level;
   const bar = document.getElementById("xp-bar");
-  if (bar) {
-    bar.max = XP_PER_LEVEL;
-    bar.value = into;
-  }
+  if (bar) { bar.max = XP_PER_LEVEL; bar.value = into; }
   const xpText = document.getElementById("xp-text");
   if (xpText) xpText.textContent = `${into} / ${XP_PER_LEVEL} XP to level ${level + 1}`;
   document.getElementById("badges").textContent = sdgs.size;
+}
+
+// [course] courses come from /api/pathway, which needs a role. Fetch it for each role in the
+// tree once per persona and keep the recommended (or first verified) course per skill.
+let skillCourses = {};
+let coursesFor = null;
+
+async function loadCourses(tree) {
+  if (coursesFor === state.persona) return;
+  const persona = state.persona;
+  const roles = tree.nodes.filter((n) => n.kind === "role");
+  const results = await Promise.all(roles.map((r) => api.pathway(r.id, persona, state.owned).catch(() => null)));
+  const map = {};
+  for (const res of results) {
+    for (const step of (res && res.steps) || []) {
+      const c = step.recommended || (step.courses || []).find((x) => x && x.verified !== false);
+      if (c && !map[step.skill]) map[step.skill] = c;
+    }
+  }
+  if (state.persona !== persona) return; // persona changed while loading
+  skillCourses = map;
+  coursesFor = persona;
+}
+
+// [course] only a verified course with a real http(s) link is ever shown as a link
+function courseHtml(course) {
+  const ok = course && course.verified !== false && /^https?:\/\//i.test(course.url || "");
+  if (!ok) return `<p class="muted">No verified course yet. You can still mark this skill as completed.</p>`;
+  const cost = course.cost_myr == null ? "" : course.cost_myr === 0 ? " · Free" : ` · RM${course.cost_myr}`;
+  const fund = course.funding_note ? ` · ${esc(course.funding_note)}` : "";
+  const checked = course.checked_on ? `<br><span class="muted">Checked on ${esc(course.checked_on)}</span>` : "";
+  return `<div class="course"><b>${esc(course.title)}</b><br>
+    <span class="muted">${esc(course.provider || "")}${cost}${fund}</span>${checked}<br>
+    <a href="${esc(course.url)}" target="_blank" rel="noopener noreferrer">Open course (new tab)</a></div>`;
 }
 
 function fmt(v) {
@@ -110,7 +141,11 @@ async function showDetail(node) {
     const c = node.components || {};
     html += `<p>Momentum: <b>${fmt(node.momentum)}</b> (${node.direction}).
       Research ${fmt(c.research_growth)}, job demand ${fmt(c.demand_growth)}, outlook ${fmt(c.outlook)}.</p>`;
-    if (node.state === "available") html += `<button id="train">Start quest</button>`;
+    if (node.state === "available") {
+      html += courseHtml(node.course || skillCourses[node.id]);
+      html += `<button id="train">Mark as completed</button>
+        <p class="muted">Progress is self-reported: the app does not check completion.</p>`;
+    }
     if (node.state === "locked") html += `<p class="muted">Locked: train the skills below it first.</p>`;
   } else {
     const m = node.match;
@@ -134,6 +169,7 @@ async function train(id) {
   await refreshTree();
 }
 
+// [persist] back to the persona's starting skills, and forget the saved progress
 async function resetProgress() {
   if (!window.confirm("Reset your progress? Trained skills will be cleared.")) return;
   clearOwned();
@@ -145,13 +181,14 @@ export async function refreshTree() {
   state.tree = await api.tree(state.persona, state.scenario, state.owned);
   renderTree(state.tree);
   emit("tree-updated", state.tree);
+  await loadCourses(state.tree);
   if (state.selected) {
     const node = state.tree.nodes.find((n) => n.id === state.selected);
     if (node) showDetail(node);
   }
 }
 
-// Return focus to a node after the SVG is redrawn (innerHTML wipes focus)
+// [a11y] return focus to a node after the SVG is redrawn (innerHTML wipes focus)
 function focusNode(id) {
   svg.querySelector(`.node[data-id="${CSS.escape(id)}"]`)?.focus();
 }
@@ -165,7 +202,7 @@ svg.addEventListener("click", (e) => {
   showDetail(state.tree.nodes.find((n) => n.id === state.selected));
 });
 
-// Enter/Space activate the focused node
+// [a11y] Enter / Space activate the focused node
 svg.addEventListener("keydown", (e) => {
   if (e.key !== "Enter" && e.key !== " ") return;
   const g = e.target.closest(".node");
