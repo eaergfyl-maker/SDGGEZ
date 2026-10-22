@@ -84,6 +84,18 @@
       "funding_note": null,
       "verified": true,
       "checked_on": "2026-10-22"
+    },
+    {
+      "id": "alison_it_support_technician",
+      "title": "Working as an IT Support Technician",
+      "provider": "Alison",
+      "url": "https://alison.com/course/working-as-an-it-support-technician",
+      "hours": 4,
+      "cost_myr": 0,
+      "skills": ["tech_support"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
     }
   ]
 }
