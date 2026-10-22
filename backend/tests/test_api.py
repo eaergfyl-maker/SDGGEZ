@@ -79,3 +79,25 @@ def test_every_persona_tree_loads(client):
         states = {n["id"]: n["state"] for n in body["nodes"]}
         assert body["family"] == p["family"]
         assert all(states.get(s) == "mastered" for s in p["skills"])
+
+
+def test_same_skills_same_tree_whatever_the_persona(client):
+    owned = "communication,empathy,crm_tools"
+    params = {"owned": owned, "family": "service-ai"}
+    a = client.get("/api/tree", params={**params, "persona": "aisyah"}).json()
+    b = client.get("/api/tree", params={**params, "persona": "hafiz"}).json()
+    assert a["nodes"] == b["nodes"]
+
+
+def test_role_nodes_have_outlook_and_source(client):
+    body = client.get("/api/tree", params={"persona": "aisyah"}).json()
+    role = next(n for n in body["nodes"] if n["id"] == "qa_analyst")
+    assert "outlook" in role and "outlook_range" in role
+    assert role["based_on"]["onet_code"] == "15-1253.00"
+
+
+def test_pathway_uses_persona_study_hours(client):
+    body = client.get("/api/pathway", params={"role": "qa_analyst", "persona": "aisyah"}).json()
+    assert body["hours_per_week"] == 6
+    assert body["estimated_weeks"] is None   # no verified courses yet, so no honest estimate
+    assert client.get("/api/pathway", params={"role": "qa_analyst", "hours_per_week": 0}).status_code == 422

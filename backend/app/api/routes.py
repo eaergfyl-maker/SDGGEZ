@@ -87,11 +87,17 @@ def get_tree(persona: str = "aisyah", scenario: Scenario = Scenario.moderate,
 
 
 @router.get("/pathway")
-def get_pathway(role: str, persona: str = "aisyah", owned: str | None = None):
+def get_pathway(role: str, persona: str = "aisyah", owned: str | None = None,
+                hours_per_week: float | None = Query(None, gt=0, le=80,
+                                                     description="default: the persona's study hours")):
     r = data_loader.roles_by_id().get(role)
     if r is None:
         raise HTTPException(404, f"unknown role: {role}")
-    return build_pathway(r, data_loader.skills(), data_loader.courses(), _owned(persona, owned))
+    if hours_per_week is None:
+        p = data_loader.persona(persona)
+        hours_per_week = p["hours_per_week"] if p else None
+    return build_pathway(r, data_loader.skills(), data_loader.courses(), _owned(persona, owned),
+                         hours_per_week)
 
 
 @router.get("/story/{node_id}")

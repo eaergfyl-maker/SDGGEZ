@@ -7,6 +7,13 @@ in one sentence. This is the core of Innovation and Problem-Solution Fit.
 Time budget: about 3 hours Wednesday (data), 3 hours Thursday (scoring), 2 hours Friday
 (pathway), then tuning.
 
+## Status (2026-10-22)
+Steps 1 to 7 are done on the `part-3` branch: real ids, O*NET references, families, capped
+components, low-data flag, role outlook and range, a clearer `why`, shared courses counted once,
+week estimates, and tests. What is left for Member 3 is review and tuning: check the results
+with real data once Member 2's snapshot exists, and adjust weights only with a reason in
+`docs/DECISIONS.md`. The "Known issue" sections below describe what was fixed and why.
+
 ## What you own
 
 | Thing | Where |

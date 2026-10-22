@@ -3,6 +3,8 @@
 Only courses from data/courses.json are ever returned. Unverified courses are flagged, and
 totals only count verified courses, so the app never presents unchecked information as fact.
 """
+import math
+
 from .tree import skill_tiers
 
 
@@ -19,19 +21,23 @@ def needed_skills(role: dict, skills_by_id: dict, owned: set[str]) -> set[str]:
     return needed
 
 
-def build_pathway(role: dict, skills: list[dict], courses: list[dict], owned: set[str]) -> dict:
+def build_pathway(role: dict, skills: list[dict], courses: list[dict], owned: set[str],
+                  hours_per_week: float | None = None) -> dict:
     by_id = {s["id"]: s for s in skills}
     tiers = skill_tiers(skills)
     needed = sorted(needed_skills(role, by_id, owned), key=lambda sid: (tiers[sid], sid))
 
     steps, total_hours, total_cost, gaps = [], 0.0, 0.0, []
+    counted: set[str] = set()   # one course can cover several skills: count it once
     for sid in needed:
         options = [c for c in courses if sid in c["skills"]]
         options.sort(key=lambda c: (not c["verified"], c["cost_myr"] or 0, c["hours"] or 0))
         best = next((c for c in options if c["verified"]), None)
         if best:
-            total_hours += best["hours"]
-            total_cost += best["cost_myr"]
+            if best["id"] not in counted:
+                counted.add(best["id"])
+                total_hours += best["hours"]
+                total_cost += best["cost_myr"]
         else:
             gaps.append(sid)
         steps.append({
@@ -48,4 +54,8 @@ def build_pathway(role: dict, skills: list[dict], courses: list[dict], owned: se
         "total_hours_verified": total_hours,
         "total_cost_myr_verified": total_cost,
         "skills_without_verified_course": gaps,
+        "hours_per_week": hours_per_week,
+        # An estimate: verified course hours only, at the person's weekly study time.
+        "estimated_weeks": (math.ceil(total_hours / hours_per_week)
+                            if hours_per_week and total_hours else None),
     }
