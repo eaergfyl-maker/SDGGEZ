@@ -82,3 +82,96 @@ def test_pathway_never_counts_unverified_courses():
     assert step_b["recommended"] is None
     assert path["total_hours_verified"] == 0
     assert set(path["skills_without_verified_course"]) == {"b", "c"}
+
+
+# --- Guide 3, steps 4 to 7 -------------------------------------------------------------
+
+from backend.app.scoring.momentum import MIN_MENTIONS, low_data  # noqa: E402
+from backend.app.scoring.tree import outlook_range, role_outlook  # noqa: E402
+
+
+def test_components_are_capped_before_averaging():
+    expected = round((0.3 * 100 + 0.5 * 10) / 0.8, 1)
+    assert momentum({"research_growth": 500, "demand_growth": 10}) == expected
+
+
+def test_missing_components_renormalise_weights():
+    assert momentum({"research_growth": 20, "outlook": 50}) == round((0.3 * 20 + 0.2 * 50) / 0.5, 1)
+
+
+def test_scenarios_amplify_decline_too():
+    comp = {"demand_growth": -20}
+    assert momentum(comp, "fast") < momentum(comp, "moderate") < momentum(comp, "slow")
+
+
+def _with_mentions(n):
+    return {"demand_growth": 50, "sources": {"demand": {"mentions_recent": n, "mentions_previous": n}}}
+
+
+def test_small_samples_are_flagged_and_ignored():
+    assert low_data(_with_mentions(MIN_MENTIONS - 1)) == ["demand_growth"]
+    assert momentum(_with_mentions(MIN_MENTIONS - 1)) is None
+    assert low_data(_with_mentions(MIN_MENTIONS)) == []
+    assert momentum(_with_mentions(MIN_MENTIONS)) == 50.0
+
+
+def test_small_sample_falls_back_to_other_signals():
+    comp = {**_with_mentions(3), "research_growth": 10}
+    assert momentum(comp) == 10.0
+
+
+def test_full_match_and_no_match():
+    full = match_role(ROLE, {"a", "b", "c"}, {})
+    assert full["score"] == 100 and full["missing"] == [] and "no skills missing" in full["why"]
+    none = match_role(ROLE, set(), {})
+    assert none["score"] == 0 and len(none["missing"]) == 3
+
+
+def test_why_names_the_biggest_gap_in_plain_words():
+    result = match_role(ROLE, {"a"}, {"b": 38.0}, {"b": "Prompting"})
+    assert result["why"] == ("1 of 3 skills matched, weighted by importance; "
+                             "biggest gap: Prompting (core, rising +38%)")
+
+
+def test_gap_with_no_trend_data_does_not_crash():
+    result = match_role(ROLE, {"a"}, {"b": None, "c": None})
+    assert "no trend data" in result["why"]
+
+
+def test_identical_skills_give_identical_results_whoever_the_person_is():
+    first = match_role(ROLE, {"a", "b"}, {"c": 12.0})
+    second = match_role(ROLE, {"b", "a"}, {"c": 12.0})
+    assert first == second
+
+
+def test_role_locked_until_all_required_skills_owned():
+    role = {**ROLE, "requires": ["b", "c"]}
+    states = lambda owned: {n["id"]: n["state"] for n in build_tree(SKILLS, [role], owned, TRENDS, "moderate")["nodes"]}
+    assert states({"a", "b"})["r"] == "locked"
+    assert states({"a", "b", "c"})["r"] == "available"
+
+
+def test_role_outlook_is_importance_weighted_and_skips_missing_data():
+    assert role_outlook(ROLE, {"a": 10, "b": 40, "c": None}) == round((1 * 10 + 3 * 40) / 4, 1)
+    assert role_outlook(ROLE, {}) is None
+
+
+def test_outlook_range_covers_every_scenario():
+    rng = outlook_range(ROLE, {"b": {"demand_growth": 20}})
+    assert set(rng["by_scenario"]) == {"slow", "moderate", "fast"}
+    assert rng["min"] == rng["by_scenario"]["slow"] and rng["max"] == rng["by_scenario"]["fast"]
+    assert outlook_range(ROLE, {}) is None
+
+
+def test_shared_course_counted_once():
+    shared = {**course("both", "b", hours=5), "skills": ["b", "c"]}
+    path = build_pathway(ROLE, SKILLS, [shared], {"a"})
+    assert [s["recommended"] for s in path["steps"]] == ["both", "both"]
+    assert path["total_hours_verified"] == 5
+
+
+def test_weeks_estimate_rounds_up():
+    path = build_pathway(ROLE, SKILLS, [course("cb", "b", hours=5), course("cc", "c", hours=5)], {"a"},
+                         hours_per_week=3)
+    assert path["estimated_weeks"] == 4          # 10 hours at 3 a week
+    assert build_pathway(ROLE, SKILLS, [], {"a"}, hours_per_week=3)["estimated_weeks"] is None

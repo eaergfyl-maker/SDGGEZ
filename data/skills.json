@@ -1,14 +1,679 @@
 {
-  "_note": "Starter set owned by Member 3. Grow to ~40-60 skills. IDs freeze on 21 Oct.",
+  "_note": "Owned by Member 3. IDs frozen 2026-10-21: add new ids, never rename. Names max 16 characters.",
   "skills": [
-    {"id": "communication", "name": "Communication", "prereqs": [], "keywords": ["communication", "written communication"], "arxiv_query": null, "sdg": [8]},
-    {"id": "empathy", "name": "Empathy", "prereqs": [], "keywords": ["empathy", "customer care"], "arxiv_query": null, "sdg": [3, 10]},
-    {"id": "case_handling", "name": "Case handling", "prereqs": [], "keywords": ["ticket handling", "case management", "customer support"], "arxiv_query": null, "sdg": [8]},
-    {"id": "crm_tools", "name": "CRM tools", "prereqs": [], "keywords": ["crm", "salesforce", "zendesk", "hubspot"], "arxiv_query": null, "sdg": [9]},
-    {"id": "ai_tools", "name": "AI tools use", "prereqs": ["communication", "empathy"], "keywords": ["ai tools", "chatgpt", "copilot", "generative ai"], "arxiv_query": "all:\"generative AI\"", "sdg": [9]},
-    {"id": "data_literacy", "name": "Data literacy", "prereqs": ["case_handling", "crm_tools"], "keywords": ["data analysis", "excel", "sql", "dashboards"], "arxiv_query": null, "sdg": [4, 9]},
-    {"id": "prompting", "name": "Prompting", "prereqs": ["crm_tools"], "keywords": ["prompt engineering", "prompting", "llm"], "arxiv_query": "all:\"prompt engineering\"", "sdg": [4]},
-    {"id": "chatbot_qa", "name": "Chatbot QA", "prereqs": ["ai_tools", "prompting"], "keywords": ["conversational ai", "chatbot", "bot testing"], "arxiv_query": "all:\"conversational agent\"", "sdg": [9, 16]},
-    {"id": "ops_analytics", "name": "Ops analytics", "prereqs": ["data_literacy", "prompting"], "keywords": ["operations analytics", "process automation", "power bi", "tableau"], "arxiv_query": "all:\"process mining\"", "sdg": [8, 9]}
+    {
+      "id": "communication",
+      "name": "Communication",
+      "prereqs": [],
+      "keywords": [
+        "written communication",
+        "verbal communication",
+        "communication skills"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        8
+      ]
+    },
+    {
+      "id": "empathy",
+      "name": "Empathy",
+      "prereqs": [],
+      "keywords": [
+        "empathy",
+        "customer care",
+        "active listening"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        8
+      ]
+    },
+    {
+      "id": "spreadsheets",
+      "name": "Spreadsheets",
+      "prereqs": [],
+      "keywords": [
+        "excel",
+        "spreadsheets",
+        "google sheets",
+        "vlookup",
+        "pivot tables"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        4
+      ]
+    },
+    {
+      "id": "data_literacy",
+      "name": "Data literacy",
+      "prereqs": [
+        "spreadsheets"
+      ],
+      "keywords": [
+        "data analysis",
+        "data-driven",
+        "kpi reporting",
+        "dashboards"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        4
+      ]
+    },
+    {
+      "id": "ai_tools",
+      "name": "AI tools use",
+      "prereqs": [
+        "communication"
+      ],
+      "keywords": [
+        "chatgpt",
+        "copilot",
+        "generative ai",
+        "ai tools",
+        "ai assistants"
+      ],
+      "arxiv_query": "all:\"generative AI\"",
+      "sdg": [
+        4,
+        9
+      ]
+    },
+    {
+      "id": "prompting",
+      "name": "Prompting",
+      "prereqs": [
+        "communication"
+      ],
+      "keywords": [
+        "prompt engineering",
+        "prompt design",
+        "large language models"
+      ],
+      "arxiv_query": "all:\"prompt engineering\"",
+      "sdg": [
+        4
+      ]
+    },
+    {
+      "id": "case_handling",
+      "name": "Case handling",
+      "prereqs": [],
+      "keywords": [
+        "ticket handling",
+        "case management",
+        "customer support",
+        "helpdesk"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        8
+      ]
+    },
+    {
+      "id": "crm_tools",
+      "name": "CRM tools",
+      "prereqs": [],
+      "keywords": [
+        "crm",
+        "salesforce",
+        "zendesk",
+        "hubspot",
+        "freshdesk"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "tech_support",
+      "name": "Tech support",
+      "prereqs": [
+        "case_handling"
+      ],
+      "keywords": [
+        "technical support",
+        "troubleshooting",
+        "it support",
+        "service desk"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": "chatbot_qa",
+      "name": "Chatbot QA",
+      "prereqs": [
+        "ai_tools",
+        "prompting"
+      ],
+      "keywords": [
+        "conversational ai",
+        "chatbot",
+        "bot testing",
+        "dialogflow"
+      ],
+      "arxiv_query": "all:\"conversational agent\"",
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "ops_analytics",
+      "name": "Ops analytics",
+      "prereqs": [
+        "data_literacy",
+        "prompting"
+      ],
+      "keywords": [
+        "operations analytics",
+        "power bi",
+        "tableau",
+        "process analysis"
+      ],
+      "arxiv_query": "all:\"process mining\"",
+      "sdg": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": "process_automation",
+      "name": "RPA tools",
+      "prereqs": [
+        "ai_tools",
+        "data_literacy"
+      ],
+      "keywords": [
+        "robotic process automation",
+        "rpa",
+        "uipath",
+        "power automate",
+        "workflow automation"
+      ],
+      "arxiv_query": "all:\"robotic process automation\"",
+      "sdg": [
+        8,
+        9
+      ]
+    },
+    {
+      "id": "responsible_ai",
+      "name": "Responsible AI",
+      "prereqs": [
+        "ai_tools",
+        "prompting"
+      ],
+      "keywords": [
+        "responsible ai",
+        "ai ethics",
+        "ai governance",
+        "ai fairness"
+      ],
+      "arxiv_query": "all:\"responsible AI\"",
+      "sdg": [
+        10,
+        16
+      ]
+    },
+    {
+      "id": "bookkeeping",
+      "name": "Bookkeeping",
+      "prereqs": [],
+      "keywords": [
+        "bookkeeping",
+        "accounts payable",
+        "accounts receivable",
+        "general ledger"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        8
+      ]
+    },
+    {
+      "id": "statistics",
+      "name": "Statistics",
+      "prereqs": [],
+      "keywords": [
+        "statistics",
+        "statistical analysis",
+        "regression analysis",
+        "hypothesis testing"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        4
+      ]
+    },
+    {
+      "id": "sql",
+      "name": "SQL",
+      "prereqs": [
+        "spreadsheets"
+      ],
+      "keywords": [
+        "sql",
+        "postgresql",
+        "mysql",
+        "database queries"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        4,
+        9
+      ]
+    },
+    {
+      "id": "data_viz",
+      "name": "Data viz",
+      "prereqs": [
+        "data_literacy",
+        "sql"
+      ],
+      "keywords": [
+        "data visualization",
+        "data visualisation",
+        "looker",
+        "power bi",
+        "tableau"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        4
+      ]
+    },
+    {
+      "id": "python_basics",
+      "name": "Python basics",
+      "prereqs": [
+        "data_literacy"
+      ],
+      "keywords": [
+        "python",
+        "pandas",
+        "jupyter"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        4,
+        9
+      ]
+    },
+    {
+      "id": "ml_basics",
+      "name": "ML basics",
+      "prereqs": [
+        "python_basics",
+        "statistics"
+      ],
+      "keywords": [
+        "machine learning",
+        "scikit-learn",
+        "predictive modelling",
+        "predictive modeling"
+      ],
+      "arxiv_query": "all:\"machine learning\"",
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "esg_reporting",
+      "name": "ESG reporting",
+      "prereqs": [
+        "data_viz",
+        "bookkeeping"
+      ],
+      "keywords": [
+        "esg",
+        "sustainability reporting",
+        "carbon accounting",
+        "gri standards",
+        "csrd"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        12,
+        13
+      ]
+    },
+    {
+      "id": "machine_operation",
+      "name": "Machine ops",
+      "prereqs": [],
+      "keywords": [
+        "machine operator",
+        "cnc",
+        "production line",
+        "smt"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "quality_checks",
+      "name": "Quality checks",
+      "prereqs": [],
+      "keywords": [
+        "quality inspection",
+        "visual inspection",
+        "quality control",
+        "qc"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "safety_procedures",
+      "name": "Workplace safety",
+      "prereqs": [],
+      "keywords": [
+        "occupational safety",
+        "health and safety",
+        "osha",
+        "hse"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        8
+      ]
+    },
+    {
+      "id": "plc_basics",
+      "name": "PLC basics",
+      "prereqs": [
+        "machine_operation"
+      ],
+      "keywords": [
+        "plc",
+        "siemens s7",
+        "ladder logic",
+        "scada"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "lean_methods",
+      "name": "Lean methods",
+      "prereqs": [
+        "quality_checks"
+      ],
+      "keywords": [
+        "lean manufacturing",
+        "kaizen",
+        "5s",
+        "six sigma"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        9,
+        12
+      ]
+    },
+    {
+      "id": "preventive_maintenance",
+      "name": "Maintenance",
+      "prereqs": [
+        "machine_operation",
+        "safety_procedures"
+      ],
+      "keywords": [
+        "preventive maintenance",
+        "maintenance technician",
+        "equipment maintenance",
+        "tpm"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "robotics_ops",
+      "name": "Robot operation",
+      "prereqs": [
+        "plc_basics",
+        "safety_procedures"
+      ],
+      "keywords": [
+        "industrial robot",
+        "robotics",
+        "fanuc",
+        "cobot"
+      ],
+      "arxiv_query": "all:\"industrial robot\"",
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "sensor_iot",
+      "name": "Sensors and IoT",
+      "prereqs": [
+        "plc_basics"
+      ],
+      "keywords": [
+        "industrial iot",
+        "iiot",
+        "iot",
+        "sensors"
+      ],
+      "arxiv_query": "all:\"industrial internet of things\"",
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "spc_quality",
+      "name": "SPC quality",
+      "prereqs": [
+        "lean_methods",
+        "data_literacy"
+      ],
+      "keywords": [
+        "statistical process control",
+        "spc",
+        "process capability",
+        "control charts"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        9,
+        12
+      ]
+    },
+    {
+      "id": "predictive_maintenance",
+      "name": "Predictive maint",
+      "prereqs": [
+        "sensor_iot",
+        "preventive_maintenance",
+        "data_literacy"
+      ],
+      "keywords": [
+        "predictive maintenance",
+        "condition monitoring",
+        "vibration analysis"
+      ],
+      "arxiv_query": "all:\"predictive maintenance\"",
+      "sdg": [
+        9,
+        12
+      ]
+    },
+    {
+      "id": "machine_vision_qc",
+      "name": "AI inspection",
+      "prereqs": [
+        "spc_quality",
+        "sensor_iot"
+      ],
+      "keywords": [
+        "machine vision",
+        "automated optical inspection",
+        "aoi",
+        "defect detection"
+      ],
+      "arxiv_query": "all:\"defect detection\"",
+      "sdg": [
+        9,
+        12
+      ]
+    },
+    {
+      "id": "electrical_wiring",
+      "name": "Electrical work",
+      "prereqs": [],
+      "keywords": [
+        "electrician",
+        "electrical installation",
+        "electrical wiring",
+        "wiring"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        8
+      ]
+    },
+    {
+      "id": "technical_drawing",
+      "name": "Tech drawings",
+      "prereqs": [],
+      "keywords": [
+        "technical drawing",
+        "autocad",
+        "schematics",
+        "blueprints"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        9
+      ]
+    },
+    {
+      "id": "solar_pv_install",
+      "name": "Solar PV install",
+      "prereqs": [
+        "electrical_wiring",
+        "safety_procedures"
+      ],
+      "keywords": [
+        "solar pv",
+        "photovoltaic",
+        "solar installation",
+        "solar panel"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        7,
+        13
+      ]
+    },
+    {
+      "id": "energy_auditing",
+      "name": "Energy auditing",
+      "prereqs": [
+        "electrical_wiring",
+        "spreadsheets"
+      ],
+      "keywords": [
+        "energy audit",
+        "energy efficiency",
+        "energy assessment"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        7,
+        13
+      ]
+    },
+    {
+      "id": "battery_storage",
+      "name": "Battery storage",
+      "prereqs": [
+        "electrical_wiring"
+      ],
+      "keywords": [
+        "battery storage",
+        "energy storage",
+        "bess",
+        "lithium-ion"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        7
+      ]
+    },
+    {
+      "id": "pv_system_design",
+      "name": "PV design",
+      "prereqs": [
+        "solar_pv_install",
+        "technical_drawing"
+      ],
+      "keywords": [
+        "pv design",
+        "pvsyst",
+        "solar design",
+        "system sizing"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        7,
+        13
+      ]
+    },
+    {
+      "id": "energy_monitoring",
+      "name": "Energy analytics",
+      "prereqs": [
+        "energy_auditing",
+        "data_literacy"
+      ],
+      "keywords": [
+        "energy management system",
+        "energy monitoring",
+        "smart meter",
+        "load forecasting"
+      ],
+      "arxiv_query": "all:\"load forecasting\"",
+      "sdg": [
+        7,
+        13
+      ]
+    },
+    {
+      "id": "ev_charging",
+      "name": "EV charging",
+      "prereqs": [
+        "battery_storage",
+        "electrical_wiring"
+      ],
+      "keywords": [
+        "ev charging",
+        "charging station",
+        "ev charger",
+        "electric vehicle"
+      ],
+      "arxiv_query": null,
+      "sdg": [
+        7,
+        11
+      ]
+    }
   ]
 }

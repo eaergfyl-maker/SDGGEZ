@@ -10,7 +10,7 @@ from .. import config, data_loader, db, trends
 from ..ingest import pipeline
 from ..scoring.momentum import direction, momentum
 from ..scoring.pathway import build_pathway
-from ..scoring.tree import build_tree
+from ..scoring.tree import build_tree, family_subset
 
 router = APIRouter()
 
@@ -64,19 +64,40 @@ def get_trends(scenario: Scenario = Scenario.moderate):
             "as_of": t["as_of"], "skills": items}
 
 
+@router.get("/families")
+def families():
+    return data_loader.families()
+
+
 @router.get("/tree")
 def get_tree(persona: str = "aisyah", scenario: Scenario = Scenario.moderate,
-             owned: str | None = Query(None, description="comma-separated skill ids")):
-    return build_tree(data_loader.skills(), data_loader.roles(), _owned(persona, owned),
-                      trends.get_trends(), scenario.value)
+             owned: str | None = Query(None, description="comma-separated skill ids"),
+             family: str | None = Query(None, description="family id, or 'all'; default: the persona's family")):
+    if family is None:
+        p = data_loader.persona(persona)
+        family = p["family"] if p else "all"
+    if family == "all":
+        skills, roles = data_loader.skills(), data_loader.roles()
+    elif family in {f["id"] for f in data_loader.families()}:
+        skills, roles = family_subset(data_loader.skills(), data_loader.roles(), family)
+    else:
+        raise HTTPException(404, f"unknown family: {family}")
+    tree = build_tree(skills, roles, _owned(persona, owned), trends.get_trends(), scenario.value)
+    return {**tree, "family": family}
 
 
 @router.get("/pathway")
-def get_pathway(role: str, persona: str = "aisyah", owned: str | None = None):
+def get_pathway(role: str, persona: str = "aisyah", owned: str | None = None,
+                hours_per_week: float | None = Query(None, gt=0, le=80,
+                                                     description="default: the persona's study hours")):
     r = data_loader.roles_by_id().get(role)
     if r is None:
         raise HTTPException(404, f"unknown role: {role}")
-    return build_pathway(r, data_loader.skills(), data_loader.courses(), _owned(persona, owned))
+    if hours_per_week is None:
+        p = data_loader.persona(persona)
+        hours_per_week = p["hours_per_week"] if p else None
+    return build_pathway(r, data_loader.skills(), data_loader.courses(), _owned(persona, owned),
+                         hours_per_week)
 
 
 @router.get("/story/{node_id}")
