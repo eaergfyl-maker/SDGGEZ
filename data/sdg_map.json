@@ -1,70 +1,14 @@
 {
   "_note": "Owned by Member 5. One entry per SDG used in skills.json/roles.json. Add the specific sub-target and a one-line reason for every tag.",
   "sdgs": [
-    {
-      "sdg": 3,
-      "name": "Good health and well-being",
-      "targets": [],
-      "reason": "TBD"
-    },
-    {
-      "sdg": 4,
-      "name": "Quality education",
-      "targets": [
-        "4.4"
-      ],
-      "reason": "Builds relevant skills for decent jobs."
-    },
-    {
-      "sdg": 7,
-      "name": "Affordable and clean energy",
-      "targets": [],
-      "reason": "TBD"
-    },
-    {
-      "sdg": 8,
-      "name": "Decent work and economic growth",
-      "targets": [
-        "8.2",
-        "8.5"
-      ],
-      "reason": "Supports productive employment as AI changes work."
-    },
-    {
-      "sdg": 9,
-      "name": "Industry, innovation and infrastructure",
-      "targets": [],
-      "reason": "TBD"
-    },
-    {
-      "sdg": 10,
-      "name": "Reduced inequalities",
-      "targets": [],
-      "reason": "TBD"
-    },
-    {
-      "sdg": 11,
-      "name": "Sustainable cities and communities",
-      "targets": [],
-      "reason": "TBD"
-    },
-    {
-      "sdg": 12,
-      "name": "Responsible consumption and production",
-      "targets": [],
-      "reason": "TBD"
-    },
-    {
-      "sdg": 13,
-      "name": "Climate action",
-      "targets": [],
-      "reason": "TBD"
-    },
-    {
-      "sdg": 16,
-      "name": "Peace, justice and strong institutions",
-      "targets": [],
-      "reason": "TBD"
-    }
+    {"sdg": 4, "name": "Quality education", "targets": ["4.4"], "reason": "Builds relevant skills for decent jobs."},
+    {"sdg": 7, "name": "Affordable and clean energy", "targets": ["7.2"], "reason": "Solar install, PV system design and battery storage skills directly grow the share of renewable energy in the energy mix."},
+    {"sdg": 8, "name": "Decent work and economic growth", "targets": ["8.2", "8.5"], "reason": "Supports productive employment as AI changes work."},
+    {"sdg": 9, "name": "Industry, innovation and infrastructure", "targets": ["9.5"], "reason": "AI tools, RPA, data and manufacturing-technology skills upgrade the technological capabilities of industrial and service sectors and encourage innovation."},
+    {"sdg": 10, "name": "Reduced inequalities", "targets": ["10.3"], "reason": "Responsible AI practices help ensure AI-driven decisions do not create discriminatory outcomes, supporting equal opportunity."},
+    {"sdg": 11, "name": "Sustainable cities and communities", "targets": ["11.6"], "reason": "Energy monitoring and auditing skills reduce the environmental impact of buildings and infrastructure in cities."},
+    {"sdg": 12, "name": "Responsible consumption and production", "targets": ["12.6"], "reason": "ESG reporting skills help companies integrate sustainability information into their reporting cycle."},
+    {"sdg": 13, "name": "Climate action", "targets": ["13.3"], "reason": "Predictive maintenance and energy auditing skills build the institutional capacity needed for climate mitigation."},
+    {"sdg": 16, "name": "Peace, justice and strong institutions", "targets": ["16.6"], "reason": "Responsible AI governance skills help build effective, accountable and transparent institutional use of AI systems."}
   ]
 }

@@ -36,5 +36,5 @@ python scripts/validate_data.py
 ```
 
 The data validator currently warns about the existing unverified course
-`example_placeholder`. The refresh endpoint is not protected; restrict it before
-making the app publicly available.
+`example_placeholder`. The refresh endpoint is protected: set `REFRESH_TOKEN` in Replit Secrets
+to enable it (it also has a 30-minute cooldown).

@@ -2,16 +2,124 @@
   "_note": "Owned by Member 5. ONLY real courses that someone opened and checked. Set verified=true after checking. Unverified entries are shown with a warning and never presented as fact. The example below is a placeholder and must be replaced.",
   "courses": [
     {
-      "id": "example_placeholder",
-      "title": "PLACEHOLDER - replace with a real course",
-      "provider": "TBD",
-      "url": null,
-      "hours": null,
-      "cost_myr": null,
+      "id": "simplilearn_google_sheets",
+      "title": "Free Google Sheets Course: Spreadsheet Proficiency",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/free-google-sheets-course-skillup",
+      "hours": 1,
+      "cost_myr": 0,
+      "skills": ["spreadsheets"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "alison_understanding_spreadsheets",
+      "title": "Understanding Spreadsheets",
+      "provider": "Alison",
+      "url": "https://alison.com/course/understanding-spreadsheets",
+      "hours": 3,
+      "cost_myr": 0,
+      "skills": ["spreadsheets"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "tableau_data_literacy_for_all",
+      "title": "Data Literacy for All",
+      "provider": "Tableau",
+      "url": "https://www.tableau.com/learn/data-literacy",
+      "hours": 5,
+      "cost_myr": 0,
+      "skills": ["data_literacy"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+       "id": "simplilearn_prompt_engineering",
+      "title": "Introduction to Prompt Engineering Fundamentals",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/prompt-engineering-free-course-skillup",
+      "hours": 1,
+      "cost_myr": 0,
+      "skills": ["prompting"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "simplilearn_intro_to_ai",
+      "title": "Introduction to Artificial Intelligence",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/learn-ai-basics-skillup",
+      "hours": 2,
+      "cost_myr": 0,
       "skills": ["ai_tools"],
       "funding_note": null,
-      "verified": false,
-      "checked_on": null
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "anthropic_claude_code_101",
+      "title": "Claude Code 101",
+      "provider": "Anthropic (Claude Academy)",
+      "url": "https://anthropic-partners.skilljar.com/claude-code-101",
+      "hours": 1.5,
+      "cost_myr": 0,
+      "skills": ["ai_tools"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "simplilearn_intro_to_data_analytics",
+      "title": "Introduction to Data Analytics",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/learn-data-analytics-for-beginners-skillup",
+      "hours": 2,
+      "cost_myr": 0,
+      "skills": ["ops_analytics"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "alison_it_support_technician",
+      "title": "Working as an IT Support Technician",
+      "provider": "Alison",
+      "url": "https://alison.com/course/working-as-an-it-support-technician",
+      "hours": 4,
+      "cost_myr": 0,
+      "skills": ["tech_support"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "simplilearn_uipath_rpa",
+      "title": "Learn UiPath: Master RPA with Our Comprehensive Course",
+      "provider": "Simplilearn SkillUp",
+      "url": "https://www.simplilearn.com/learn-uipath-course-skillup",
+      "hours": 4,
+      "cost_myr": 0,
+      "skills": ["process_automation"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
+    },
+    {
+      "id": "alison_responsible_ai",
+      "title": "Introduction to Responsible AI Use and Design",
+      "provider": "Alison",
+      "url": "https://alison.com/course/introduction-to-responsible-ai-use-and-design",
+      "hours": 2,
+      "cost_myr": 0,
+      "skills": ["responsible_ai"],
+      "funding_note": null,
+      "verified": true,
+      "checked_on": "2026-10-22"
     }
   ]
 }
