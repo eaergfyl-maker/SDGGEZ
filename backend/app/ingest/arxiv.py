@@ -87,6 +87,9 @@ def fetch_monthly_counts(conn, skills: list[dict], months: int = 24) -> int:
                     log.warning("stopping arXiv fetch: %s", err)
                     conn.commit()
                     return written
+                except httpx.HTTPError as err:
+                    log.warning("skipping %s %s: %s", s["id"], month, err)
+                    continue
                 conn.execute("INSERT OR REPLACE INTO arxiv_counts VALUES (?, ?, ?, ?, ?)",
                              (s["id"], month, n, s["arxiv_query"], now))
                 conn.commit()
