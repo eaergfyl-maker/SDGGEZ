@@ -132,6 +132,86 @@ function fmt(v) {
   return v == null ? "no data" : `${v > 0 ? "+" : ""}${v}%`;
 }
 
+// [scenario] one line per scenario. Wording is a draft: keep it in sync with docs/DECISIONS.md.
+const SCENARIO_NOTES = {
+  slow: "Slow: AI adoption is gradual, so most roles change little in the next few years.",
+  moderate: "Moderate: AI adoption grows steadily and some tasks shift to AI-assisted work.",
+  fast: "Fast: AI adoption accelerates and many tasks change quickly.",
+};
+function showScenarioNote() {
+  const el = document.getElementById("scenario-note");
+  if (el) el.textContent = `${SCENARIO_NOTES[state.scenario] || ""} These are estimates, not predictions.`;
+}
+function markScenarioButtons() {
+  document.querySelectorAll("#scenario button").forEach((b) => {
+    const on = b.dataset.s === state.scenario;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", String(on));
+  });
+}
+
+// [boss] role panel: name and SDGs, match bar, gap list, scenario range, data status
+const IMPORTANCE = { 3: "core", 2: "important", 1: "helpful" };
+
+// outlook_range = { min, max, by_scenario: { slow, moderate, fast } } (percent change in demand)
+function outlookHtml(r) {
+  if (!r) return `<p class="muted">Scenario range not available yet.</p>`;
+  const by = r.by_scenario || {};
+  const lo = r.min ?? r.low, hi = r.max ?? r.high;
+  if (lo == null || hi == null) return `<p class="muted">Scenario range not available yet.</p>`;
+  let html = `<p>Outlook between <b>${fmt(lo)}</b> and <b>${fmt(hi)}</b> depending on how fast AI moves.
+    <span class="muted">Estimate, not a prediction.</span></p>`;
+  const items = ["slow", "moderate", "fast"].filter((k) => by[k] != null).map((k) => {
+    const sel = k === state.scenario;
+    return `<li>${k[0].toUpperCase() + k.slice(1)}: <b>${fmt(by[k])}</b>${sel ? " (selected scenario)" : ""}</li>`;
+  });
+  if (items.length) html += `<ul class="gap">${items.join("")}</ul>`;
+  const vals = items.length ? ["slow", "moderate", "fast"].filter((k) => by[k] != null).map((k) => by[k]) : [lo, hi];
+  if (Math.max(...vals) < 0) html += `<p class="muted">Demand for this role is estimated to fall in every scenario.</p>`;
+  else if (Math.min(...vals) > 0) html += `<p class="muted">Demand for this role is estimated to grow in every scenario.</p>`;
+  return html;
+}
+
+function dataStatus(tree) {
+  const mock = !document.getElementById("mock-badge")?.hidden;
+  const parts = [];
+  if (mock) parts.push("Mock data: not real trends");
+  if (tree && tree.as_of) parts.push(`Data as of ${esc(tree.as_of)}`);
+  return parts.length ? `<p class="muted">${parts.join(" · ")}</p>` : "";
+}
+
+function roleHtml(node) {
+  const m = node.match || { score: 0, why: "", missing: [] };
+  const score = Math.max(0, Math.min(100, Number(m.score) || 0));
+  let html = `<div class="match">
+    <p>Match score: <b>${score}%</b></p>
+    <progress value="${score}" max="100" aria-label="Match score ${score} percent"></progress>
+    <p>${esc(m.why || "")}</p></div>`;
+
+  const have = (m.matched || []).map((id) => (state.tree.nodes.find((n) => n.id === id) || {}).name || id);
+  if (have.length) html += `<p class="muted">Already matched: ${have.map(esc).join(", ")}</p>`;
+
+  const gaps = m.missing || [];
+  if (gaps.length) {
+    const items = gaps.map((g) => {
+      const sn = state.tree.nodes.find((n) => n.id === g.skill) || {};
+      const name = sn.name || g.skill;
+      const imp = IMPORTANCE[g.importance] ? `${IMPORTANCE[g.importance]} for this role` : "";
+      const mv = g.momentum ?? sn.momentum;
+      const mom = mv == null ? "no trend data" : `${sn.direction || "trend"} (${fmt(mv)})`;
+      return `<li>${esc(name)}${imp ? ` · ${imp}` : ""} · ${esc(mom)}</li>`;
+    });
+    html += `<p>Skills gap:</p><ul class="gap">${items.join("")}</ul>`;
+  } else {
+    html += `<p>No skills gap: you already have everything this role asks for.</p>`;
+  }
+
+  html += outlookHtml(node.outlook_range);
+  html += `<button id="show-path">Show pathway</button>`;
+  html += dataStatus(state.tree);
+  return html;
+}
+
 async function showDetail(node) {
   const el = document.getElementById("detail");
   const tags = node.sdg.map((g) => `<span class="tag">SDG ${g}</span>`).join("");
@@ -148,10 +228,7 @@ async function showDetail(node) {
     }
     if (node.state === "locked") html += `<p class="muted">Locked: train the skills below it first.</p>`;
   } else {
-    const m = node.match;
-    html += `<p>Match score: <b>${m.score}%</b>. ${esc(m.why)}.</p>`;
-    if (m.missing.length) html += `<p>Skills gap: ${m.missing.map((g) => esc(g.skill)).join(", ")}</p>`;
-    html += `<button id="show-path">Show pathway</button>`;
+    html += roleHtml(node);
   }
 
   const story = await api.story(node.id).catch(() => ({}));
@@ -217,7 +294,12 @@ document.getElementById("scenario").addEventListener("click", (e) => {
   const s = e.target.dataset.s;
   if (!s) return;
   state.scenario = s;
-  document.querySelectorAll("#scenario button").forEach((b) => b.classList.toggle("on", b.dataset.s === s));
+  markScenarioButtons();
+  showScenarioNote();
   refreshTree();
   emit("scenario-changed", s);
 });
+
+// show the note for the starting scenario
+markScenarioButtons();
+showScenarioNote();
