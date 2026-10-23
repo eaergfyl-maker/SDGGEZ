@@ -5,7 +5,7 @@ import "./tree/refresh.js";
 import "./tree/profile.js";
 import { renderIntake } from "./panels/intake.js";
 import { renderRadar } from "./panels/radar.js";
-import { renderChat } from "./panels/chat.js";
+// import { renderChat } from "./panels/chat.js";
 import { clearPathway, renderPathway } from "./panels/pathway.js";
 
 on("persona-changed", () => {
@@ -21,4 +21,4 @@ on("role-selected", (roleId) => renderPathway(roleId));
 clearPathway();
 renderRadar();
 renderIntake();
-renderChat();
+// renderChat();
