@@ -6,6 +6,7 @@ export const state = {
   startingSkills: new Set(),
   selected: null,       // selected node id
   tree: null,           // last /api/tree response
+  family: null,         // career area: null = the class's own area, "auto" = guess from skills, or an area id
   skillXp: {},          // optional { skillId: course hours }, used for XP
 };
 
