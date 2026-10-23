@@ -41,8 +41,11 @@ h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
 .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
 button { font: inherit; font-size: 13px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; }
 button.on { border-color: var(--accent); color: var(--accent); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 600px) { button { min-height: 40px; } }
 .seg { display: flex; gap: 4px; }
-#tree { width: 100%; height: auto; display: block; }
+.tree-wrap { overflow-x: auto; }
+#tree { width: 100%; min-width: 640px; height: auto; display: block; }
 #tree .node { cursor: pointer; }
 #tree .node text { font-size: 13px; fill: #fff; pointer-events: none; }
 #tree .mastered rect { fill: var(--mastered); }
@@ -51,13 +54,19 @@ button.on { border-color: var(--accent); color: var(--accent); }
 #tree .role rect { fill: var(--role); }
 #tree .role.locked rect { fill: var(--locked); }
 #tree .selected rect { stroke: var(--text); stroke-width: 2; }
+#tree .node:focus { outline: none; }
+#tree .node:focus-visible rect { stroke: var(--accent); stroke-width: 3; }
 #tree line { stroke: var(--locked); stroke-width: 1; }
 #tree line.lit { stroke: var(--mastered); stroke-width: 2; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 12px 0; }
 .stats div { background: var(--bg); border-radius: 8px; padding: 8px 12px; }
 .stats span { display: block; font-size: 12px; color: var(--muted); }
 .stats b { font-size: 18px; font-weight: 600; }
+.xp { margin: 0 0 8px; }
+.xp progress { width: 100%; height: 12px; accent-color: var(--mastered); }
 .detail { min-height: 80px; }
+.course { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 8px 0; }
+.course a { color: var(--accent); }
 .story { border-left: 3px solid var(--accent); padding-left: 12px; margin: 8px 0; font-style: italic; }
 footer { max-width: 900px; margin: 0 auto; padding: 16px; }
 ol { padding-left: 20px; }

@@ -1,16 +1,19 @@
 """HTTP API. Owner: Member 1. Response shapes here are shared contracts with the frontend;
 change them only after noting it in docs/DECISIONS.md.
 """
+import os
+import sqlite3
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 
 import yaml
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Path, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Path, Query
 
 from .. import config, data_loader, db, trends
 from ..ingest import pipeline
 from ..scoring.momentum import direction, momentum
 from ..scoring.pathway import build_pathway
-from ..scoring.tree import build_tree
+from ..scoring.tree import build_tree, family_subset
 
 router = APIRouter()
 
@@ -64,19 +67,40 @@ def get_trends(scenario: Scenario = Scenario.moderate):
             "as_of": t["as_of"], "skills": items}
 
 
+@router.get("/families")
+def families():
+    return data_loader.families()
+
+
 @router.get("/tree")
 def get_tree(persona: str = "aisyah", scenario: Scenario = Scenario.moderate,
-             owned: str | None = Query(None, description="comma-separated skill ids")):
-    return build_tree(data_loader.skills(), data_loader.roles(), _owned(persona, owned),
-                      trends.get_trends(), scenario.value)
+             owned: str | None = Query(None, description="comma-separated skill ids"),
+             family: str | None = Query(None, description="family id, or 'all'; default: the persona's family")):
+    if family is None:
+        p = data_loader.persona(persona)
+        family = p["family"] if p else "all"
+    if family == "all":
+        skills, roles = data_loader.skills(), data_loader.roles()
+    elif family in {f["id"] for f in data_loader.families()}:
+        skills, roles = family_subset(data_loader.skills(), data_loader.roles(), family)
+    else:
+        raise HTTPException(404, f"unknown family: {family}")
+    tree = build_tree(skills, roles, _owned(persona, owned), trends.get_trends(), scenario.value)
+    return {**tree, "family": family}
 
 
 @router.get("/pathway")
-def get_pathway(role: str, persona: str = "aisyah", owned: str | None = None):
+def get_pathway(role: str, persona: str = "aisyah", owned: str | None = None,
+                hours_per_week: float | None = Query(None, gt=0, le=80,
+                                                     description="default: the persona's study hours")):
     r = data_loader.roles_by_id().get(role)
     if r is None:
         raise HTTPException(404, f"unknown role: {role}")
-    return build_pathway(r, data_loader.skills(), data_loader.courses(), _owned(persona, owned))
+    if hours_per_week is None:
+        p = data_loader.persona(persona)
+        hours_per_week = p["hours_per_week"] if p else None
+    return build_pathway(r, data_loader.skills(), data_loader.courses(), _owned(persona, owned),
+                         hours_per_week)
 
 
 @router.get("/story/{node_id}")
@@ -108,11 +132,42 @@ def _refresh_job():
         conn.close()
 
 
-@router.post("/refresh", status_code=202)
+REFRESH_COOLDOWN_MINUTES = 30
+
+
+def require_refresh_token(x_refresh_token: str | None = Header(None)):
+    """Only callers who send the secret token in the X-Refresh-Token header may refresh."""
+    expected = os.environ.get("REFRESH_TOKEN")
+    if not expected or x_refresh_token != expected:
+        raise HTTPException(403, "Refresh is restricted")
+
+
+def refresh_cooldown():
+    """Refuse a refresh if a snapshot was saved in the last REFRESH_COOLDOWN_MINUTES."""
+    if not config.DB_PATH.exists():
+        return
+    conn = db.connect()
+    try:
+        row = conn.execute("SELECT created_at FROM snapshots ORDER BY id DESC LIMIT 1").fetchone()
+    except sqlite3.OperationalError:
+        return  # no snapshots table yet, so there is nothing to cool down from
+    finally:
+        conn.close()
+    if row is None:
+        return
+    last = datetime.fromisoformat(row["created_at"])
+    if last.tzinfo is None:
+        last = last.replace(tzinfo=timezone.utc)
+    if last > datetime.now(timezone.utc) - timedelta(minutes=REFRESH_COOLDOWN_MINUTES):
+        raise HTTPException(429, "A refresh ran recently; try again later")
+
+
+@router.post("/refresh", status_code=202,
+             dependencies=[Depends(require_refresh_token), Depends(refresh_cooldown)])
 def refresh(background: BackgroundTasks):
     """Fetch new job data (cached, rate-limited) and save a new snapshot in the background.
 
-    TODO (Member 1): protect this before the public demo so anyone can't trigger it repeatedly.
+    Needs the X-Refresh-Token header, and is limited to one refresh per 30 minutes.
     """
     background.add_task(_refresh_job)
     return {"started": True}

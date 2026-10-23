@@ -18,11 +18,11 @@ Copy each line into a GitHub issue on the Projects board. Tick here or on the bo
 - [ ] Fri: `ingest/pipeline.py` writes `skill_trends` + a `snapshots` row; diff for patch notes
 
 ## Member 3: Scoring and matching
-- [ ] Tue: freeze skill and role IDs in `data/skills.json` and `data/roles.json`
-- [ ] Wed: grow to ~40-60 skills, ~15-25 roles; pick ESCO or O*NET and check its licence
-- [ ] Thu: tune `scoring/momentum.py` weights and scenarios; tests
-- [ ] Thu: `scoring/matching.py` fit score, gap, "why" strings; tests
-- [ ] Fri: `scoring/pathway.py` ordering and course selection; tests
+- [x] Tue: freeze skill and role IDs in `data/skills.json` and `data/roles.json`
+- [x] Wed: grow to ~40-60 skills, ~15-25 roles; pick ESCO or O*NET and check its licence
+- [x] Thu: tune `scoring/momentum.py` weights and scenarios; tests
+- [x] Thu: `scoring/matching.py` fit score, gap, "why" strings; tests
+- [x] Fri: `scoring/pathway.py` ordering and course selection; tests
 
 ## Member 4: Frontend A, skill tree and game
 - [ ] Tue: run the app, read `frontend/js/tree/tree.js`

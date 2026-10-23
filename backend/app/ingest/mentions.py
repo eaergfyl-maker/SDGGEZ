@@ -43,9 +43,12 @@ def demand_growth(conn, keywords: list[str], window_days: int = 14,
     if len(recent) < MIN_POSTINGS_PER_WINDOW or len(prev) < MIN_POSTINGS_PER_WINDOW:
         return None, details
 
-    share_recent = sum(mentions(t, keywords) for t in recent) / len(recent)
-    share_prev = sum(mentions(t, keywords) for t in prev) / len(prev)
-    details.update(share_recent=round(share_recent, 4), share_previous=round(share_prev, 4))
+    hits_recent = sum(mentions(t, keywords) for t in recent)
+    hits_prev = sum(mentions(t, keywords) for t in prev)
+    share_recent = hits_recent / len(recent)
+    share_prev = hits_prev / len(prev)
+    details.update(mentions_recent=hits_recent, mentions_previous=hits_prev,
+                   share_recent=round(share_recent, 4), share_previous=round(share_prev, 4))
     if share_prev == 0:
         return None, details
     return round(100 * (share_recent - share_prev) / share_prev, 1), details

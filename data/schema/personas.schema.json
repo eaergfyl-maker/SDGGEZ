@@ -2,21 +2,75 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "personas.json",
   "type": "object",
-  "required": ["personas"],
+  "required": [
+    "personas"
+  ],
   "properties": {
     "personas": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["id", "name", "synthetic", "current_role", "skills", "hours_per_week"],
+        "required": [
+          "id",
+          "name",
+          "synthetic",
+          "current_role",
+          "family",
+          "skills",
+          "hours_per_week"
+        ],
         "additionalProperties": false,
         "properties": {
-          "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
-          "name": {"type": "string"},
-          "synthetic": {"const": true},
-          "current_role": {"type": "string"},
-          "skills": {"type": "array", "items": {"type": "string"}},
-          "hours_per_week": {"type": "number", "exclusiveMinimum": 0}
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "synthetic": {
+            "const": true
+          },
+          "current_role": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hours_per_week": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "family": {
+            "type": "string"
+          },
+          "based_on": {
+            "type": "object",
+            "required": [
+              "onet_code",
+              "onet_title",
+              "match"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "onet_code": {
+                "type": "string",
+                "pattern": "^\\d{2}-\\d{4}\\.\\d{2}$"
+              },
+              "onet_title": {
+                "type": "string"
+              },
+              "match": {
+                "enum": [
+                  "direct",
+                  "closest"
+                ]
+              }
+            }
+          }
         }
       }
     }

@@ -6,10 +6,18 @@ Each component is a % change (or None when we have no data):
   outlook          a published forecast (cite the report), if we have one
 
 Scenarios are assumptions, not predictions. They change how much each signal counts and how
-strongly change is amplified. Tune the numbers and write the reasoning in docs/DECISIONS.md.
+strongly change is amplified. The reasoning is in docs/DECISIONS.md.
 """
 
 COMPONENTS = ("research_growth", "demand_growth", "outlook")
+
+# Each component is capped before averaging, so one exploding signal (e.g. +400% research
+# growth from a tiny base) cannot drown out the others.
+COMPONENT_CAP = 100.0
+
+# Below this many postings mentioning the skill (in either window), demand growth is noise:
+# 3 mentions vs 1 mention reads as +200%. We drop the component and flag it as low data.
+MIN_MENTIONS = 20
 
 SCENARIOS = {
     "slow": {"research_growth": 0.2, "demand_growth": 0.5, "outlook": 0.3, "scale": 0.6},
@@ -18,10 +26,27 @@ SCENARIOS = {
 }
 
 
+def low_data(components: dict) -> list[str]:
+    """Components we have a value for but too small a sample to trust."""
+    demand = (components.get("sources") or {}).get("demand") or {}
+    counts = (demand.get("mentions_recent"), demand.get("mentions_previous"))
+    if components.get("demand_growth") is not None and any(
+            c is not None and c < MIN_MENTIONS for c in counts):
+        return ["demand_growth"]
+    return []
+
+
+def usable(components: dict) -> dict[str, float]:
+    """The components we trust, each capped to plus or minus COMPONENT_CAP."""
+    skip = set(low_data(components))
+    return {k: max(-COMPONENT_CAP, min(COMPONENT_CAP, components[k]))
+            for k in COMPONENTS if components.get(k) is not None and k not in skip}
+
+
 def momentum(components: dict, scenario: str = "moderate") -> float | None:
-    """Weighted average of the components we have, scaled by the scenario, clamped to ±100."""
+    """Weighted average of the usable components, scaled by the scenario, clamped to plus or minus 100."""
     weights = SCENARIOS[scenario]
-    present = {k: components[k] for k in COMPONENTS if components.get(k) is not None}
+    present = usable(components)
     if not present:
         return None
     total = sum(weights[k] for k in present)

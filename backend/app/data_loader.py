@@ -20,6 +20,11 @@ def roles():
 
 
 @lru_cache
+def families():
+    return _read("roles")["families"]
+
+
+@lru_cache
 def courses():
     return _read("courses")["courses"]
 

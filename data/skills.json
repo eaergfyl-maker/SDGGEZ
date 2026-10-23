@@ -66,8 +66,7 @@
       "id": "ai_tools",
       "name": "AI tools use",
       "prereqs": [
-        "communication",
-        "empathy"
+        "communication"
       ],
       "keywords": [
         "chatgpt",
