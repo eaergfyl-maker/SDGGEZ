@@ -114,6 +114,30 @@ def test_pathway_uses_persona_study_hours(client):
     assert client.get("/api/pathway", params={"role": "qa_analyst", "hours_per_week": 0}).status_code == 422
 
 
+def test_custom_profile_gets_its_area_guessed(client):
+    body = client.get("/api/tree", params={"persona": "custom",
+                                           "owned": "bookkeeping,statistics,communication"}).json()
+    assert body["family"] == "data" and body["family_inferred"] is True
+    assert body["needs_family"] is False
+    assert len(body["nodes"]) < 25                 # one area, not all 55 nodes
+
+
+def test_custom_profile_with_nothing_specific_is_asked_to_choose(client):
+    body = client.get("/api/tree", params={"persona": "custom", "owned": "communication"}).json()
+    assert body["needs_family"] is True and body["family"] is None and body["nodes"] == []
+
+
+def test_chosen_area_overrides_the_guess(client):
+    body = client.get("/api/tree", params={"persona": "custom", "owned": "bookkeeping",
+                                           "family": "green-energy"}).json()
+    assert body["family"] == "green-energy" and body["family_inferred"] is False
+
+
+def test_starting_classes_keep_their_own_area(client):
+    body = client.get("/api/tree", params={"persona": "hafiz"}).json()
+    assert body["family"] == "green-energy" and body["family_inferred"] is False
+
+
 def test_page_credits_onet_under_cc_by(client):
     """O*NET is used under CC BY 4.0, which requires the credit to be shown. A merge once
     dropped it silently, so this keeps it in place."""

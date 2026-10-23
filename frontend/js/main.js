@@ -3,6 +3,7 @@ import { on, state, loadOwned } from "./state.js";
 import { refreshTree } from "./tree/tree.js";
 import "./tree/refresh.js";
 import "./tree/profile.js";
+import "./tree/area.js";
 import { renderIntake } from "./panels/intake.js";
 import { renderRadar } from "./panels/radar.js";
 // import { renderChat } from "./panels/chat.js";

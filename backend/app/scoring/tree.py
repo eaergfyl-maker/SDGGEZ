@@ -6,6 +6,8 @@ Node states:
   locked     at least one prerequisite missing
 Roles sit one tier above their required skills and use the same states.
 """
+from collections import Counter
+
 from .matching import match_role
 from .momentum import SCENARIOS, direction, low_data, momentum
 
@@ -41,6 +43,31 @@ def family_subset(skills: list[dict], roles: list[dict], family: str) -> tuple[l
             needed.add(sid)
             todo |= set(by_id[sid]["prereqs"])
     return [s for s in skills if s["id"] in needed], fam_roles
+
+
+def infer_family(owned: set[str], skills: list[dict], roles: list[dict], families: list[dict]) -> dict:
+    """Guess which career area a person belongs in, from their skills alone.
+
+    Each owned skill scores 1 / (number of career areas that use it), so a skill every area
+    uses (communication) barely counts, and a skill only one area uses (bookkeeping) counts fully.
+    The area with the highest score wins; ties break by id so the result never changes randomly.
+    Returns family None when no skill points anywhere (or every area ties), so the UI can ask
+    instead of guessing.
+    `ambiguous` is true when the runner-up scores at least 80% of the winner.
+    """
+    areas = {f["id"]: {s["id"] for s in family_subset(skills, roles, f["id"])[0]} for f in families}
+    spread = Counter(sid for ids in areas.values() for sid in ids)
+    ranked = sorted(
+        ({"id": f["id"], "name": f["name"],
+          "score": round(sum(1 / spread[sid] for sid in owned if sid in areas[f["id"]]), 2)}
+         for f in families),
+        key=lambda r: (-r["score"], r["id"]),
+    )
+    best = ranked[0] if ranked and ranked[0]["score"] > 0 else None
+    if best and ranked[-1]["score"] == best["score"]:
+        best = None  # every area scores the same: only shared skills, so there is nothing to go on
+    ambiguous = bool(best) and len(ranked) > 1 and ranked[1]["score"] >= 0.8 * best["score"]
+    return {"family": best["id"] if best else None, "ambiguous": ambiguous, "ranked": ranked}
 
 
 def role_outlook(role: dict, mom: dict[str, float | None]) -> float | None:

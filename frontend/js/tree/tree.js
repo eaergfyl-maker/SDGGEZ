@@ -357,13 +357,13 @@ async function resetProgress() {
 export async function refreshTree() {
   setStatus(state.tree ? "" : "Loading your skill tree…");
   try {
-    state.tree = await api.tree(state.persona, state.scenario, state.owned);
+    state.tree = await api.tree(state.persona, state.scenario, state.owned, state.family);
   } catch (err) {
     justTrained = null;
     setStatus("Couldn't load the skill tree. Check that the server is running.", true);
     return;
   }
-  setStatus("");
+  setStatus(state.tree.needs_family ? "Choose a career area above to see your skill tree." : "");
   renderTree(state.tree);
   emit("tree-updated", state.tree);
   await loadCourses(state.tree);

@@ -22,7 +22,7 @@ function chips(ids, mark = "") {
 function render() {
   if (!body) return;
   if (!state.tree || !state.owned) {
-    body.innerHTML = `<p class="muted">Choose a persona to meet your character.</p>`;
+    body.innerHTML = `<p class="muted">Choose a starting class to meet your character.</p>`;
     return;
   }
   const c = classFor(state.startingSkills);

@@ -13,7 +13,7 @@ from .. import config, data_loader, db, trends
 from ..ingest import pipeline
 from ..scoring.momentum import direction, momentum
 from ..scoring.pathway import build_pathway
-from ..scoring.tree import build_tree, family_subset
+from ..scoring.tree import build_tree, family_subset, infer_family
 
 router = APIRouter()
 
@@ -75,18 +75,39 @@ def families():
 @router.get("/tree")
 def get_tree(persona: str = "aisyah", scenario: Scenario = Scenario.moderate,
              owned: str | None = Query(None, description="comma-separated skill ids"),
-             family: str | None = Query(None, description="family id, or 'all'; default: the persona's family")):
+             family: str | None = Query(None, description=(
+                 "career area id, 'all', or 'auto' (guess from the skills); "
+                 "default: the persona's area, or 'auto' for a custom profile"))):
+    owned_ids = _owned(persona, owned)
+    families = data_loader.families()
     if family is None:
         p = data_loader.persona(persona)
-        family = p["family"] if p else "all"
+        family = p["family"] if p else "auto"
+
+    guess = None
+    if family == "auto":
+        guess = infer_family(owned_ids, data_loader.skills(), data_loader.roles(), families)
+        family = guess["family"]
+    extra = {
+        "family_inferred": guess is not None,
+        "family_ambiguous": bool(guess and guess["ambiguous"]),
+        "family_ranked": guess["ranked"] if guess else None,
+    }
+
+    if family is None:
+        # Nothing to guess from (no skills, or none tied to an area): ask instead of guessing.
+        t = trends.get_trends()
+        return {"scenario": scenario.value, "is_mock": t["is_mock"], "as_of": t["as_of"],
+                "source": t["source"], "nodes": [], "edges": [], "family": None,
+                "needs_family": True, **extra}
     if family == "all":
         skills, roles = data_loader.skills(), data_loader.roles()
-    elif family in {f["id"] for f in data_loader.families()}:
+    elif family in {f["id"] for f in families}:
         skills, roles = family_subset(data_loader.skills(), data_loader.roles(), family)
     else:
         raise HTTPException(404, f"unknown family: {family}")
-    tree = build_tree(skills, roles, _owned(persona, owned), trends.get_trends(), scenario.value)
-    return {**tree, "family": family}
+    tree = build_tree(skills, roles, owned_ids, trends.get_trends(), scenario.value)
+    return {**tree, "family": family, "needs_family": False, **extra}
 
 
 @router.get("/pathway")

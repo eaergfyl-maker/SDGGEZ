@@ -175,3 +175,50 @@ def test_weeks_estimate_rounds_up():
                          hours_per_week=3)
     assert path["estimated_weeks"] == 4          # 10 hours at 3 a week
     assert build_pathway(ROLE, SKILLS, [], {"a"}, hours_per_week=3)["estimated_weeks"] is None
+
+
+# --- Career area guess ------------------------------------------------------------------
+
+from backend.app.scoring.tree import infer_family  # noqa: E402
+
+AREA_SKILLS = [
+    {"id": "talk", "name": "Talk", "prereqs": [], "keywords": ["t"], "sdg": [8]},
+    {"id": "ledger", "name": "Ledger", "prereqs": [], "keywords": ["l"], "sdg": [8]},
+    {"id": "solder", "name": "Solder", "prereqs": [], "keywords": ["s"], "sdg": [9]},
+    {"id": "weld", "name": "Weld", "prereqs": [], "keywords": ["w"], "sdg": [9]},
+]
+AREA_ROLES = [
+    {"id": "clerk", "family": "office", "requires": ["ledger"], "sdg": [8],
+     "skills": [{"skill": "ledger", "importance": 3}, {"skill": "talk", "importance": 1}]},
+    {"id": "tech", "family": "factory", "requires": ["solder"], "sdg": [9],
+     "skills": [{"skill": "solder", "importance": 3}, {"skill": "talk", "importance": 1}]},
+    {"id": "welder", "family": "workshop", "requires": ["weld"], "sdg": [9],
+     "skills": [{"skill": "weld", "importance": 3}, {"skill": "talk", "importance": 1}]},
+]
+AREAS = [{"id": "office", "name": "Office"}, {"id": "factory", "name": "Factory"},
+         {"id": "workshop", "name": "Workshop"}]
+
+
+def guess(owned):
+    return infer_family(set(owned), AREA_SKILLS, AREA_ROLES, AREAS)
+
+
+def test_area_specific_skill_decides_the_area():
+    assert guess({"ledger"})["family"] == "office"
+    assert guess({"solder", "talk"})["family"] == "factory"
+
+
+def test_shared_skill_alone_is_not_enough_to_guess():
+    assert guess({"talk"})["family"] is None      # every area uses it: ask instead
+    assert guess(set())["family"] is None
+
+
+def test_close_call_is_flagged_and_order_is_stable():
+    g = guess({"ledger", "solder"})                # two areas tie, the third scores nothing
+    assert g["ambiguous"] is True
+    assert g["family"] == "factory"               # tie broken by id, the same every time
+    assert [r["id"] for r in g["ranked"]] == ["factory", "office", "workshop"]
+
+
+def test_tie_across_every_area_asks_instead_of_guessing():
+    assert guess({"ledger", "solder", "weld"})["family"] is None

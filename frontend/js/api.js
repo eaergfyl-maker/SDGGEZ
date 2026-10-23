@@ -10,7 +10,9 @@ export const api = {
   personas: () => get("personas"),
   sdgs: () => get("sdgs"),
   trends: (scenario) => get("trends", { scenario }),
-  tree: (persona, scenario, owned) => get("tree", { persona, scenario, owned: owned && [...owned].join(",") }),
+  families: () => get("families"),
+  tree: (persona, scenario, owned, family) =>
+    get("tree", { persona, scenario, owned: owned && [...owned].join(","), family }),
   pathway: (role, persona, owned) => get("pathway", { role, persona, owned: owned && [...owned].join(",") }),
   story: (nodeId) => get(`story/${nodeId}`),
   changes: () => get("changes"),

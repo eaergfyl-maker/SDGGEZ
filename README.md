@@ -64,7 +64,8 @@ makes them.
 
 ### Key Features
 
-- **Skills profile** — pick one of four synthetic personas (customer service, accounts, factory, electrician) as a starting character, or describe yourself by ticking skills from a checklist (sample information only; nothing is stored). A game class (Bard, Wizard, Rogue, Paladin, Druid) is derived from the skills.
+- **Skills profile** — pick a starting class (Bard, Wizard, Paladin, Druid), each a sample starting kit based on a synthetic persona's job and skills, or describe yourself by ticking skills (sample information only; nothing is stored). The class comes from the skills.
+- **Career areas** — 16 roles are grouped into four career areas so each tree stays readable. A starting class opens in its own area; for a custom profile the area is guessed from the ticked skills (shared skills like communication barely count), and the user can always switch.
 - **Live trend signals** — skill momentum from Arbeitnow and Remotive job postings and arXiv research counts, each shown with its source and date. Mock data is clearly labelled until a real snapshot exists.
 - **Future-role matching** — 16 roles, each based on an O\*NET occupation, with an importance-weighted match score, a skills gap, and a one-sentence explanation.
 - **Skill tree and reskilling path** — prerequisites unlock in order; the pathway lists verified courses with hours, cost and an estimated number of weeks.
