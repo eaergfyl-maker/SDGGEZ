@@ -1,97 +1,134 @@
+/* Dungeon-and-parchment theme. Light mode = parchment, dark mode = dungeon at night.
+   All text/fill pairs below were checked for at least 4.5:1 contrast. */
 :root {
-  --bg: #f7f6f2;
-  --card: #ffffff;
-  --text: #1f1e1b;
-  --muted: #6b6a64;
-  --border: #dedcd3;
-  --mastered: #0f7a58;
-  --available: #9a5a0b;
-  --locked: #6b6962;
-  --role: #534ab7;
-  --warn-bg: #faeeda;
-  --warn-text: #633806;
-  --accent: #185fa5;
+  --bg: #e9dcc0;
+  --card: #f7efdc;
+  --text: #2a1c10;
+  --muted: #5a4632;
+  --border: #a8884f;      /* soft decorative lines */
+  --edge: #7a5a2a;        /* borders of controls and nodes (3:1+ against the page) */
+  --accent: #8b1a2b;      /* crimson: links, focus, selected */
+  --on-accent: #fffaf0;
+  --gold: #946a0a;
+  --mastered: #1d6b45;
+  --available: #8a5a0a;
+  --locked: #5f5a52;
+  --role: #5b2a86;
+  --node-text: #fffaf0;
+  --warn-bg: #f0d9a0;
+  --warn-text: #4d2e06;
+  --hover: rgba(139, 26, 43, .08);
+  --shadow: rgba(60, 35, 10, .18);
+  --glow1: rgba(255, 250, 235, .7);
+  --glow2: rgba(150, 100, 40, .18);
+  --serif: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1b1b19;
-    --card: #262624;
-    --text: #ecebe6;
-    --muted: #a3a29b;
-    --border: #3d3d3a;
-    --locked: #5f5e5a;
-    --role: #5b52c4;
-    --warn-bg: #633806;
-    --warn-text: #faeeda;
-    --accent: #85b7eb;
+    --bg: #15110e;
+    --card: #211a15;
+    --text: #eadcc0;
+    --muted: #b5a48a;
+    --border: #6b5236;
+    --edge: #a8803f;
+    --accent: #e2b44d;    /* torch gold */
+    --on-accent: #15110e;
+    --gold: #e2b44d;
+    --mastered: #237a50;
+    --available: #8a5a0a;
+    --locked: #5a554d;
+    --role: #6a3fa3;
+    --warn-bg: #5a3b0c;
+    --warn-text: #f6e3b4;
+    --hover: rgba(226, 180, 77, .12);
+    --shadow: rgba(0, 0, 0, .5);
+    --glow1: rgba(120, 70, 30, .22);
+    --glow2: rgba(70, 30, 90, .2);
   }
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 system-ui, sans-serif; }
+body {
+  margin: 0; color: var(--text); font: 15px/1.6 system-ui, sans-serif;
+  background-color: var(--bg);
+  background-image: radial-gradient(ellipse at 15% 0%, var(--glow1), transparent 55%),
+                    radial-gradient(ellipse at 90% 100%, var(--glow2), transparent 50%);
+  background-attachment: fixed;
+}
 main { max-width: 900px; margin: 0 auto; padding: 0 16px; }
-.top { max-width: 900px; margin: 0 auto; padding: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-h1 { font-size: 20px; font-weight: 600; margin: 0; }
-h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
-.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 0 0 16px; }
+.top { max-width: 900px; margin: 0 auto 16px; padding: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; border-bottom: 2px solid var(--edge); }
+h1 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: .05em; color: var(--accent); margin: 0; }
+h2 { font-family: var(--serif); font-size: 18px; font-weight: 700; margin: 0 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--border); }
+a { color: var(--accent); }
+.card {
+  background: var(--card); border: 2px solid var(--edge); border-radius: 8px; padding: 16px; margin: 0 0 16px;
+  box-shadow: inset 0 0 0 3px var(--card), inset 0 0 0 4px var(--border), 0 2px 6px var(--shadow);
+}
 .muted { color: var(--muted); font-size: 13px; }
-.badge { font-size: 12px; padding: 2px 8px; border-radius: 6px; }
-.badge.warn { background: var(--warn-bg); color: var(--warn-text); }
-.tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 6px; border: 1px solid var(--border); margin: 0 4px 4px 0; }
+.badge { font-size: 12px; padding: 2px 8px; border-radius: 4px; }
+.badge.warn { background: var(--warn-bg); color: var(--warn-text); border: 1px solid var(--edge); }
+.tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 3px; border: 1px solid var(--edge); background: var(--bg); margin: 0 4px 4px 0; }
 .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
-button { font: inherit; font-size: 13px; padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; }
-button.on { border-color: var(--accent); color: var(--accent); }
+button {
+  font: inherit; font-family: var(--serif); font-size: 14px; padding: 4px 14px; border-radius: 4px;
+  border: 1px solid var(--edge); background: transparent; color: var(--text); cursor: pointer;
+}
+button:hover:not(:disabled) { background: var(--hover); }
+button:disabled { opacity: .55; cursor: not-allowed; }
+button.on, button.on:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (max-width: 600px) { button { min-height: 40px; } }
 .seg { display: flex; gap: 4px; }
 .tree-wrap { overflow-x: auto; }
 #tree { width: 100%; min-width: 640px; height: auto; display: block; }
 #tree .node { cursor: pointer; }
-#tree .node text { font-size: 13px; fill: #fff; pointer-events: none; }
+#tree .node text { font-size: 13px; fill: var(--node-text); pointer-events: none; }
+#tree .node rect { stroke: var(--edge); stroke-width: 1.5; rx: 6px; }
 #tree .mastered rect { fill: var(--mastered); }
 #tree .available rect { fill: var(--available); }
 #tree .locked rect { fill: var(--locked); }
 #tree .role rect { fill: var(--role); }
 #tree .role.locked rect { fill: var(--locked); }
-@media (prefers-color-scheme: dark) {
-  #tree .node rect { stroke: var(--text); stroke-opacity: .45; stroke-width: 1; }
-}
-#tree .selected rect { stroke: var(--text); stroke-opacity: 1; stroke-width: 2; }
+#tree .node.moved rect { stroke: var(--text); stroke-opacity: 1; stroke-width: 2; stroke-dasharray: 4 2; }
+#tree .selected rect { stroke: var(--text); stroke-opacity: 1; stroke-width: 3; }
 #tree .node:focus { outline: none; }
 #tree .node:focus-visible rect { stroke: var(--accent); stroke-opacity: 1; stroke-width: 3; }
 #tree line { stroke: var(--locked); stroke-width: 1; }
-#tree line.lit { stroke: var(--mastered); stroke-width: 2; }
+#tree line.lit { stroke: var(--gold); stroke-width: 2; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 12px 0; }
-.stats div { background: var(--bg); border-radius: 8px; padding: 8px 12px; }
+.stats div { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; }
 .stats span { display: block; font-size: 12px; color: var(--muted); }
-.stats b { font-size: 18px; font-weight: 600; }
-.class-card { display: flex; gap: 12px; align-items: center; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 12px 0 0; }
+.stats b { font-family: var(--serif); font-size: 20px; font-weight: 700; }
+.class-card { display: flex; gap: 12px; align-items: center; border: 1px solid var(--edge); background: var(--bg); border-radius: 6px; padding: 8px 12px; margin: 12px 0 0; }
 .class-card[hidden] { display: none; }
-.class-img { width: 96px; height: 96px; flex: none; image-rendering: pixelated; border-radius: 8px; }
+.class-img { width: 96px; height: 96px; flex: none; image-rendering: pixelated; border: 2px solid var(--edge); border-radius: 6px; }
 .class-card p { margin: 2px 0; }
-#class-name { font-size: 18px; }
+#class-name { font-family: var(--serif); font-size: 20px; color: var(--accent); }
 .xp { margin: 0 0 8px; }
-.xp progress { width: 100%; height: 12px; accent-color: var(--mastered); }
+.xp progress { width: 100%; height: 12px; accent-color: var(--gold); }
 .detail { min-height: 80px; overflow-wrap: anywhere; }
 .game-message { margin: 4px 0 8px; font-weight: 500; }
 #tree-status { margin: 8px 0; }
+.refresh-result { margin: 4px 0 8px; }
+.refresh-result:empty { display: none; }
+.refresh-result ul { margin: 4px 0 8px; padding-left: 20px; }
 #tree-status:empty { display: none; }
 @media (prefers-reduced-motion: no-preference) {
   #tree .node.just-unlocked rect { animation: pop .6s ease-out; }
 }
 @keyframes pop { from { opacity: .3; } to { opacity: 1; } }
 @media (max-width: 480px) { .class-card { flex-direction: column; align-items: flex-start; } }
-.match progress { width: 100%; height: 12px; accent-color: var(--role); }
+.match progress { width: 100%; height: 12px; accent-color: var(--accent); }
 .match p { margin: 4px 0; }
 .gap { margin: 4px 0 8px; padding-left: 20px; }
-.course { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 8px 0; }
+.course { border: 1px solid var(--edge); background: var(--bg); border-radius: 6px; padding: 8px 12px; margin: 8px 0; }
 .course a { color: var(--accent); display: inline-block; padding: 6px 0; }
 .story { border-left: 3px solid var(--accent); padding-left: 12px; margin: 8px 0; font-style: italic; }
 .chat-log { max-height: 260px; overflow-y: auto; margin: 8px 0; }
 .chat-msg { padding: 6px 0; }
 .chat-msg .who { font-weight: 600; }
 .chat-msg.user .who { color: var(--accent); }
-#chat-input { flex: 1; min-width: 180px; font: inherit; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+#chat-input { flex: 1; min-width: 180px; font: inherit; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--edge); background: var(--bg); color: var(--text); }
 #chat-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 footer { max-width: 900px; margin: 0 auto; padding: 16px; }
 ol { padding-left: 20px; }
