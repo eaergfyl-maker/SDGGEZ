@@ -4,9 +4,9 @@
   --text: #1f1e1b;
   --muted: #6b6a64;
   --border: #dedcd3;
-  --mastered: #1d9e75;
-  --available: #ba7517;
-  --locked: #b4b2a9;
+  --mastered: #0f7a58;
+  --available: #9a5a0b;
+  --locked: #6b6962;
   --role: #534ab7;
   --warn-bg: #faeeda;
   --warn-text: #633806;
@@ -20,7 +20,7 @@
     --muted: #a3a29b;
     --border: #3d3d3a;
     --locked: #5f5e5a;
-    --role: #7f77dd;
+    --role: #5b52c4;
     --warn-bg: #633806;
     --warn-text: #faeeda;
     --accent: #85b7eb;
@@ -53,20 +53,45 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 #tree .locked rect { fill: var(--locked); }
 #tree .role rect { fill: var(--role); }
 #tree .role.locked rect { fill: var(--locked); }
-#tree .selected rect { stroke: var(--text); stroke-width: 2; }
+@media (prefers-color-scheme: dark) {
+  #tree .node rect { stroke: var(--text); stroke-opacity: .45; stroke-width: 1; }
+}
+#tree .selected rect { stroke: var(--text); stroke-opacity: 1; stroke-width: 2; }
 #tree .node:focus { outline: none; }
-#tree .node:focus-visible rect { stroke: var(--accent); stroke-width: 3; }
+#tree .node:focus-visible rect { stroke: var(--accent); stroke-opacity: 1; stroke-width: 3; }
 #tree line { stroke: var(--locked); stroke-width: 1; }
 #tree line.lit { stroke: var(--mastered); stroke-width: 2; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 12px 0; }
 .stats div { background: var(--bg); border-radius: 8px; padding: 8px 12px; }
 .stats span { display: block; font-size: 12px; color: var(--muted); }
 .stats b { font-size: 18px; font-weight: 600; }
+.class-card { display: flex; gap: 12px; align-items: center; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 12px 0 0; }
+.class-card[hidden] { display: none; }
+.class-img { width: 96px; height: 96px; flex: none; image-rendering: pixelated; border-radius: 8px; }
+.class-card p { margin: 2px 0; }
+#class-name { font-size: 18px; }
 .xp { margin: 0 0 8px; }
 .xp progress { width: 100%; height: 12px; accent-color: var(--mastered); }
-.detail { min-height: 80px; }
+.detail { min-height: 80px; overflow-wrap: anywhere; }
+.game-message { margin: 4px 0 8px; font-weight: 500; }
+#tree-status { margin: 8px 0; }
+#tree-status:empty { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  #tree .node.just-unlocked rect { animation: pop .6s ease-out; }
+}
+@keyframes pop { from { opacity: .3; } to { opacity: 1; } }
+@media (max-width: 480px) { .class-card { flex-direction: column; align-items: flex-start; } }
+.match progress { width: 100%; height: 12px; accent-color: var(--role); }
+.match p { margin: 4px 0; }
+.gap { margin: 4px 0 8px; padding-left: 20px; }
 .course { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 8px 0; }
-.course a { color: var(--accent); }
+.course a { color: var(--accent); display: inline-block; padding: 6px 0; }
 .story { border-left: 3px solid var(--accent); padding-left: 12px; margin: 8px 0; font-style: italic; }
+.chat-log { max-height: 260px; overflow-y: auto; margin: 8px 0; }
+.chat-msg { padding: 6px 0; }
+.chat-msg .who { font-weight: 600; }
+.chat-msg.user .who { color: var(--accent); }
+#chat-input { flex: 1; min-width: 180px; font: inherit; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+#chat-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 footer { max-width: 900px; margin: 0 auto; padding: 16px; }
 ol { padding-left: 20px; }

@@ -23,6 +23,51 @@ function progress(owned) {
   return { trained: trainedIds.length, xp, level: 1 + Math.floor(xp / XP_PER_LEVEL), into: xp % XP_PER_LEVEL };
 }
 
+// [polish] loading / error line above the tree
+function setStatus(msg, retry = false) {
+  const el = document.getElementById("tree-status");
+  if (!el) return;
+  el.innerHTML = msg ? `${esc(msg)}${retry ? ' <button id="retry" type="button">Try again</button>' : ""}` : "";
+}
+
+// [polish] feedback after a training step: highlight what changed and announce it.
+// Only runs for the render that follows train(); persona and scenario changes stay quiet.
+let prevStates = null;   // node id -> state at the last render
+let prevLevel = null;
+let prevSdgs = null;
+let justTrained = null;  // skill id completed in the current step
+
+function markUnlocked(tree) {
+  const changed = [];
+  if (justTrained && prevStates) {
+    for (const n of tree.nodes) if (prevStates[n.id] && prevStates[n.id] !== n.state) changed.push(n);
+  }
+  prevStates = Object.fromEntries(tree.nodes.map((n) => [n.id, n.state]));
+  for (const n of changed) {
+    svg.querySelector(`.node[data-id="${CSS.escape(n.id)}"]`)?.classList.add("just-unlocked");
+  }
+  if (changed.length) {
+    setTimeout(() => svg.querySelectorAll(".just-unlocked").forEach((g) => g.classList.remove("just-unlocked")), 1200);
+  }
+  return changed;
+}
+
+function announce(tree, changed, level, sdgs) {
+  const el = document.getElementById("game-message");
+  if (el && justTrained) {
+    const done = tree.nodes.find((n) => n.id === justTrained);
+    const parts = [`Skill completed: ${done ? done.name : justTrained}.`];
+    if (prevLevel !== null && level > prevLevel) parts.push(`You reached level ${level}.`);
+    const fresh = [...sdgs].filter((g) => !(prevSdgs && prevSdgs.has(g))).sort((a, b) => a - b);
+    if (fresh.length) parts.push(`New SDG badge${fresh.length > 1 ? "s" : ""}: ${fresh.map((g) => `SDG ${g}`).join(", ")}.`);
+    const opened = changed.filter((n) => n.id !== justTrained && n.state === "available").map((n) => n.name);
+    if (opened.length) parts.push(`Now available: ${opened.join(", ")}.`);
+    el.textContent = parts.join(" ");
+  }
+  prevLevel = level;
+  prevSdgs = sdgs;
+}
+
 // [class] set to true once real character art exists as assets/classes/<class>.png
 // (bard, wizard, rogue, paladin, druid). Until then every class shows the placeholder.
 const USE_CLASS_ART = false;
@@ -89,7 +134,7 @@ export function renderTree(tree) {
   }
   const { pos, W, height } = layout(tree.nodes);
   svg.setAttribute("viewBox", `0 0 ${W} ${height}`);
-  const owned = state.owned;
+  const owned = state.owned || new Set();
   const edges = tree.edges.map((e) => {
     const a = pos[e.from], b = pos[e.to];
     if (!a || !b) return ""; // edge points at a node the API filtered out
@@ -107,6 +152,7 @@ export function renderTree(tree) {
       <text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="central">${esc(label)}</text></g>`;
   });
   svg.innerHTML = edges.join("") + nodes.join("");
+  const changed = markUnlocked(tree);
 
   const { trained, level, into } = progress(owned);
   const sdgs = new Set(tree.nodes.filter((n) => n.state === "mastered").flatMap((n) => n.sdg));
@@ -118,6 +164,8 @@ export function renderTree(tree) {
   if (xpText) xpText.textContent = `${into} / ${XP_PER_LEVEL} XP to level ${level + 1}`;
   document.getElementById("badges").textContent = sdgs.size;
   renderClassCard();
+  announce(tree, changed, level, sdgs);
+  justTrained = null;
 }
 
 // [course] courses come from /api/pathway, which needs a role. Fetch it for each role in the
@@ -276,7 +324,9 @@ async function showDetail(node) {
 }
 
 async function train(id) {
+  state.owned = state.owned || new Set();
   state.owned.add(id);
+  justTrained = id;
   saveOwned();
   await refreshTree();
 }
@@ -286,11 +336,22 @@ async function resetProgress() {
   if (!window.confirm("Reset your progress? Trained skills will be cleared.")) return;
   clearOwned();
   state.owned = new Set(state.startingSkills);
+  justTrained = null;
   await refreshTree();
+  const msg = document.getElementById("game-message");
+  if (msg) msg.textContent = "Progress reset. Your starting skills are kept.";
 }
 
 export async function refreshTree() {
-  state.tree = await api.tree(state.persona, state.scenario, state.owned);
+  setStatus(state.tree ? "" : "Loading your skill tree…");
+  try {
+    state.tree = await api.tree(state.persona, state.scenario, state.owned);
+  } catch (err) {
+    justTrained = null;
+    setStatus("Couldn't load the skill tree. Check that the server is running.", true);
+    return;
+  }
+  setStatus("");
   renderTree(state.tree);
   emit("tree-updated", state.tree);
   await loadCourses(state.tree);
@@ -324,6 +385,9 @@ svg.addEventListener("keydown", (e) => {
 });
 
 document.getElementById("reset")?.addEventListener("click", resetProgress);
+document.getElementById("tree-status")?.addEventListener("click", (e) => {
+  if (e.target.id === "retry") refreshTree();
+});
 
 document.getElementById("scenario").addEventListener("click", (e) => {
   const s = e.target.dataset.s;
