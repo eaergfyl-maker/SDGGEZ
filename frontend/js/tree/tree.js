@@ -10,14 +10,14 @@ const svg = document.getElementById("tree");
 // [xp] XP is a view over real data. Until course hours from /api/pathway are wired in
 // (state.skillXp = { skillId: hours }), every trained skill is worth the fallback.
 const XP_FALLBACK = 10;
-const XP_PER_LEVEL = 20;
+export const XP_PER_LEVEL = 20;
 
 function xpFor(id) {
   const v = state.skillXp && state.skillXp[id];
   return Number.isFinite(v) && v > 0 ? v : XP_FALLBACK;
 }
 
-function progress(owned) {
+export function progress(owned) {
   const trainedIds = [...owned].filter((id) => !state.startingSkills.has(id));
   const xp = trainedIds.reduce((sum, id) => sum + xpFor(id), 0);
   return { trained: trainedIds.length, xp, level: 1 + Math.floor(xp / XP_PER_LEVEL), into: xp % XP_PER_LEVEL };
@@ -68,10 +68,22 @@ function announce(tree, changed, level, sdgs) {
   prevSdgs = sdgs;
 }
 
+// [refresh] nodes whose numbers moved in the last data refresh: id -> "up" | "down"
+let moved = new Map();
+export function setMoved(map) {
+  moved = map;
+  if (state.tree) renderTree(state.tree);
+}
+export function clearMoved() { moved = new Map(); }
+
 // [class] set to true once real character art exists as assets/classes/<class>.png
 // (bard, wizard, rogue, paladin, druid). Until then every class shows the placeholder.
 const USE_CLASS_ART = false;
 const PLACEHOLDER_IMG = "assets/classes/placeholder.png";
+// image for a class key; used by the class card and the character sheet
+export function classImage(key) {
+  return USE_CLASS_ART && key ? `assets/classes/${key}.png` : PLACEHOLDER_IMG;
+}
 
 // [class] starting class from the skills the persona began with (fixed while you train)
 function renderClassCard() {
@@ -143,10 +155,13 @@ export function renderTree(tree) {
   });
   const nodes = tree.nodes.map((n) => {
     const p = pos[n.id];
-    const cls = ["node", n.state, n.kind === "role" ? "role" : "", state.selected === n.id ? "selected" : ""].join(" ");
+    const mv = moved.get(n.id);
+    const cls = ["node", n.state, n.kind === "role" ? "role" : "", state.selected === n.id ? "selected" : "", mv ? "moved" : ""].join(" ");
+    const arrow = mv === "up" ? "↑ " : mv === "down" ? "↓ " : "";
     const mark = MARKS[n.state] || "";
-    const label = fit(mark + n.name, p.w);
-    return `<g class="${cls}" data-id="${n.id}" tabindex="0" role="button" aria-label="${esc(n.name)}, ${esc(n.state)}">
+    const label = fit(arrow + mark + n.name, p.w);
+    const said = mv ? `, ${mv === "up" ? "rose" : "fell"} in the last data refresh` : "";
+    return `<g class="${cls}" data-id="${n.id}" tabindex="0" role="button" aria-label="${esc(n.name)}, ${esc(n.state)}${said}">
       <title>${esc(n.name)} (${esc(n.state)})</title>
       <rect x="${p.x - p.w / 2}" y="${p.y - NODE_H / 2}" width="${p.w}" height="${NODE_H}" rx="8"/>
       <text x="${p.x}" y="${p.y}" text-anchor="middle" dominant-baseline="central">${esc(label)}</text></g>`;
