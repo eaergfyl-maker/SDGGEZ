@@ -136,3 +136,12 @@ def test_chosen_area_overrides_the_guess(client):
 def test_starting_classes_keep_their_own_area(client):
     body = client.get("/api/tree", params={"persona": "hafiz"}).json()
     assert body["family"] == "green-energy" and body["family_inferred"] is False
+
+
+def test_page_credits_onet_under_cc_by(client):
+    """O*NET is used under CC BY 4.0, which requires the credit to be shown. A merge once
+    dropped it silently, so this keeps it in place."""
+    page = client.get("/").text
+    assert "O*NET" in page
+    assert "U.S. Department of Labor" in page
+    assert "creativecommons.org/licenses/by/4.0" in page
