@@ -145,3 +145,7 @@ def test_page_credits_onet_under_cc_by(client):
     assert "O*NET" in page
     assert "U.S. Department of Labor" in page
     assert "creativecommons.org/licenses/by/4.0" in page
+
+def test_frontend_files_are_revalidated(client):
+    for path in ("/", "/js/main.js", "/css/style.css"):
+        assert client.get(path).headers.get("cache-control") == "no-cache"
