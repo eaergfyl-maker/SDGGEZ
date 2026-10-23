@@ -1,6 +1,7 @@
 // Skill tree rendering and game logic. Owner: Member 4.
 import { api } from "../api.js";
 import { emit, state, saveOwned, clearOwned } from "../state.js";
+import { classFor } from "./classes.js";
 
 const BASE_W = 680, NODE_W = 124, MIN_NODE_W = 70, NODE_GAP = 8;
 const NODE_H = 36, ROW_H = 90, PAD = 30;
@@ -20,6 +21,30 @@ function progress(owned) {
   const trainedIds = [...owned].filter((id) => !state.startingSkills.has(id));
   const xp = trainedIds.reduce((sum, id) => sum + xpFor(id), 0);
   return { trained: trainedIds.length, xp, level: 1 + Math.floor(xp / XP_PER_LEVEL), into: xp % XP_PER_LEVEL };
+}
+
+// [class] set to true once real character art exists as assets/classes/<class>.png
+// (bard, wizard, rogue, paladin, druid). Until then every class shows the placeholder.
+const USE_CLASS_ART = false;
+const PLACEHOLDER_IMG = "assets/classes/placeholder.png";
+
+// [class] starting class from the skills the persona began with (fixed while you train)
+function renderClassCard() {
+  const card = document.getElementById("class-card");
+  if (!card) return;
+  const c = classFor(state.startingSkills || []);
+  card.hidden = !c;
+  if (!c) return;
+  document.getElementById("class-name").textContent = c.name;
+  document.getElementById("class-title").textContent = c.title;
+  document.getElementById("class-scores").textContent =
+    "Skill points: " + c.scores.map((x) => `${x.name} ${x.points}`).join(", ");
+  const img = document.getElementById("class-img");
+  if (img && img.dataset.key !== c.key) {
+    img.dataset.key = c.key;
+    img.onerror = () => { img.onerror = null; img.src = PLACEHOLDER_IMG; }; // missing file: fall back
+    img.src = USE_CLASS_ART ? `assets/classes/${c.key}.png` : PLACEHOLDER_IMG;
+  }
 }
 
 function esc(s) {
@@ -92,6 +117,7 @@ export function renderTree(tree) {
   const xpText = document.getElementById("xp-text");
   if (xpText) xpText.textContent = `${into} / ${XP_PER_LEVEL} XP to level ${level + 1}`;
   document.getElementById("badges").textContent = sdgs.size;
+  renderClassCard();
 }
 
 // [course] courses come from /api/pathway, which needs a role. Fetch it for each role in the
@@ -183,7 +209,16 @@ function dataStatus(tree) {
 function roleHtml(node) {
   const m = node.match || { score: 0, why: "", missing: [] };
   const score = Math.max(0, Math.min(100, Number(m.score) || 0));
-  let html = `<div class="match">
+  const start = classFor(state.startingSkills || []);
+  const target = classFor([...(m.matched || []), ...(m.missing || []).map((g) => g.skill)]);
+  let html = "";
+  if (start && target) {
+    const path = start.key === target.key
+      ? `Class path: you stay a ${start.name}`
+      : `Class path: ${start.name} → ${target.name} (${target.title})`;
+    html += `<p class="muted">${esc(path)}. Based on skills only.</p>`;
+  }
+  html += `<div class="match">
     <p>Match score: <b>${score}%</b></p>
     <progress value="${score}" max="100" aria-label="Match score ${score} percent"></progress>
     <p>${esc(m.why || "")}</p></div>`;
