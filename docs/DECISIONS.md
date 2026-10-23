@@ -7,6 +7,7 @@ One line per decision: date, who, what, why.
 | 2026-10-20 | Team | Python 3.11 + FastAPI + SQLite backend, vanilla JS + SVG frontend | No build step, simple Replit deploy |
 | 2026-10-20 | Team | Trend data is mock until ingestion lands; UI labels it | Never show unlabelled invented numbers |
 | 2026-10-20 | Team | Courses only from `data/courses.json` with `verified: true` | Brief forbids invented courses |
+| 2026-10-22 | Member 5 (Aman) | Dropped SDG 3 from sdg_map.json | Not used in skills.json/roles.json; confirmed with Member 3, logged in their docs/DECISIONS.md too |
 | 2026-10-21 | Member 3 | Skill and role ids frozen: add new ids, never rename | Ingestion, courses, SDG tags, stories and the frontend key on them |
 | 2026-10-21 | Member 3 | Four families (service-ai, data, industry, green-energy), one per persona. `family` is set on roles only; a family's skills are derived from its roles plus prerequisites | Keeps each tree at most 5 nodes per tier (tested) and avoids skills and roles disagreeing |
 | 2026-10-21 | Member 3 | `/api/tree` takes `family` (or `all`); default is the persona's family. New `GET /api/families` | Frontend keeps working without changes; Member 4 can add a selector |
