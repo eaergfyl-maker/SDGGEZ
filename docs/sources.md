@@ -62,3 +62,41 @@ O*NET 31.0 Database (version named on the licence page), U.S. Department of Labo
 | `arjun` | persona (current job) | 43-3031.00 | Bookkeeping, Accounting, and Auditing Clerks | direct |
 | `mei_ling` | persona (current job) | 51-2022.00 | Electrical and Electronic Equipment Assemblers | direct |
 | `hafiz` | persona (current job) | 47-2111.00 | Electricians | direct |
+
+## Probe Test (Gavin)
+PASS arXiv: 73 papers matched in 2025-09
+PASS Arbeitnow: 300 postings on page 1, fields ['company_name', 'created_at', 'description', 'job_types', 'location']...
+PASS Remotive: 9 postings (expected to be small, about 10)
+
+## Source terms (checked 2026-10-23)
+
+### arXiv API
+Read: https://info.arxiv.org/help/api/tou.html and https://info.arxiv.org/help/api
+- Max one request every 3 seconds, one connection at a time. Our code pauses 3 s between requests.
+- Metadata is CC0. Reuse is allowed. Link back to arXiv when republishing records.
+- Acknowledge arXiv with: "Thank you to arXiv for use of its open access interoperability."
+- Do not use the names or logos "arXiv" or "arXiv.org" to suggest arXiv endorses the project.
+- Our use: we store monthly paper counts per skill, not the papers themselves.
+- Not confirmed: how strict the rate limit is in practice. We have seen HTTP 429 and the code backs off.
+
+### Remotive API
+Read: https://remotive.com/api/remote-jobs (terms are noted on the API page)
+- Name Remotive as the source and link back to the Remotive URL.
+- Remotive delays its jobs by 24 hours.
+- Do not submit Remotive jobs to third-party sites (Jooble, Google Jobs, LinkedIn) or show them behind a sign-up wall.
+- Guidance is at most about 4 requests a day. Our code caches for 6 hours.
+- Our use: we count skill mentions in postings. We do not show the listings.
+
+### Arbeitnow API
+Read: https://www.arbeitnow.com/api/job-board-api and https://www.arbeitnow.com/terms (section 11, API)
+- The API is provided "as is", with no warranties. It may be interrupted or changed.
+- Required: provide a link back to arbeitnow.com on our platform.
+- Arbeitnow may revoke API permission at any time.
+- Section 2 of the website terms licenses website materials for personal, non-commercial viewing and bars mirroring them. We treat this project as non-commercial and store only the counts we need.
+- Our use: we count skill mentions in postings and do not show the listings. Our code pauses 3 s between pages, caches for 3 hours and keeps partial results if rate limited. [Check against backend/app/ingest/arbeitnow.py before committing.]
+- Open item: the app footer does not yet link back to Arbeitnow. [Fix before the demand data goes public.]
+
+### Limitations
+- Job data is mostly German and European, not Malaysian.
+- About one week of history, so windows are short.
+- The older window only holds postings still live today.
