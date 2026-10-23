@@ -22,11 +22,12 @@
       <div class="row">
         <span class="muted">Disruption scenario</span>
         <div id="scenario" class="seg">
-          <button data-s="slow">Slow</button>
-          <button data-s="moderate" class="on">Moderate</button>
-          <button data-s="fast">Fast</button>
+          <button data-s="slow" aria-pressed="false">Slow</button>
+          <button data-s="moderate" class="on" aria-pressed="true">Moderate</button>
+          <button data-s="fast" aria-pressed="false">Fast</button>
         </div>
       </div>
+      <p id="scenario-note" class="muted" aria-live="polite"></p>
       <div class="tree-wrap"><svg id="tree" role="group" aria-label="Skill tree"></svg></div>
       <div class="stats">
         <div><span>Level</span><b id="level">1</b></div>
@@ -41,13 +42,16 @@
       <div id="detail" class="detail muted">Select a node to see details.</div>
     </section>
 
+    <!-- Member 4: explainer chat -->
+    <section id="chat" class="card"></section>
+
     <!-- Member 5: radar and pathway panels -->
     <section id="radar" class="card"></section>
     <section id="pathway" class="card"></section>
   </main>
 
   <footer class="muted">
-    Personas are synthetic. Every number cites its source and date. Job data: <a href="https://www.arbeitnow.com">Arbeitnow</a> and <a href="https://remotive.com">Remotive</a>. Research data: arXiv. Occupation references: O*NET 31.0 Database, U.S. Department of Labor, Employment and Training Administration, used under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, adapted by us.
+    Personas are synthetic. Every number cites its source and date. Job data: <a href="https://www.arbeitnow.com">Arbeitnow</a> and <a href="https://remotive.com">Remotive</a>. Research data: arXiv.
     This tool supports your career decisions; you make them.
   </footer>
 
