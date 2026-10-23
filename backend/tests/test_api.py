@@ -112,3 +112,12 @@ def test_pathway_uses_persona_study_hours(client):
     assert faster["estimated_weeks"] == (math.ceil(hours / 3) if hours else None)
 
     assert client.get("/api/pathway", params={"role": "qa_analyst", "hours_per_week": 0}).status_code == 422
+
+
+def test_page_credits_onet_under_cc_by(client):
+    """O*NET is used under CC BY 4.0, which requires the credit to be shown. A merge once
+    dropped it silently, so this keeps it in place."""
+    page = client.get("/").text
+    assert "O*NET" in page
+    assert "U.S. Department of Labor" in page
+    assert "creativecommons.org/licenses/by/4.0" in page
