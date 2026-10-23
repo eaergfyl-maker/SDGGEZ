@@ -2,6 +2,7 @@
 import { api } from "../api.js";
 import { emit, state, saveOwned, clearOwned } from "../state.js";
 import { classFor } from "./classes.js";
+import { esc } from "../util.js";
 
 const BASE_W = 680, NODE_W = 124, MIN_NODE_W = 70, NODE_GAP = 8;
 const NODE_H = 36, ROW_H = 90, PAD = 30;
@@ -102,10 +103,6 @@ function renderClassCard() {
     img.onerror = () => { img.onerror = null; img.src = PLACEHOLDER_IMG; }; // missing file: fall back
     img.src = USE_CLASS_ART ? `assets/classes/${c.key}.png` : PLACEHOLDER_IMG;
   }
-}
-
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
 // [a11y] non-colour cue per state, so state is not shown by colour alone

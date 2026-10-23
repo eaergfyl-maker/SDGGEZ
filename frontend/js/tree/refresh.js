@@ -2,6 +2,7 @@
 import { state, on } from "../state.js";
 import { refreshTree, setMoved, clearMoved } from "./tree.js";
 import { diffTrees } from "../diff.js";
+import { esc } from "../util.js";
 
 // Contract to confirm with Member 1: POST /api/refresh, protected by a token.
 // If the endpoint or the way the token is sent differs, change only these two lines.
@@ -14,9 +15,6 @@ const btn = document.getElementById("refresh-data");
 const note = document.getElementById("refresh-note");
 const result = document.getElementById("refresh-result");
 
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-}
 const signed = (v) => (v == null ? "no data" : `${v > 0 ? "+" : ""}${v}%`);
 const plain = (v) => (v == null ? "no data" : `${v}%`);
 

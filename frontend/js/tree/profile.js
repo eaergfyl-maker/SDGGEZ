@@ -3,14 +3,11 @@
 import { state, on, saveName, loadName, clearAllSaved } from "../state.js";
 import { classFor } from "./classes.js";
 import { progress, XP_PER_LEVEL, classImage, refreshTree } from "./tree.js";
+import { esc } from "../util.js";
 
 const nameInput = document.getElementById("profile-name");
 const body = document.getElementById("profile-body");
 let lastRole = null; // role the user last opened the pathway for
-
-function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-}
 
 function nameOf(id) {
   const n = state.tree && state.tree.nodes.find((x) => x.id === id);
