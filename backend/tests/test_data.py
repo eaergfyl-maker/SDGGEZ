@@ -35,3 +35,14 @@ def test_every_persona_skill_is_in_its_family_tree():
         skills, _ = family_subset(data_loader.skills(), data_loader.roles(), p["family"])
         ids = {s["id"] for s in skills}
         assert set(p["skills"]) <= ids, f"{p['id']}: {set(p['skills']) - ids} not in tree"
+
+
+def test_each_sample_persona_would_be_guessed_into_its_own_area():
+    """If someone ticked exactly a sample persona's skills, the guess must land in that persona's
+    area. This catches data changes that make the guess unreliable."""
+    from backend.app import data_loader
+    from backend.app.scoring.tree import infer_family
+
+    for p in data_loader.personas():
+        g = infer_family(set(p["skills"]), data_loader.skills(), data_loader.roles(), data_loader.families())
+        assert g["family"] == p["family"], f"{p['id']}: guessed {g['family']}"

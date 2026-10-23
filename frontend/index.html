@@ -28,6 +28,12 @@
         </div>
       </div>
       <p id="scenario-note" class="muted" aria-live="polite"></p>
+      <div class="row">
+        <label for="area" class="muted">Career area</label>
+        <select id="area"></select>
+      </div>
+      <p id="area-note" class="muted" aria-live="polite"></p>
+      <p id="tree-status" class="muted" role="status"></p>
       <div class="tree-wrap"><svg id="tree" role="group" aria-label="Skill tree"></svg></div>
       <div id="class-card" class="class-card" hidden>
         <img id="class-img" class="class-img" src="assets/classes/placeholder.png" alt="" width="96" height="96">
@@ -47,12 +53,33 @@
         <progress id="xp-bar" value="0" max="20" aria-label="XP to next level"></progress>
         <span id="xp-text" class="muted">0 / 20 XP</span>
       </div>
+      <p id="game-message" class="game-message" aria-live="polite"></p>
+      <div class="row">
+        <button id="refresh-data" type="button">Refresh data</button>
+        <span id="refresh-note" class="muted" role="status"></span>
+      </div>
+      <div id="refresh-result" class="refresh-result" aria-live="polite"></div>
       <div class="row"><button id="reset" type="button">Reset progress</button></div>
       <div id="detail" class="detail muted">Select a node to see details.</div>
     </section>
 
     <!-- Member 4: explainer chat -->
-    <section id="chat" class="card"></section>
+    <section id="chat" class="card" hidden></section>
+
+    <!-- Member 4: character sheet (saved in this browser) -->
+    <section id="profile" class="card" aria-labelledby="profile-title">
+      <h2 id="profile-title">Your character</h2>
+      <div class="row">
+        <label for="profile-name" class="muted">Adventurer name</label>
+        <input id="profile-name" type="text" maxlength="24" autocomplete="off" placeholder="A nickname is enough">
+      </div>
+      <p class="muted">Saved only in this browser. No account and no personal details needed: please use a nickname.</p>
+      <div id="profile-body" class="profile-body"></div>
+      <div class="row">
+        <button id="profile-export" type="button">Download profile (JSON)</button>
+        <button id="profile-delete" type="button">Delete saved data</button>
+      </div>
+    </section>
 
     <!-- Member 5: radar and pathway panels -->
     <section id="radar" class="card"></section>
@@ -60,7 +87,7 @@
   </main>
 
   <footer class="muted">
-    Personas are synthetic. Every number cites its source and date. Job data: <a href="https://www.arbeitnow.com">Arbeitnow</a> and <a href="https://remotive.com">Remotive</a>. Research data: arXiv.
+    Personas are synthetic. Every number cites its source and date. Job data: <a href="https://www.arbeitnow.com">Arbeitnow</a> and <a href="https://remotive.com">Remotive</a>. Research data: arXiv. Occupation references: O*NET 31.0 Database, U.S. Department of Labor, Employment and Training Administration, used under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, adapted by us.
     This tool supports your career decisions; you make them.
   </footer>
 

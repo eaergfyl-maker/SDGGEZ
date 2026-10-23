@@ -2,6 +2,8 @@
 import { api } from "../api.js";
 import { emit, state } from "../state.js";
 import { esc } from "../util.js";
+import { classFor } from "../tree/classes.js";
+import { classImage, PLACEHOLDER_IMG } from "../tree/tree.js";
 
 const el = document.getElementById("intake");
 
@@ -9,8 +11,18 @@ export async function renderIntake() {
   const personas = await api.personas();
   const trends = await api.trends(state.scenario);
 
-  el.innerHTML = `<h2>Choose a character</h2>
-    <div class="row">${personas.map((p) => `<button data-id="${p.id}">${p.name}</button>`).join("")}</div>
+  // Each sample persona is offered as a starting class (Bard, Wizard, ...): the class comes from
+  // its skills, and its job is shown as the background. The persona data itself is unchanged.
+  const kit = (p) => {
+    const c = classFor(p.skills);
+    // Image follows USE_CLASS_ART in tree.js: the placeholder for now, real art later.
+    return `<button class="kit" data-id="${esc(p.id)}">` +
+      `<img class="kit-img" src="${esc(classImage(c && c.key))}" alt="" width="48" height="48">` +
+      `<span><b>${esc(c ? c.name : p.name)}</b><small>${esc(p.current_role)}</small></span></button>`;
+  };
+  el.innerHTML = `<h2>Choose your starting class</h2>
+    <p class="muted">Each class is a sample starting kit: a typical job and its skills.</p>
+    <div class="row">${personas.map(kit).join("")}</div>
     <p id="persona-info" class="muted"></p>
 
     <h2>Or describe yourself</h2>
@@ -30,13 +42,20 @@ export async function renderIntake() {
     state.startingSkills = new Set(p.skills);
     state.owned = new Set(p.skills);
     el.querySelectorAll(".row button").forEach((b) => b.classList.toggle("on", b.dataset.id === p.id));
-    el.querySelector("#persona-info").textContent =
-      `${p.current_role}, ${p.hours_per_week} hours a week to study. Synthetic persona.`;
+    const c = classFor(p.skills);
+    el.querySelector("#persona-info").textContent = p.id === "custom"
+      ? `Your profile: ${p.skills.length} skills ticked, ${p.hours_per_week} hours a week to study.`
+      : `${c ? `${c.name}, ${c.title}. ` : ""}Background: ${p.current_role}, ` +
+        `${p.hours_per_week} hours a week to study. Sample data, not a real person.`;
     emit("persona-changed", p);
   };
 
+  el.querySelectorAll(".kit-img").forEach((img) =>
+    img.addEventListener("error", () => { img.src = PLACEHOLDER_IMG; }, { once: true }));
+
   el.querySelector(".row").addEventListener("click", (e) => {
-    const p = personas.find((x) => x.id === e.target.dataset.id);
+    const btn = e.target.closest("button");  // the click can land on the <small> inside
+    const p = btn && personas.find((x) => x.id === btn.dataset.id);
     if (p) select(p);
   });
 
