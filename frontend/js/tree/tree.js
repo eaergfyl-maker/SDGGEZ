@@ -80,8 +80,8 @@ export function clearMoved() { moved = new Map(); }
 // [class] set to true once real character art exists as assets/classes/<class>.png
 // (bard, wizard, rogue, paladin, druid). Until then every class shows the placeholder.
 const USE_CLASS_ART = false;
-const PLACEHOLDER_IMG = "assets/classes/placeholder.png";
-// image for a class key; used by the class card and the character sheet
+export const PLACEHOLDER_IMG = "assets/classes/placeholder.png";
+// image for a class key; used by the class card, the character sheet and the class selector
 export function classImage(key) {
   return USE_CLASS_ART && key ? `assets/classes/${key}.png` : PLACEHOLDER_IMG;
 }

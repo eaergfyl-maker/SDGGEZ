@@ -3,6 +3,7 @@ import { api } from "../api.js";
 import { emit, state } from "../state.js";
 import { esc } from "../util.js";
 import { classFor } from "../tree/classes.js";
+import { classImage, PLACEHOLDER_IMG } from "../tree/tree.js";
 
 const el = document.getElementById("intake");
 
@@ -14,8 +15,10 @@ export async function renderIntake() {
   // its skills, and its job is shown as the background. The persona data itself is unchanged.
   const kit = (p) => {
     const c = classFor(p.skills);
-    return `<button class="kit" data-id="${esc(p.id)}">${esc(c ? c.name : p.name)}` +
-      `<small>${esc(p.current_role)}</small></button>`;
+    // Image follows USE_CLASS_ART in tree.js: the placeholder for now, real art later.
+    return `<button class="kit" data-id="${esc(p.id)}">` +
+      `<img class="kit-img" src="${esc(classImage(c && c.key))}" alt="" width="48" height="48">` +
+      `<span><b>${esc(c ? c.name : p.name)}</b><small>${esc(p.current_role)}</small></span></button>`;
   };
   el.innerHTML = `<h2>Choose your starting class</h2>
     <p class="muted">Each class is a sample starting kit: a typical job and its skills.</p>
@@ -46,6 +49,9 @@ export async function renderIntake() {
         `${p.hours_per_week} hours a week to study. Sample data, not a real person.`;
     emit("persona-changed", p);
   };
+
+  el.querySelectorAll(".kit-img").forEach((img) =>
+    img.addEventListener("error", () => { img.src = PLACEHOLDER_IMG; }, { once: true }));
 
   el.querySelector(".row").addEventListener("click", (e) => {
     const btn = e.target.closest("button");  // the click can land on the <small> inside
