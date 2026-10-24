@@ -4,6 +4,7 @@ import { emit, state, saveOwned, clearOwned } from "../state.js";
 import { classFor } from "./classes.js";
 import { esc } from "../util.js";
 import { t } from "../i18n.js";
+import { sdgName, sdgTag } from "../sdg.js";
 
 const BASE_W = 680, NODE_W = 124, MIN_NODE_W = 70, NODE_GAP = 8;
 const NODE_H = 36, ROW_H = 90, PAD = 30;
@@ -61,7 +62,7 @@ function announce(tree, changed, level, sdgs) {
     const parts = [`Skill completed: ${done ? done.name : justTrained}.`];
     if (prevLevel !== null && level > prevLevel) parts.push(`You reached level ${level}.`);
     const fresh = [...sdgs].filter((g) => !(prevSdgs && prevSdgs.has(g))).sort((a, b) => a - b);
-    if (fresh.length) parts.push(`New SDG badge${fresh.length > 1 ? "s" : ""}: ${fresh.map((g) => `SDG ${g}`).join(", ")}.`);
+    if (fresh.length) parts.push(`New SDG badge${fresh.length > 1 ? "s" : ""}: ${fresh.map((g) => `SDG ${g} (${sdgName(g)})`).join(", ")}.`);
     const opened = changed.filter((n) => n.id !== justTrained && n.state === "available").map((n) => n.name);
     if (opened.length) parts.push(`Now available: ${opened.join(", ")}.`);
     el.textContent = parts.join(" ");
@@ -313,7 +314,7 @@ function roleHtml(node) {
 
 async function showDetail(node) {
   const el = document.getElementById("detail");
-  const tags = node.sdg.map((g) => `<span class="tag">SDG ${g}</span>`).join("");
+  const tags = node.sdg.map(sdgTag).join("");
   let html = `<h2>${esc(node.full_name || node.name)}</h2>${tags}`;
 
   if (node.kind === "skill") {

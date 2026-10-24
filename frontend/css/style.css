@@ -393,3 +393,14 @@ body[data-class="druid"]   { --accent: #2f6b3f; --hover: rgba(47, 107, 63, .14);
 .top button:focus-visible { outline-color: var(--red-accent); }
 footer, footer.muted { color: var(--muted); }
 footer a { color: var(--red-accent); }
+
+/* Clickable SDG tags and their popup */
+button.sdg-tag { font-family: var(--body-font); font-size: 12px; letter-spacing: 0; padding: 1px 8px; min-height: 0; cursor: pointer; }
+button.sdg-tag[aria-expanded="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.sdg-pop {
+  position: absolute; z-index: 60; width: min(320px, calc(100vw - 16px));
+  background: var(--card); color: var(--text); border: 2px solid var(--border);
+  padding: 12px 36px 4px 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, .3); font-size: 14px; line-height: 1.5;
+}
+.sdg-pop p { margin: 0 0 8px; }
+.sdg-pop-close { position: absolute; top: 4px; right: 4px; padding: 0 8px; font-size: 18px; line-height: 1.4; border-color: transparent; background: transparent; }
