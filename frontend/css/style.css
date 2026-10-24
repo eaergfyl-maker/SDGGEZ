@@ -11,86 +11,71 @@
 }
 
 :root {
-  color-scheme: light dark;   /* native controls (dropdowns, file picker) follow the theme */
+  color-scheme: light;   /* light theme only: native controls (dropdowns, file picker) match it */
   --bg: #F5E8C7;           /* Warm parchment / cream sky */
   --card: #EAD9AF;         /* Muted golden parchment card background */
   --text: #2A3236;         /* Dark iron / charcoal body text */
   --muted: #625539;        /* Warm brown muted text */
-  --border: #C8AD6D;       /* Soft gold-brown decorative line */
+  --border: #8b1a2b;       /* Crimson garnet border lines */
   --edge: #9B7736;         /* Earthy bronze-gold border edge */
-  --accent: #5F6B61;       /* Muted sage/forest green for primary controls */
+  --accent: #5F6B61;       /* Base accent (overridden dynamically by selected class) */
+  --red-accent: #8b1a2b;   /* Crimson Garnet Red for permanent highlights and headings */
+  --red-hover: rgba(139, 26, 43, 0.12);
   --on-accent: #F5E8C7;    /* Light text over accent */
   --gold: #A27B2C;         /* Rich ochre/gold highlights */
   --mastered: #5F6B61;     /* Sage green for mastered nodes */
   --available: #9B7736;    /* Earthy bronze for available nodes */
   --locked: #4A4036;       /* Warm dark brown for locked nodes */
-  --role: #364146;         /* Deep slate/charcoal for role nodes */
+  --role: #8b1a2b;         /* Crimson red for role nodes */
   --node-text: #F5E8C7;     /* Light parchment text inside nodes */
-  --warn-bg: #D9C28D;      /* Soft parchment-ochre warning background */
-  --warn-text: #3A2A12;     /* Dark amber-brown warning text */
-  --hover: rgba(95, 107, 97, 0.15); /* Gentle matte hover overlay */
-  --shadow: rgba(42, 50, 54, 0.08); /* Soft clean shadow */
-  --glow1: rgba(245, 232, 199, 0.8);
-  --glow2: rgba(155, 119, 54, 0.1);
-  
-  /* Standard D&D Typography Stack */
+  --warn-bg: #8b1a2b;      /* Crimson warning background */
+  --warn-text: #F5E8C7;     /* Light text on warning badge */
+  --hover: rgba(139, 26, 43, 0.08); /* Gentle crimson-tinged hover overlay */
+  --shadow: rgba(42, 50, 54, 0.12); /* Soft clean shadow */
+
+  /* Standard D&D font */
   --heading-font: "Mrs Eaves", "Mrs Eaves Small Caps", "Palatino Linotype", Georgia, serif;
   --body-font: "Bookman Old Style", "Bookman", "Book Antiqua", Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1F2528;         /* Deep armor charcoal / night canvas */
-    --card: #2B3337;       /* Dark slate card */
-    --text: #EAD9AF;       /* Light warm parchment text */
-    --muted: #A89878;      /* Soft warm tan */
-    --border: #4D5854;     /* Deep sage-grey border */
-    --edge: #8A968C;       /* Light sage edge */
-    --accent: #C8AD6D;     /* Vintage gold highlight */
-    --on-accent: #1F2528;  /* Dark text over gold accent */
-    --gold: #D9B35C;       /* Ochre gold */
-    --mastered: #5F6B61;   /* Sage green */
-    --available: #9B7736;  /* Bronze gold */
-    --locked: #4A4036;     /* Dark brown */
-    --role: #4D5854;       /* Muted slate */
-    --warn-bg: #3A301E;    /* Dark ochre background */
-    --warn-text: #EAD9AF;   /* Light tan warning text */
-    --hover: rgba(200, 173, 109, 0.12);
-    --shadow: rgba(0, 0, 0, 0.25);
-    --glow1: rgba(31, 37, 40, 0.3);
-    --glow2: rgba(95, 107, 97, 0.15);
-  }
+* { 
+  box-sizing: border-box; 
+  border-radius: 0 !important; /* Global removal of all rounded corners */
 }
 @media print {
   body > *:not(#pathway) { display: none; }
   #pathway button, #pathway input[type=checkbox] { display: none; }
 }
 
-* { box-sizing: border-box; }
-
+/* Tiled background setup */
 body {
   margin: 0; 
   color: var(--text); 
   font-family: var(--body-font);
   font-size: 15px;
   line-height: 1.6;
-  background-color: var(--bg);
-  background-image: radial-gradient(ellipse at 15% 0%, var(--glow1), transparent 55%),
-                    radial-gradient(ellipse at 90% 100%, var(--glow2), transparent 50%);
+  background-color: #D3B989;
+  background-image: url("../assets/background/dice.png");
+  background-repeat: repeat;
+  background-position: top left;
+  background-size: 320px auto;
   background-attachment: fixed;
 }
 
 main { max-width: 900px; margin: 0 auto; padding: 0 16px; }
 
+/* Header card container */
 .top { 
   max-width: 900px; 
-  margin: 0 auto 16px; 
+  margin: 16px auto; 
   padding: 16px; 
   display: flex; 
   gap: 12px; 
   align-items: center; 
   flex-wrap: wrap; 
-  border-bottom: 2px solid var(--border); 
+  background: var(--card);
+  border: 1px solid var(--border); 
+  box-shadow: 0 3px 8px var(--shadow);
 }
 
 h1 { 
@@ -98,7 +83,7 @@ h1 {
   font-size: 28px; 
   font-weight: 700; 
   letter-spacing: .03em; 
-  color: var(--accent); 
+  color: var(--red-accent); 
   margin: 0; 
 }
 
@@ -106,6 +91,7 @@ h2 {
   font-family: var(--heading-font); 
   font-size: 20px; 
   font-weight: 700; 
+  color: var(--red-accent);
   margin: 0 0 8px; 
   padding-bottom: 4px; 
   border-bottom: 1px solid var(--border); 
@@ -115,24 +101,25 @@ h3 {
   font-family: var(--heading-font);
   font-size: 17px;
   font-weight: 700;
+  color: var(--red-accent);
 }
 
-a { color: var(--accent); }
+a { color: var(--red-accent); }
+a:hover { text-decoration: underline; }
 
 /* Clean single border for cards */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 8px;
   padding: 16px;
   margin: 0 0 16px;
-  box-shadow: 0 2px 5px var(--shadow);
+  box-shadow: 0 3px 8px var(--shadow);
 }
 
 .muted { color: var(--muted); font-size: 13px; }
-.badge { font-size: 12px; padding: 2px 8px; border-radius: 4px; }
+.badge { font-size: 12px; padding: 2px 8px; }
 .badge.warn { background: var(--warn-bg); color: var(--warn-text); border: 1px solid var(--border); }
-.tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg); margin: 0 4px 4px 0; }
+.tag { display: inline-block; font-size: 12px; padding: 1px 8px; border: 1px solid var(--border); background: var(--bg); margin: 0 4px 4px 0; }
 .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
 
 button {
@@ -140,17 +127,18 @@ button {
   font-size: 15px; 
   letter-spacing: 0.02em;
   padding: 6px 14px; 
-  border-radius: 4px;
   border: 1px solid var(--border); 
-  background: transparent; 
+  background: var(--bg); 
   color: var(--text); 
   cursor: pointer;
 }
 
 button:hover:not(:disabled) { background: var(--hover); }
 button:disabled { opacity: .55; cursor: not-allowed; }
+
+/* Active buttons use class-selected accent color */
 button.on, button.on:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button:focus-visible { outline: 2px solid var(--red-accent); outline-offset: 2px; }
 @media (max-width: 600px) { button { min-height: 40px; } }
 
 .seg { display: flex; gap: 4px; }
@@ -163,23 +151,23 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   fill: var(--node-text); 
   pointer-events: none; 
 }
-#tree .node rect { stroke: var(--edge); stroke-width: 1.5; rx: 6px; }
+#tree .node rect { stroke: var(--edge); stroke-width: 1.5; rx: 0; }
 #tree .mastered rect { fill: var(--mastered); }
 #tree .available rect { fill: var(--available); }
 #tree .locked rect { fill: var(--locked); }
 #tree .role rect { fill: var(--role); }
 #tree .role.locked rect { fill: var(--locked); }
 #tree .node.moved rect { stroke: var(--text); stroke-opacity: 1; stroke-width: 2; stroke-dasharray: 4 2; }
-#tree .selected rect { stroke: var(--text); stroke-opacity: 1; stroke-width: 3; }
+#tree .selected rect { stroke: var(--red-accent); stroke-opacity: 1; stroke-width: 3; }
 #tree .node:focus { outline: none; }
-#tree .node:focus-visible rect { stroke: var(--accent); stroke-opacity: 1; stroke-width: 3; }
+#tree .node:focus-visible rect { stroke: var(--red-accent); stroke-opacity: 1; stroke-width: 3; }
 #tree line { stroke: var(--locked); stroke-width: 1.5; }
 #tree line.lit { stroke: var(--gold); stroke-width: 2.5; }
 
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 12px 0; }
-.stats div { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; }
+.stats div { background: var(--bg); border: 1px solid var(--border); padding: 8px 12px; }
 .stats span { display: block; font-size: 12px; color: var(--muted); }
-.stats b { font-family: var(--heading-font); font-size: 20px; font-weight: 700; }
+.stats b { font-family: var(--heading-font); font-size: 20px; font-weight: 700; color: var(--red-accent); }
 
 /* Intake Class Selector Formatting */
 .class-grid, .persona-list, [id*="persona"], [id*="class-list"] {
@@ -196,7 +184,6 @@ button.class-btn, button.persona-btn, .persona-card, .class-select-card {
   text-align: left !important;
   padding: 10px 12px !important;
   border: 1px solid var(--border);
-  border-radius: 6px;
   width: 100%;
 }
 
@@ -204,10 +191,9 @@ button.class-btn img, button.persona-btn img, .persona-card img {
   width: 48px;
   height: 48px;
   flex-shrink: 0;
-  border-radius: 4px;
   border: 1px solid var(--border);
   object-fit: cover;
-  object-position: top center; /* full-body class art: keep the head in the thumbnail */
+  object-position: top center;
 }
 
 button.class-btn .info, button.persona-btn .info {
@@ -219,27 +205,27 @@ button.class-btn .info, button.persona-btn .info {
 button.class-btn b, button.persona-btn b {
   font-family: var(--heading-font);
   font-size: 16px;
-  color: var(--accent);
+  color: var(--red-accent);
 }
 
-.class-card { display: flex; gap: 12px; align-items: center; border: 1px solid var(--border); background: var(--bg); border-radius: 6px; padding: 8px 12px; margin: 12px 0 0; }
+.class-card { display: flex; gap: 12px; align-items: center; border: 1px solid var(--border); background: var(--bg); padding: 8px 12px; margin: 12px 0 0; }
 .class-card[hidden] { display: none; }
-.class-img { width: 96px; height: 128px; flex: none; object-fit: contain; border: 1px solid var(--border); border-radius: 6px; }
+.class-img { width: 96px; height: 128px; flex: none; object-fit: contain; border: 1px solid var(--border); }
 .class-img[src$=".png"] { image-rendering: pixelated; }
 .class-card p { margin: 2px 0; }
 #class-name { font-family: var(--heading-font); font-size: 20px; color: var(--accent); }
 
 .xp { margin: 0 0 8px; }
-.xp progress { width: 100%; height: 12px; accent-color: var(--gold); }
+.xp progress { width: 100%; height: 12px; accent-color: var(--red-accent); }
 .profile-body h3 { font-family: var(--heading-font); font-size: 16px; margin: 12px 0 4px; }
-.profile-body progress { width: 100%; height: 12px; accent-color: var(--gold); margin: 8px 0 0; }
+.profile-body progress { width: 100%; height: 12px; accent-color: var(--red-accent); margin: 8px 0 0; }
 
 .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.chips li { border: 1px solid var(--border); background: var(--bg); border-radius: 3px; padding: 1px 8px; font-size: 13px; }
+.chips li { border: 1px solid var(--border); background: var(--bg); padding: 1px 8px; font-size: 13px; }
 
-.char-name { font-family: var(--heading-font); font-size: 20px; color: var(--accent); }
-#profile-name { flex: 1; min-width: 180px; max-width: 320px; font-family: var(--body-font); font-size: 14px; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
-#profile-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.char-name { font-family: var(--heading-font); font-size: 20px; color: var(--red-accent); }
+#profile-name { flex: 1; min-width: 180px; max-width: 320px; font-family: var(--body-font); font-size: 14px; padding: 6px 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+#profile-name:focus-visible { outline: 2px solid var(--red-accent); outline-offset: 2px; }
 
 .detail { min-height: 80px; overflow-wrap: anywhere; }
 .game-message { margin: 4px 0 8px; font-weight: 500; }
@@ -258,19 +244,28 @@ button.class-btn b, button.persona-btn b {
 .match progress { width: 100%; height: 12px; accent-color: var(--accent); }
 .match p { margin: 4px 0; }
 .gap { margin: 4px 0 8px; padding-left: 20px; }
-.course { border: 1px solid var(--border); background: var(--bg); border-radius: 6px; padding: 8px 12px; margin: 8px 0; }
-.course a { color: var(--accent); display: inline-block; padding: 6px 0; }
-.story { border-left: 3px solid var(--accent); padding-left: 12px; margin: 8px 0; font-style: italic; }
+.course { border: 1px solid var(--border); background: var(--bg); padding: 8px 12px; margin: 8px 0; }
+.course a { color: var(--red-accent); display: inline-block; padding: 6px 0; }
+.story { border-left: 3px solid var(--red-accent); padding-left: 12px; margin: 8px 0; font-style: italic; }
 .chat-log { max-height: 260px; overflow-y: auto; margin: 8px 0; }
 .chat-msg { padding: 6px 0; }
 .chat-msg .who { font-weight: 600; }
-.chat-msg.user .who { color: var(--accent); }
-#chat-input { flex: 1; min-width: 180px; font-family: var(--body-font); font-size: 14px; padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
-#chat-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chat-msg.user .who { color: var(--red-accent); }
+#chat-input { flex: 1; min-width: 180px; font-family: var(--body-font); font-size: 14px; padding: 6px 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+#chat-input:focus-visible { outline: 2px solid var(--red-accent); outline-offset: 2px; }
+
+/* Footer card container */
+footer { 
+  max-width: 900px; 
+  margin: 0 auto 24px; 
+  padding: 16px; 
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 3px 8px var(--shadow);
+}
 .rising { fill: #2d9d5f; }
 .declining { fill: #c94a4a; }
 .lbl { font-size: 12px; fill: currentColor; }
-footer { max-width: 900px; margin: 0 auto; padding: 16px; }
 ol { padding-left: 20px; }
 
 /* Member 4: Ranked roles list styling */
@@ -288,7 +283,7 @@ ol { padding-left: 20px; }
   font-family: var(--heading-font);
   font-size: 17px;
   margin: 0;
-  color: var(--accent);
+  color: var(--red-accent);
 }
 .onet-label {
   font-size: 12px;
@@ -300,7 +295,7 @@ ol { padding-left: 20px; }
 #radar svg text, #radar .lbl { fill: var(--text) !important; font-family: var(--body-font) !important; }
 #radar svg rect { fill: var(--accent) !important; }
 
-/* Intake picker polish (Member 5's markup, styled by structure so it does not depend on class names) */
+/* Intake picker polish */
 #intake div:has(> button > img) {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -321,35 +316,35 @@ ol { padding-left: 20px; }
   grid-row: 1 / span 2;
   width: 48px; height: 64px;
   object-fit: contain;
-  border: 0; border-radius: 0;
+  border: 0;
   image-rendering: auto;
 }
 #intake button:has(> img) b { display: block; font-family: var(--heading-font); font-size: 18px; line-height: 1.2; }
 #intake button:has(> img) span { display: block; font-family: var(--body-font); font-size: 13px; line-height: 1.3; }
 #intake button.on * { color: var(--on-accent); }
 
-/* Form controls: match the theme instead of the browser defaults */
+/* Form controls */
 select, textarea, input[type="text"], input[type="search"] {
   font-family: var(--body-font); font-size: 14px;
   color: var(--text); background: var(--bg);
-  border: 1px solid var(--edge); border-radius: 4px;
+  border: 1px solid var(--border);
   padding: 6px 10px;
 }
 select { cursor: pointer; }
 textarea { display: block; width: 100%; max-width: 100%; min-height: 140px; resize: vertical; line-height: 1.5; margin: 8px 0; }
 select:focus-visible, textarea:focus-visible, input[type="text"]:focus-visible, input[type="search"]:focus-visible {
-  outline: 2px solid var(--accent); outline-offset: 2px;
+  outline: 2px solid var(--red-accent); outline-offset: 2px;
 }
 input[type="file"] { font-family: var(--body-font); font-size: 13px; color: var(--muted); }
 input[type="file"]::file-selector-button {
   font-family: var(--heading-font); font-size: 14px;
   padding: 6px 14px; margin-right: 10px;
-  border: 1px solid var(--edge); border-radius: 4px;
-  background: transparent; color: var(--text); cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg); color: var(--text); cursor: pointer;
 }
 input[type="file"]::file-selector-button:hover { background: var(--hover); }
-summary { cursor: pointer; font-family: var(--heading-font); font-size: 17px; margin: 8px 0; }
-summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+summary { cursor: pointer; font-family: var(--heading-font); font-size: 17px; margin: 8px 0; color: var(--red-accent); }
+summary:focus-visible { outline: 2px solid var(--red-accent); outline-offset: 2px; }
 /* "How to use" tour: a panel in the corner, and an outline on the part of the page it explains */
 .guide-open { margin-left: auto; }
 .guide {
@@ -382,3 +377,19 @@ summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 #chat-form input { flex: 1 1 220px; min-width: 0; padding: 6px 10px; font: inherit; color: var(--text);
   background: var(--bg); border: 1px solid var(--border); border-radius: 4px; }
 .chat-suggest .chip { font-size: 13px; padding: 4px 10px; }
+
+/* Dynamic Class Highlights: Retained class-selected color accents */
+body[data-class="bard"]    { --accent: #6b3fa0; --hover: rgba(107, 63, 160, .14); }
+body[data-class="wizard"]  { --accent: #2a5caa; --hover: rgba(42, 92, 170, .14); }
+body[data-class="paladin"] { --accent: #7a560a; --hover: rgba(122, 86, 10, .16); }
+body[data-class="druid"]   { --accent: #2f6b3f; --hover: rgba(47, 107, 63, .14); }
+.class-card { border-left: 4px solid var(--accent); }
+
+/* Header and footer text styling */
+.top h1 { color: var(--red-accent); }
+.top button { color: var(--text); border-color: var(--border); background: var(--bg); }
+.top button:hover:not(:disabled) { background: var(--hover); }
+.top button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.top button:focus-visible { outline-color: var(--red-accent); }
+footer, footer.muted { color: var(--muted); }
+footer a { color: var(--red-accent); }
