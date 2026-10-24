@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from backend.app import trends
 from backend.app.api import routes
 from backend.app.main import app
 
@@ -20,8 +21,16 @@ def test_sdgs_returns_data():
     assert r.json()
 
 
-def test_changes_has_expected_shape_without_a_database(monkeypatch, tmp_path):
+def test_changes_without_a_database_compare_the_two_committed_snapshots(monkeypatch, tmp_path):
     monkeypatch.setattr(routes.config, "DB_PATH", tmp_path / "missing.db")
     r = client.get("/api/changes")
     assert r.status_code == 200
-    assert r.json() == {"changes": []}
+    body = r.json()
+    assert body["from"] < body["to"] and body["changes"]
+    assert all({"skill", "signal", "old", "new"} <= set(c) and c["old"] != c["new"] for c in body["changes"])
+
+
+def test_changes_empty_without_a_database_or_seeds(monkeypatch, tmp_path):
+    monkeypatch.setattr(routes.config, "DB_PATH", tmp_path / "missing.db")
+    monkeypatch.setattr(trends, "PREVIOUS", tmp_path / "missing.json")
+    assert client.get("/api/changes").json() == {"changes": [], "from": None, "to": None}

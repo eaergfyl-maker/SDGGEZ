@@ -24,3 +24,15 @@ def test_export_writes_newest_snapshot(tmp_path):
     assert seed["note"] == "new"
     assert seed["skills"][0]["demand_growth"] == 9.0
     assert json.loads(out.read_text(encoding="utf-8"))["note"] == "new"
+
+
+def test_export_keeps_the_replaced_seed_as_previous(tmp_path):
+    conn = db.connect(tmp_path / "test.db")
+    out = tmp_path / "snapshot_seed.json"
+    out.write_text(json.dumps({"created_at": "2026-10-22", "note": "older", "skills": []}), encoding="utf-8")
+    conn.execute("INSERT INTO snapshots (id, created_at, note) VALUES (1, '2026-10-24', 'new')")
+    conn.commit()
+    export_snapshot.export(conn, out)
+    assert json.loads((tmp_path / "snapshot_previous.json").read_text(encoding="utf-8"))["note"] == "older"
+    export_snapshot.export(conn, out)   # same snapshot again: previous is not overwritten
+    assert json.loads((tmp_path / "snapshot_previous.json").read_text(encoding="utf-8"))["note"] == "older"

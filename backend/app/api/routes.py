@@ -238,14 +238,23 @@ def get_story(node_id: str = Path(pattern=r"^[a-z0-9_]+$")):
 
 @router.get("/changes")
 def changes():
-    """What changed between the last two snapshots (patch notes)."""
-    if not config.DB_PATH.exists():
-        return {"changes": []}
-    conn = db.connect()
-    try:
-        return {"changes": pipeline.diff_last_two(conn)}
-    finally:
-        conn.close()
+    """What changed between the last two snapshots (patch notes).
+
+    Uses the local database when it holds two snapshots; otherwise the two committed seed
+    snapshots (data/snapshot_previous.json -> data/snapshot_seed.json), so deployments without
+    a database still show real changes.
+    """
+    if config.DB_PATH.exists():
+        conn = db.connect()
+        try:
+            snaps = conn.execute(
+                "SELECT created_at FROM snapshots ORDER BY id DESC LIMIT 2").fetchall()
+            if len(snaps) == 2:
+                return {"changes": pipeline.diff_last_two(conn),
+                        "from": snaps[1]["created_at"], "to": snaps[0]["created_at"]}
+        finally:
+            conn.close()
+    return trends.seed_changes() or {"changes": [], "from": None, "to": None}
 
 
 def _refresh_job():

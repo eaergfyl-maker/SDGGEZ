@@ -42,8 +42,28 @@ function sourceDetail(s) {
   return lines.map((l) => `<p class="muted">${esc(l)}</p>`).join("");
 }
 
+// What changed between the last two real snapshots. Only "reliable" changes are listed (both
+// values exist and neither rests on too few postings or papers); the rest are counted.
+function changesSection(ch, names) {
+  if (!ch || !ch.from || !ch.changes?.length) return "";
+  const pct = (v) => `${v > 0 ? "+" : ""}${v}%`;
+  const shown = ch.changes
+    .filter((c) => c.reliable !== false && c.old != null && c.new != null)
+    .sort((a, b) => Math.abs(b.new - b.old) - Math.abs(a.new - a.old));
+  const rest = ch.changes.length - shown.length;
+  const items = shown.map((c) => `<li>${esc(tr("radar.changeLine", {
+    name: names[c.skill] || c.skill, signal: tr(`radar.signal.${c.signal}`), from: pct(c.old), to: pct(c.new) }))}</li>`).join("");
+  return `<details class="radar-changes">
+    <summary>${esc(tr("radar.changesTitle", { from: ch.from.slice(0, 10), to: ch.to.slice(0, 10), n: shown.length }))}</summary>
+    <p class="muted">${esc(tr("radar.changesCaveat"))}</p>
+    ${items ? `<ul>${items}</ul>` : ""}
+    ${rest ? `<p class="muted">${esc(tr("radar.changesRest", { n: rest }))}</p>` : ""}
+  </details>`;
+}
+
 export async function renderRadar() {
-  const t = await api.trends(state.scenario);
+  const [t, ch] = await Promise.all([api.trends(state.scenario), api.changes().catch(() => null)]);
+  const names = Object.fromEntries(t.skills.map((s) => [s.skill, s.name]));
   document.getElementById("mock-badge").hidden = !t.is_mock;
   document.getElementById("as-of").textContent = tr("asof", { date: t.as_of.slice(0, 10), source: t.source });
 
@@ -72,5 +92,6 @@ export async function renderRadar() {
     ${noData.length ? `
       <b>${esc(tr("radar.noData"))}</b>
       <ul>${noData.map((s) => `<li class="muted">${esc(s.name)}</li>`).join("")}</ul>
-    ` : ""}`;
+    ` : ""}
+    ${changesSection(ch, names)}`;
 }
