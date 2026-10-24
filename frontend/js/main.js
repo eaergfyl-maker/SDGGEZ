@@ -5,18 +5,25 @@ import { refreshTree } from "./tree/tree.js";
 import "./tree/refresh.js";
 import "./tree/profile.js";
 import "./tree/area.js";
+import "./tree/roles.js"; // Ranked roles component for Member 4
 import { renderIntake } from "./panels/intake.js";
 import { renderRadar } from "./panels/radar.js";
 // import { renderChat } from "./panels/chat.js";
 import { clearPathway, renderPathway } from "./panels/pathway.js";
 
 on("persona-changed", () => {
-  // restore saved progress for this persona (always keep the starting skills)
+  // Clear selection and restore saved progress specifically for this persona/profile
+  state.selected = null;
   const saved = loadOwned(state.persona);
-  if (saved) state.owned = new Set([...state.startingSkills, ...saved]);
+  if (saved) {
+    state.owned = new Set([...state.startingSkills, ...saved]);
+  } else {
+    state.owned = new Set(state.startingSkills);
+  }
   clearPathway();
   refreshTree();
 });
+
 on("scenario-changed", () => renderRadar());
 on("role-selected", (roleId) => renderPathway(roleId));
 
