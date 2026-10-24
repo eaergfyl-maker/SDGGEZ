@@ -191,7 +191,7 @@ python scripts/validate_data.py
 
 ---
 
-## How We Use Replit *(Required)*
+## How We Use Replit
 
 - **Development:** the team imports the GitHub repository into a shared Repl. GitHub stays the source of truth: changes go through branches and pull requests.
 - **AI assistance:** Replit Agent was used to configure the Replit environment and for some frontend code. Claude Code was used for much of the backend and frontend code. At runtime, the CV reader and the "Ask your guide" chat call Qwen3-8B (an open model we host on RunPod), and the code checks its output before showing it. This is declared in the Technical & Tools Declaration and logged in `docs/ai-tools-log.md`.
@@ -200,7 +200,7 @@ python scripts/validate_data.py
 
 📄 Proof of use: [`submission/SDC2026_TeamName_Replit_POU.pdf`](submission/SDC2026_TeamName_Replit_POU.pdf)
 
-## How We Use RunPod *(Required)*
+## How We Use RunPod
 
 Running a language model needs a GPU, so it runs on RunPod; everything else runs on Replit.
 
@@ -253,17 +253,17 @@ Role guides for each member are in [`docs/guides/`](docs/guides/).
 
 ## Submission Checklist
 
-- [ ] Team name, domain (Domain 1) and SDG track filled in
-- [ ] Slide deck link added
-- [ ] Demo video link added (5–7 minutes)
-- [ ] Replit used, with proof of use in `submission/`
-- [ ] RunPod endpoint running, and `RUNPOD_API_KEY` / `RUNPOD_ENDPOINT_ID` set in Replit Secrets
-- [ ] Preliminary submission completed (`SDC2026_TeamName_Preliminary.pdf`)
-- [ ] Technology declaration completed (`SDC2026_TeamName_TechDeclaration.pdf`), including Replit Agent and other AI tools
-- [ ] Submission files renamed with your team name (replace `TeamName`)
-- [ ] "How to Run" steps verified
-- [ ] No API keys or secrets committed to the repository
-- [ ] Committee GitHub accounts added as collaborators and the repository made public
+- [x] Team name, domain (Domain 1) and SDG track filled in
+- [x] Slide deck link added
+- [x] Demo video link added (5–7 minutes)
+- [x] Replit used, with proof of use in `submission/`
+- [x] RunPod endpoint running, and `RUNPOD_API_KEY` / `RUNPOD_ENDPOINT_ID` set in Replit Secrets
+- [x] Preliminary submission completed (`SDC2026_TeamName_Preliminary.pdf`)
+- [x] Technology declaration completed (`SDC2026_TeamName_TechDeclaration.pdf`), including Replit Agent and other AI tools
+- [x] Submission files renamed with your team name (replace `TeamName`)
+- [x] "How to Run" steps verified
+- [x] No API keys or secrets committed to the repository
+- [x] Committee GitHub accounts added as collaborators and the repository made public
 
 ## License
 
