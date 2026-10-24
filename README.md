@@ -18,11 +18,11 @@
 
 | Field                  | Details                                     |
 | ---------------------- | ------------------------------------------- |
-| **Team Name**          | TBD                                         |
+| **Team Name**          | ICEMAN                                      |
 | **Team Domain**        | Domain 1 — Aiversecity Future-Ready Workforce |
 | **SDG Track (1–17)**   | SDG 4 — Quality Education (targets 4.3, 4.4), with SDG 8 — Decent Work and Economic Growth (targets 8.2, 8.5) |
-| **Team Leader**        | TBD                                         |
-| **University**         | TBD                                         |
+| **Team Leader**        | Eashwar Singh Sidhu                         |
+| **University**         | Asia Pacific University                     |
 | **Number of Members**  | 5                                           |
 
 ## Links
@@ -30,8 +30,8 @@
 | Resource          | Link                                           |
 | ----------------- | ---------------------------------------------- |
 | GitHub Repository | https://github.com/eaergfyl-maker/SDGGEZ       |
-| Replit Project    | TBD                                            |
-| Live Demo         | TBD                                            |
+| Replit Project    | https://replit.com/@jtjw07/SDGGEZ              |
+| Live Demo         | https://sdggez.replit.app                      |
 | RunPod Endpoint   | Serverless vLLM endpoint running Qwen3-8B (see [How We Use RunPod](#how-we-use-runpod-required)); the endpoint ID is kept in Replit Secrets |
 | Slide Deck        | TBD                                            |
 | Demo Video        | TBD                                            |
@@ -154,7 +154,7 @@ User ──► Replit (FastAPI app: API + frontend)
 ### Option 1 — Run on Replit (Recommended)
 
 1. Open the Replit project (link above), or import this repository via **Create Repl → Import from GitHub**.
-2. Open the **Secrets** tab (🔒) and add the variables you need (see `.env.example`). The app runs without any of them; the AI features appear only when the RunPod ones are set:
+2. Open the **Secrets** tab and add the variables you need (see `.env.example`). The app runs without any of them; the AI features appear only when the RunPod ones are set:
    - `RUNPOD_API_KEY` and `RUNPOD_ENDPOINT_ID` — turn on the CV skill suggestions and the "Ask your guide" chat
    - `RUNPOD_MODEL` — optional label for the model (default `Qwen/Qwen3-8B`)
    - `REFRESH_TOKEN` — protects the `/api/refresh` endpoint that fetches new data
