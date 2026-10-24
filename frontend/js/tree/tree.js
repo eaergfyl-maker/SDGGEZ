@@ -79,7 +79,7 @@ export function setMoved(map) {
 export function clearMoved() { moved = new Map(); }
 
 // [class] classes that have their own illustration in assets/classes/<class>.svg.
-// Any other class (rogue) shows the placeholder.
+// A class without art, or no class yet, shows the placeholder.
 const CLASS_ART = new Set(["bard", "wizard", "paladin", "druid"]);
 export const PLACEHOLDER_IMG = "assets/classes/placeholder.png";
 // image for a class key; used by the class card, the character sheet and the class selector
@@ -93,6 +93,8 @@ function renderClassCard() {
   if (!card) return;
   const c = classFor(state.startingSkills || []);
   card.hidden = !c;
+  // highlight colour follows the class (see body[data-class] rules in style.css)
+  if (c) document.body.dataset.class = c.key; else delete document.body.dataset.class;
   if (!c) return;
   document.getElementById("class-name").textContent = c.name;
   document.getElementById("class-title").textContent = c.title;

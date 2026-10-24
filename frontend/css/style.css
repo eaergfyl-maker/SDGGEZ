@@ -1,3 +1,7 @@
+/* Vintage Fantasy / Storybook Knight palette inspired by reference artwork.
+   Replaces dark/glow effects with matte parchment, muted sage green, and dark iron tones.
+   Typography: Mrs Eaves (Headings) & Bookman Old Style (Body text). */
+
 @font-face {
   font-family: "Mrs Eaves";
   src: local("Mrs Eaves"), local("MrsEavesSmallCaps"), local("Mrs Eaves OT");
@@ -11,7 +15,7 @@
 }
 
 :root {
-  color-scheme: light dark;   /* native controls (dropdowns, file picker) follow the theme */
+  color-scheme: light;   /* light theme only: native controls (dropdowns, file picker) match it */
   --bg: #F5E8C7;           /* Warm parchment / cream sky */
   --card: #EAD9AF;         /* Muted golden parchment card background */
   --text: #2A3236;         /* Dark iron / charcoal body text */
@@ -36,30 +40,6 @@
   /* Standard D&D Typography Stack */
   --heading-font: "Mrs Eaves", "Mrs Eaves Small Caps", "Palatino Linotype", Georgia, serif;
   --body-font: "Bookman Old Style", "Bookman", "Book Antiqua", Georgia, serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1F2528;         /* Deep armor charcoal / night canvas */
-    --card: #2B3337;       /* Dark slate card */
-    --text: #EAD9AF;       /* Light warm parchment text */
-    --muted: #A89878;      /* Soft warm tan */
-    --border: #4D5854;     /* Deep sage-grey border */
-    --edge: #8A968C;       /* Light sage edge */
-    --accent: #C8AD6D;     /* Vintage gold highlight */
-    --on-accent: #1F2528;  /* Dark text over gold accent */
-    --gold: #D9B35C;       /* Ochre gold */
-    --mastered: #5F6B61;   /* Sage green */
-    --available: #9B7736;  /* Bronze gold */
-    --locked: #4A4036;     /* Dark brown */
-    --role: #4D5854;       /* Muted slate */
-    --warn-bg: #3A301E;    /* Dark ochre background */
-    --warn-text: #EAD9AF;   /* Light tan warning text */
-    --hover: rgba(200, 173, 109, 0.12);
-    --shadow: rgba(0, 0, 0, 0.25);
-    --glow1: rgba(31, 37, 40, 0.3);
-    --glow2: rgba(95, 107, 97, 0.15);
-  }
 }
 
 * { box-sizing: border-box; }
@@ -343,3 +323,12 @@ input[type="file"]::file-selector-button {
 input[type="file"]::file-selector-button:hover { background: var(--hover); }
 summary { cursor: pointer; font-family: var(--heading-font); font-size: 17px; margin: 8px 0; }
 summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Class colours. tree.js sets <body data-class="..."> once the starting class is known.
+   Each accent was checked for 4.5:1 contrast as text on the parchment cards and under the
+   parchment-coloured text of selected buttons. */
+body[data-class="bard"]    { --accent: #6b3fa0; --hover: rgba(107, 63, 160, .14); }
+body[data-class="wizard"]  { --accent: #2a5caa; --hover: rgba(42, 92, 170, .14); }
+body[data-class="paladin"] { --accent: #7a560a; --hover: rgba(122, 86, 10, .16); }
+body[data-class="druid"]   { --accent: #2f6b3f; --hover: rgba(47, 107, 63, .14); }
+.class-card { border-left: 4px solid var(--accent); }
