@@ -4,11 +4,11 @@ Fill in names. Each owner must be able to explain their module to a judge (handb
 
 | # | Name | Role | Owns | Backup |
 |---|---|---|---|---|
-| 1 | TBD | Lead: API, integration, deploy | `backend/app/main.py`, `api/`, Replit, tests | 3 |
-| 2 | TBD | Data ingestion | `backend/app/ingest/`, `db.py` | 3 |
-| 3 | TBD | Scoring and matching | `backend/app/scoring/`, `data/skills.json`, `data/roles.json` | 2 |
-| 4 | TBD | Frontend A: skill tree and game | `frontend/js/tree/`, `frontend/js/main.js` | 5 |
-| 5 | TBD | Frontend B + content | `frontend/js/panels/`, `data/courses.json`, `data/sdg_map.json` | 4 |
+| 1 | Jayden Tan Jin Wei | Lead: API, integration, deploy | `backend/app/main.py`, `api/`, Replit, tests | 3 |
+| 2 | Gavin Wong Yung | Data ingestion | `backend/app/ingest/`, `db.py` | 3 |
+| 3 | Eashwar Singh Sidhu | Scoring and matching | `backend/app/scoring/`, `data/skills.json`, `data/roles.json` | 2 |
+| 4 | Lucas Isaac Fong Tayag | Frontend A: skill tree and game | `frontend/js/tree/`, `frontend/js/main.js` | 5 |
+| 5 | Abdul Rahman Bin Rahmatullah | Frontend B + content | `frontend/js/panels/`, `data/courses.json`, `data/sdg_map.json` | 4 |
 
 Parked for later: story, Submission Template, Tech Declaration, deck, video.
 
