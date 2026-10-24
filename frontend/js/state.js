@@ -15,8 +15,8 @@ export function on(event, fn) { (listeners[event] ||= []).push(fn); }
 export function emit(event, data) { (listeners[event] || []).forEach((fn) => fn(data)); }
 
 // Save and restore trained skills per persona, in the browser only.
-// try/catch: storage can be blocked and the app must still work.
-const key = (persona) => `rpg:owned:${persona}`;
+// Key explicitly evaluates the current persona (or falls back to custom) to prevent state leaks across profiles.
+const key = (persona) => `rpg:owned:${persona || state.persona || "custom"}`;
 
 export function saveOwned() {
   try { localStorage.setItem(key(state.persona), JSON.stringify([...state.owned])); } catch {}
