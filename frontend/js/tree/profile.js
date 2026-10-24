@@ -35,7 +35,7 @@ function render() {
 
   body.innerHTML = `
     <div class="class-card">
-      <img class="class-img" src="${esc(classImage(c && c.key))}" alt="" width="96" height="96">
+      <img class="class-img" src="${esc(classImage(c && c.key))}" alt="" width="96" height="128">
       <div>
         <p><b class="char-name">${esc(label)}</b>${c ? ` the ${esc(c.name)}` : ""}</p>
         ${c ? `<p class="muted">${esc(c.title)}</p>` : ""}
