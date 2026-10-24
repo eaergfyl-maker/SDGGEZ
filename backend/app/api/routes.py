@@ -126,7 +126,10 @@ def cv_samples():
 
 @router.get("/families")
 def families():
-    return data_loader.families()
+    """Career areas, each with the skill ids its roles use (a skill can be in several areas)."""
+    skills, roles = data_loader.skills(), data_loader.roles()
+    return [{**f, "skills": [s["id"] for s in family_subset(skills, roles, f["id"])[0]]}
+            for f in data_loader.families()]
 
 
 @router.get("/tree")

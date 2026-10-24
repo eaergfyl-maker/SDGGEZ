@@ -18,9 +18,27 @@ function noteText(note) {
   return note;
 }
 
+// The checklist, grouped: skills used in several career areas first, then each area's own.
+// Areas come from /api/families (with the skills their roles use); if that fails, one plain list.
+function skillGroups(skills, families) {
+  const box = (s) => `<label><input type="checkbox" value="${esc(s.skill)}"> ${esc(s.name)}</label>`;
+  const group = (title, items) => items.length ? `<fieldset class="skill-group">
+      <legend>${esc(title)} <span class="muted">(${items.length})</span></legend>
+      <div class="skill-group-items">${items.map(box).join("")}</div></fieldset>` : "";
+  const count = {};
+  families.forEach((f) => (f.skills || []).forEach((id) => { count[id] = (count[id] || 0) + 1; }));
+  if (!Object.keys(count).length) return group(t("intake.skillsAll"), skills);
+  const shared = skills.filter((s) => count[s.skill] > 1);
+  const other = skills.filter((s) => !count[s.skill]);
+  return group(t("intake.skillsShared"), shared)
+    + families.map((f) => group(f.name, skills.filter((s) => count[s.skill] === 1 && f.skills.includes(s.skill)))).join("")
+    + group(t("intake.skillsOther"), other);
+}
+
 export async function renderIntake() {
   const personas = await api.personas();
   const trends = await api.trends(state.scenario);
+  const families = await api.families().catch(() => []);
 
   // Each sample persona is offered as a starting class (Bard, Wizard, ...): the class comes from
   // its skills, and its job is shown as the background. The persona data itself is unchanged.
@@ -56,11 +74,7 @@ export async function renderIntake() {
     <label for="hours-input">${esc(t("intake.hours"))}
       <input type="number" id="hours-input" min="1" max="40" value="6" />
     </label>
-    <div id="skill-boxes">
-      ${trends.skills.map((s) => `
-        <label><input type="checkbox" value="${esc(s.skill)}"> ${esc(s.name)}</label>
-      `).join("")}
-    </div>
+    <div id="skill-boxes">${skillGroups(trends.skills, families)}</div>
     <button id="use-profile">${esc(t("intake.use"))}</button>`;
 
   const select = (p) => {

@@ -34,3 +34,11 @@ def test_changes_empty_without_a_database_or_seeds(monkeypatch, tmp_path):
     monkeypatch.setattr(routes.config, "DB_PATH", tmp_path / "missing.db")
     monkeypatch.setattr(trends, "PREVIOUS", tmp_path / "missing.json")
     assert client.get("/api/changes").json() == {"changes": [], "from": None, "to": None}
+
+def test_families_list_their_skills_and_cover_every_skill():
+    from backend.app import data_loader
+    fams = client.get("/api/families").json()
+    known = {s["id"] for s in data_loader.skills()}
+    listed = {sid for f in fams for sid in f["skills"]}
+    assert all(f["skills"] for f in fams) and listed <= known
+    assert listed == known      # every skill appears in at least one area's checklist group
