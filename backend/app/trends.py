@@ -1,7 +1,8 @@
 """Where the API gets trend components from. Owner: Member 1 (wiring), Member 2 (data).
 
-Uses the latest snapshot in the database. Falls back to data/mock_trends.json, clearly marked
-is_mock=True, until ingestion has produced a snapshot.
+Order: the latest snapshot in the local database (after running the pipeline); otherwise the
+committed real snapshot in data/snapshot_seed.json (what Replit uses, since the database is not
+committed); only if neither exists, data/mock_trends.json, clearly marked is_mock=True.
 """
 import json
 
@@ -40,8 +41,28 @@ def latest_snapshot_trends():
     }
 
 
+SEED = config.DATA_DIR / "snapshot_seed.json"
+
+
+def seed_trends():
+    """The real snapshot committed to the repo by scripts/export_snapshot.py."""
+    if not SEED.exists():
+        return None
+    seed = json.loads(SEED.read_text(encoding="utf-8"))
+    return {
+        "is_mock": False,
+        "source": "snapshot",
+        "as_of": seed["created_at"],
+        "snapshot_id": None,
+        "trends": {
+            s["skill_id"]: {k: s[k] for k in ("research_growth", "demand_growth", "outlook", "sources")}
+            for s in seed["skills"]
+        },
+    }
+
+
 def get_trends():
-    real = latest_snapshot_trends()
+    real = latest_snapshot_trends() or seed_trends()
     if real is not None:
         return real
     mock = data_loader.mock_trends()
