@@ -1,6 +1,8 @@
 """HTTP API. Owner: Member 1. Response shapes here are shared contracts with the frontend;
 change them only after noting it in docs/DECISIONS.md.
 """
+import base64
+import binascii
 import os
 import sqlite3
 from datetime import datetime, timedelta, timezone
@@ -81,6 +83,23 @@ def cv_skills(body: CVText):
     removed before matching. Use invented CVs only (see /api/cv/samples).
     """
     return cv.match_cv(body.text, data_loader.skills())
+
+
+class CVFile(BaseModel):
+    data: str = Field(min_length=1, max_length=cv.MAX_FILE_BYTES * 4 // 3 + 4)  # base64 of a .docx
+
+
+@router.post("/cv/file")
+def cv_file(body: CVFile):
+    """Text of an uploaded Word .docx CV, for the person to review before matching.
+
+    Nothing is stored or logged; the text goes back to the browser only.
+    """
+    try:
+        text = cv.docx_text(base64.b64decode(body.data, validate=True))
+    except (ValueError, binascii.Error):
+        raise HTTPException(422, "Could not read this file. Save it as .docx or paste the text.")
+    return {"text": text[:cv.MAX_CHARS], "truncated": len(text) > cv.MAX_CHARS}
 
 
 @router.get("/cv/ai")

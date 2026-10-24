@@ -1,3 +1,6 @@
+import base64
+import io
+import zipfile
 from pathlib import Path
 
 import pytest
@@ -5,7 +8,7 @@ from fastapi.testclient import TestClient
 
 from backend.app import config, data_loader
 from backend.app.main import app
-from backend.app.scoring.cv import MAX_CHARS, match_cv, redact
+from backend.app.scoring.cv import MAX_CHARS, docx_text, match_cv, redact
 from backend.app.scoring.tree import infer_family
 
 SKILLS = [
@@ -111,3 +114,28 @@ def test_sample_cvs_endpoint_serves_invented_cvs(client):
     samples = client.get("/api/cv/samples").json()
     assert {s["id"] for s in samples} == set(EXPECTED)
     assert all("invented" in s["text"].lower() for s in samples)
+
+
+# --- Word .docx upload --------------------------------------------------------------------
+
+def make_docx(*paragraphs):
+    ns = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
+    body = "".join(f"<w:p><w:r><w:t>{p}</w:t></w:r></w:p>" for p in paragraphs)
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("word/document.xml", f"<w:document {ns}><w:body>{body}</w:body></w:document>")
+    return buf.getvalue()
+
+
+def test_docx_text_keeps_paragraphs():
+    assert docx_text(make_docx("SAMPLE (invented)", "Five years using Zendesk.")) == \
+        "SAMPLE (invented)\nFive years using Zendesk."
+
+
+def test_docx_endpoint_returns_text_and_rejects_other_files(client):
+    data = base64.b64encode(make_docx("Five years using Zendesk and MS Excel.")).decode()
+    assert client.post("/api/cv/file", json={"data": data}).json() == \
+        {"text": "Five years using Zendesk and MS Excel.", "truncated": False}
+    not_docx = base64.b64encode(b"%PDF-1.7 not a word file").decode()
+    assert client.post("/api/cv/file", json={"data": not_docx}).status_code == 422
+    assert client.post("/api/cv/file", json={"data": "not base64!"}).status_code == 422

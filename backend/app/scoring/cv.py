@@ -19,9 +19,15 @@ The AI layer is in cv_ai.py: it asks a model separately, keeps only skill ids th
 data/skills.json and quotes that literally appear in the redacted text, and returns them as
 level "possible" with source "ai". Keyword results stay as they are.
 """
+import io
 import re
+import zipfile
+from xml.etree import ElementTree
 
 MAX_CHARS = 20_000
+MAX_FILE_BYTES = 2_000_000           # uploaded .docx size
+MAX_XML_BYTES = 10_000_000           # unpacked document.xml size (guards against zip bombs)
+W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
 WINDOW = 6                       # words: how close the words of a phrase must be for "possible"
 SNIPPET = 45                     # characters of context on each side of the evidence
 NEGATIONS = {"no", "not", "without", "never", "lack", "lacking", "none"}
@@ -57,6 +63,33 @@ def redact(text: str) -> tuple[str, dict]:
     text = EMAIL.sub(drop_email, text)
     text = NUMBERISH.sub(drop_number, text)
     return text, counts
+
+
+def docx_text(data: bytes) -> str:
+    """Plain text of a Word .docx file, one line per paragraph. Raises ValueError if unreadable.
+
+    Only the main document body is read (not headers, footers or comments).
+    """
+    try:
+        with zipfile.ZipFile(io.BytesIO(data)) as z:
+            info = z.getinfo("word/document.xml")
+            if info.file_size > MAX_XML_BYTES:
+                raise ValueError("document too large")
+            root = ElementTree.fromstring(z.read(info))
+    except (zipfile.BadZipFile, KeyError, ElementTree.ParseError):
+        raise ValueError("not a readable .docx file") from None
+    lines = []
+    for p in root.iter(f"{W}p"):
+        parts = []
+        for el in p.iter():
+            if el.tag == f"{W}t":
+                parts.append(el.text or "")
+            elif el.tag == f"{W}tab":
+                parts.append(" ")
+            elif el.tag in (f"{W}br", f"{W}cr"):
+                parts.append("\n")
+        lines.append("".join(parts))
+    return "\n".join(lines).strip()
 
 
 def stem(word: str) -> str:
