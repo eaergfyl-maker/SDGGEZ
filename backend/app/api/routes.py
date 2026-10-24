@@ -8,8 +8,7 @@ import sqlite3
 from datetime import datetime, timedelta, timezone
 from enum import Enum
 
-import yaml
-from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Path, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Query
 from pydantic import BaseModel, Field
 
 from .. import config, data_loader, db, trends
@@ -228,15 +227,6 @@ def ask_guide(body: ChatQuestion):
     facts = chat.build_facts(tree, path, names, hours)
     return {**chat.answer(body.question, facts, body.lang),
             "as_of": tree.get("as_of"), "focus_role": focus and (focus.get("full_name") or focus["name"])}
-
-
-@router.get("/story/{node_id}")
-def get_story(node_id: str = Path(pattern=r"^[a-z0-9_]+$")):
-    """Story text for a node, or {} if the writers haven't added one yet."""
-    path = config.STORY_DIR / "nodes" / f"{node_id}.yaml"
-    if not path.exists():
-        return {}
-    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
 @router.get("/changes")

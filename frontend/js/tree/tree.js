@@ -331,10 +331,6 @@ async function showDetail(node) {
     html += roleHtml(node);
   }
 
-  const story = await api.story(node.id).catch(() => ({}));
-  if (story.scene) html += `<p class="story">${esc(story.scene)}</p>`;
-  if (story.mentor_line) html += `<p class="muted">${esc(story.mentor_line)}</p>`;
-
   el.innerHTML = html;
   el.querySelector("#train")?.addEventListener("click", () => train(node.id));
   el.querySelector("#show-path")?.addEventListener("click", () => emit("role-selected", node.id));

@@ -246,7 +246,6 @@ button.class-btn b, button.persona-btn b {
 .gap { margin: 4px 0 8px; padding-left: 20px; }
 .course { border: 1px solid var(--border); background: var(--bg); padding: 8px 12px; margin: 8px 0; }
 .course a { color: var(--red-accent); display: inline-block; padding: 6px 0; }
-.story { border-left: 3px solid var(--red-accent); padding-left: 12px; margin: 8px 0; font-style: italic; }
 .chat-log { max-height: 260px; overflow-y: auto; margin: 8px 0; }
 .chat-msg { padding: 6px 0; }
 .chat-msg .who { font-weight: 600; }

@@ -58,11 +58,6 @@ def test_pathway(client):
     assert [s["skill"] for s in body["steps"]][:2] == ["ai_tools", "prompting"]
 
 
-def test_story_missing_is_empty_and_path_is_safe(client):
-    assert client.get("/api/story/ai_tools").json() == {}
-    assert client.get("/api/story/..%2Fsecrets").status_code in (404, 422)
-
-
 def test_frontend_served(client):
     assert "Future-Ready RPG" in client.get("/").text
 

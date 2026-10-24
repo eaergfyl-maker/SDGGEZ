@@ -1,7 +1,0 @@
-# Copy to <node_id>.yaml (node_id must match an id in data/skills.json or data/roles.json).
-node: example_node_id
-title: "Short scene title"
-scene: |
-  One or two sentences of story. No numbers, course names or employers here.
-mentor_line: "One line from the mentor. The app adds the real data next to it."
-unlock_message: "Skill unlocked: ..."

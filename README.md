@@ -110,7 +110,6 @@ person makes them.
 ├── scripts/
 │   ├── validate_data.py         # Schema and cross-reference checks for data/
 │   └── probe_sources.py         # Checks each external data source responds as expected
-├── story/                       # Story files for skill nodes (optional)
 ├── submission/                  # Required submission documents (to add)
 │   ├── SDC2026_TeamName_Preliminary.pdf      # Preliminary submission
 │   ├── SDC2026_TeamName_TechDeclaration.pdf  # Technology declaration
@@ -230,7 +229,6 @@ Running a language model needs a GPU, so it runs on RunPod; everything else runs
 
 - [ ] Add a Malaysian job-market data source
 - [ ] Grow the verified course catalogue, including programmes claimable through HRD Corp where the provider confirms eligibility
-- [ ] Story scenes for each skill node
 - [ ] Chinese and Tamil language options
 - [ ] HR / team view with a workforce skills-gap heatmap
 
