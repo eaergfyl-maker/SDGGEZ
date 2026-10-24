@@ -141,6 +141,9 @@ const T = {
     "path.noCourse": "No course in the catalogue yet",
     "path.allDone": "You already have every skill for this role.",
     "path.total": "Verified total: {hours} h, RM{cost}. Skills without a verified course: {gaps}.",
+    "path.estimatedWeeks": "Estimated time: about {weeks} week(s) at your study pace (estimate, not a guarantee).",
+    "path.untickHint": "(untick if you already know this)",
+    "path.printButton": "Print or save my plan",
     "footer": "Personas are synthetic. Every number cites its source and date. Job data: <a href=\"https://www.arbeitnow.com\">Arbeitnow</a> and <a href=\"https://remotive.com\">Remotive</a>. Research data: arXiv. Occupation references: O*NET 31.0 Database, U.S. Department of Labor, Employment and Training Administration, used under <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>, adapted by us. This tool supports your career decisions; you make them.<br><br>Background image from: <a href=\"https://www.dreamstime.com/brown-seamless-pattern-d-dice-board-games-image259770746\" target=\"_blank\" rel=\"noopener\">Dreamstime</a>.",
   },
   ms: {
@@ -271,6 +274,9 @@ const T = {
     "path.noCourse": "Belum ada kursus dalam katalog",
     "path.allDone": "Anda sudah mempunyai semua kemahiran untuk peranan ini.",
     "path.total": "Jumlah yang disahkan: {hours} jam, RM{cost}. Kemahiran tanpa kursus yang disahkan: {gaps}.",
+    "path.estimatedWeeks": "Anggaran masa: lebih kurang {weeks} minggu mengikut kadar pembelajaran anda (anggaran, bukan jaminan).",
+    "path.untickHint": "(nyahtanda jika anda sudah tahu ini)",
+    "path.printButton": "Cetak atau simpan rancangan saya",
     "footer": "Persona adalah rekaan. Setiap angka menyatakan sumber dan tarikhnya. Data pekerjaan: <a href=\"https://www.arbeitnow.com\">Arbeitnow</a> dan <a href=\"https://remotive.com\">Remotive</a>. Data penyelidikan: arXiv. Rujukan pekerjaan: O*NET 31.0 Database, U.S. Department of Labor, Employment and Training Administration, digunakan di bawah <a href=\"https://creativecommons.org/licenses/by/4.0/\">CC BY 4.0</a>, diubah suai oleh kami. Alat ini menyokong keputusan kerjaya anda; anda yang membuat keputusan.<br><br>Imej latar belakang daripada: <a href=\"https://www.dreamstime.com/brown-seamless-pattern-d-dice-board-games-image259770746\" target=\"_blank\" rel=\"noopener\">Dreamstime</a>.",
   },
 };
