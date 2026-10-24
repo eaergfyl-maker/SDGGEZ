@@ -70,6 +70,7 @@ makes them.
 - **Future-role matching** — 16 roles, each based on an O\*NET occupation, with an importance-weighted match score, a skills gap, and a one-sentence explanation.
 - **Skill tree and reskilling path** — prerequisites unlock in order; the pathway lists verified courses with hours, cost and an estimated number of weeks.
 - **SDG mapping** — every skill and role is tagged to SDGs (4, 7, 8, 9, 10, 11, 12, 13, 16) with a target and a reason.
+- **Bahasa Malaysia** — an EN / BM toggle in the header switches the interface language. Skill, role and course names stay in English.
 - **Handling uncertainty** — slow, moderate and fast AI scenarios, with each role's outlook shown as a range.
 - **Living map** — refreshing the data creates a new snapshot, and the app shows what changed.
 

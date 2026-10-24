@@ -2,6 +2,7 @@
 import { api } from "../api.js";
 import { state } from "../state.js";
 import { esc } from "../util.js";
+import { t as tr } from "../i18n.js";
 
 const el = document.getElementById("radar");
 
@@ -23,7 +24,7 @@ function bars(items) {
 
 function sourceDetail(s) {
   const src = s.components?.sources;
-  if (!src) return `<span class="muted">Mock data, no source yet</span>`;
+  if (!src) return `<span class="muted">${esc(tr("radar.mockSource"))}</span>`;
   const d = src.demand;
   return `${esc(d.name)}: ${d.recent_postings} postings, from ${esc(d.recent_from)}. ${esc(d.caveat)}`;
 }
@@ -31,7 +32,7 @@ function sourceDetail(s) {
 export async function renderRadar() {
   const t = await api.trends(state.scenario);
   document.getElementById("mock-badge").hidden = !t.is_mock;
-  document.getElementById("as-of").textContent = `Data as of ${t.as_of.slice(0, 10)} (${t.source})`;
+  document.getElementById("as-of").textContent = tr("asof", { date: t.as_of.slice(0, 10), source: t.source });
 
   const known = t.skills.filter((s) => s.momentum != null).sort((a, b) => b.momentum - a.momentum);
   const noData = t.skills.filter((s) => s.momentum == null);
@@ -44,21 +45,19 @@ export async function renderRadar() {
       ${sourceDetail(s)}
     </details>`).join("");
 
-  el.innerHTML = `<h2>Future Skills Radar</h2>
-    <p class="muted">Scenario: ${esc(t.scenario)}. These are estimates, not predictions.
-      Job-posting data mostly covers German and European postings, so figures may not reflect
-      the Malaysian job market directly.</p>
+  el.innerHTML = `<h2>${esc(tr("radar.title"))}</h2>
+    <p class="muted">${esc(tr("radar.note", { scenario: tr(`scenario.${t.scenario}`) }))}</p>
 
-    <b>Rising</b>
+    <b>${esc(tr("radar.rising"))}</b>
     ${bars(rising)}
     ${detailsList(rising)}
 
-    <b>Declining</b>
+    <b>${esc(tr("radar.declining"))}</b>
     ${bars(declining)}
     ${detailsList(declining)}
 
     ${noData.length ? `
-      <b>No data yet</b>
+      <b>${esc(tr("radar.noData"))}</b>
       <ul>${noData.map((s) => `<li class="muted">${esc(s.name)}</li>`).join("")}</ul>
     ` : ""}`;
 }

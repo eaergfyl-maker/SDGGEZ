@@ -9,8 +9,13 @@
 <body>
   <header class="top">
     <h1>Future-Ready RPG</h1>
-    <span id="mock-badge" class="badge warn" hidden>Mock data: not real trends</span>
+    <span id="mock-badge" class="badge warn" hidden data-i18n="mock.badge">Mock data: not real trends</span>
     <span id="as-of" class="muted"></span>
+    <div id="lang" class="seg lang" role="group" aria-label="Language" data-i18n-aria="lang.label">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="ms" aria-pressed="false">BM</button>
+    </div>
+    <span class="muted" data-i18n="lang.note"></span>
   </header>
 
   <main>
@@ -20,47 +25,47 @@
     <!-- Member 4: skill tree and game -->
     <section class="card">
       <div class="row">
-        <span class="muted">Disruption scenario</span>
+        <span class="muted" data-i18n="scenario.label">Disruption scenario</span>
         <div id="scenario" class="seg">
-          <button data-s="slow" aria-pressed="false">Slow</button>
-          <button data-s="moderate" class="on" aria-pressed="true">Moderate</button>
-          <button data-s="fast" aria-pressed="false">Fast</button>
+          <button data-s="slow" aria-pressed="false" data-i18n="scenario.slow">Slow</button>
+          <button data-s="moderate" class="on" aria-pressed="true" data-i18n="scenario.moderate">Moderate</button>
+          <button data-s="fast" aria-pressed="false" data-i18n="scenario.fast">Fast</button>
         </div>
       </div>
       <p id="scenario-note" class="muted" aria-live="polite"></p>
       <div class="row">
-        <label for="area" class="muted">Career area</label>
+        <label for="area" class="muted" data-i18n="area.label">Career area</label>
         <select id="area"></select>
       </div>
       <p id="area-note" class="muted" aria-live="polite"></p>
       <p id="tree-status" class="muted" role="status"></p>
-      <div class="tree-wrap"><svg id="tree" role="group" aria-label="Skill tree"></svg></div>
+      <div class="tree-wrap"><svg id="tree" role="group" aria-label="Skill tree" data-i18n-aria="tree.aria"></svg></div>
       <div id="class-card" class="class-card" hidden>
         <img id="class-img" class="class-img" src="assets/classes/placeholder.png" alt="" width="96" height="96">
         <div>
-          <p class="muted">Your starting class</p>
+          <p class="muted" data-i18n="class.yours">Your starting class</p>
           <p><b id="class-name"></b> <span id="class-title"></span></p>
           <p id="class-scores" class="muted"></p>
-          <p class="muted">Based on the skills you started with. It never limits which roles are open to you.</p>
+          <p class="muted" data-i18n="class.note">Based on the skills you started with. It never limits which roles are open to you.</p>
         </div>
       </div>
       <div class="stats">
-        <div><span>Level</span><b id="level">1</b></div>
-        <div><span>Skills trained</span><b id="trained">0</b></div>
-        <div><span>SDG badges</span><b id="badges">0</b></div>
+        <div><span data-i18n="stats.level">Level</span><b id="level">1</b></div>
+        <div><span data-i18n="stats.trained">Skills trained</span><b id="trained">0</b></div>
+        <div><span data-i18n="stats.badges">SDG badges</span><b id="badges">0</b></div>
       </div>
       <div class="xp">
-        <progress id="xp-bar" value="0" max="20" aria-label="XP to next level"></progress>
+        <progress id="xp-bar" value="0" max="20" aria-label="XP to next level" data-i18n-aria="xp.aria"></progress>
         <span id="xp-text" class="muted">0 / 20 XP</span>
       </div>
       <p id="game-message" class="game-message" aria-live="polite"></p>
       <div class="row">
-        <button id="refresh-data" type="button">Refresh data</button>
+        <button id="refresh-data" type="button" data-i18n="refresh.button">Refresh data</button>
         <span id="refresh-note" class="muted" role="status"></span>
       </div>
       <div id="refresh-result" class="refresh-result" aria-live="polite"></div>
-      <div class="row"><button id="reset" type="button">Reset progress</button></div>
-      <div id="detail" class="detail muted">Select a node to see details.</div>
+      <div class="row"><button id="reset" type="button" data-i18n="reset.button">Reset progress</button></div>
+      <div id="detail" class="detail muted" data-i18n="detail.empty">Select a node to see details.</div>
     </section>
 
     <!-- Member 4: explainer chat -->
@@ -68,16 +73,16 @@
 
     <!-- Member 4: character sheet (saved in this browser) -->
     <section id="profile" class="card" aria-labelledby="profile-title">
-      <h2 id="profile-title">Your character</h2>
+      <h2 id="profile-title" data-i18n="profile.title">Your character</h2>
       <div class="row">
-        <label for="profile-name" class="muted">Adventurer name</label>
-        <input id="profile-name" type="text" maxlength="24" autocomplete="off" placeholder="A nickname is enough">
+        <label for="profile-name" class="muted" data-i18n="profile.name">Adventurer name</label>
+        <input id="profile-name" type="text" maxlength="24" autocomplete="off" placeholder="A nickname is enough" data-i18n-placeholder="profile.placeholder">
       </div>
-      <p class="muted">Saved only in this browser. No account and no personal details needed: please use a nickname.</p>
+      <p class="muted" data-i18n="profile.note">Saved only in this browser. No account and no personal details needed: please use a nickname.</p>
       <div id="profile-body" class="profile-body"></div>
       <div class="row">
-        <button id="profile-export" type="button">Download profile (JSON)</button>
-        <button id="profile-delete" type="button">Delete saved data</button>
+        <button id="profile-export" type="button" data-i18n="profile.export">Download profile (JSON)</button>
+        <button id="profile-delete" type="button" data-i18n="profile.delete">Delete saved data</button>
       </div>
     </section>
 
@@ -86,7 +91,7 @@
     <section id="pathway" class="card"></section>
   </main>
 
-  <footer class="muted">
+  <footer class="muted" data-i18n-html="footer">
     Personas are synthetic. Every number cites its source and date. Job data: <a href="https://www.arbeitnow.com">Arbeitnow</a> and <a href="https://remotive.com">Remotive</a>. Research data: arXiv. Occupation references: O*NET 31.0 Database, U.S. Department of Labor, Employment and Training Administration, used under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, adapted by us.
     This tool supports your career decisions; you make them.
   </footer>

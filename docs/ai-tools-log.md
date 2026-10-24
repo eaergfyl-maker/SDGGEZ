@@ -11,3 +11,4 @@ Record every AI tool used to help write code, text, or designs. Needed for the T
 | 2026-10 (see git log) | TBD | Replit Agent | Replit environment configuration and docs (`.replit`, `replit.md`); tree component and frontend state logic | TBD | TBD: whoever ran it fills in extent and review |
 | 2026-10-23 | Lead | Claude Code (Claude Opus 5.5) | README rewritten to the SDC GitHub template | minor | Every path, number and claim checked against the repo |
 | 2026-10-24 | Member 3 | Claude Code (Claude Opus 5.5) | CV reader: matcher, endpoints, CV terms, invented sample CVs, tests, intake panel UI | major | Member 3 reviews before merge; measured on sample CVs; 89 tests pass |
+| 2026-10-24 | Member 3 | Claude Code (Claude Opus 5.5) | Bahasa Malaysia translations and language toggle | moderate | Malay text drafted by AI: a fluent speaker should review before the demo |
