@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 
 from .. import config, data_loader, db, trends
 from ..ingest import pipeline
-from ..scoring import cv
+from ..scoring import cv, cv_ai
 from ..scoring.momentum import direction, momentum
 from ..scoring.pathway import build_pathway
 from ..scoring.tree import build_tree, family_subset, infer_family
@@ -81,6 +81,22 @@ def cv_skills(body: CVText):
     removed before matching. Use invented CVs only (see /api/cv/samples).
     """
     return cv.match_cv(body.text, data_loader.skills())
+
+
+@router.get("/cv/ai")
+def cv_ai_status():
+    """Whether AI suggestions are switched on (RunPod settings present). Does not call the model."""
+    return {"enabled": cv_ai.enabled(), "model": cv_ai.model_name()}
+
+
+@router.post("/cv/ai")
+def cv_ai_suggest(body: CVText):
+    """Extra skills suggested by the model, each checked against the skill list and the CV text.
+
+    Slower than /cv/skills (seconds, or up to 90 s on a cold start), so the UI calls it after
+    showing the keyword results. Same privacy rules: redacted first, never stored or logged.
+    """
+    return cv_ai.suggest(body.text, data_loader.skills())
 
 
 @router.get("/cv/samples")

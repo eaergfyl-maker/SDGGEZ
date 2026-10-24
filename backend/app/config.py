@@ -3,6 +3,21 @@ import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def _load_env_file(path: Path) -> None:
+    """Read KEY=value lines from a local .env. Real environment variables (Replit Secrets) win."""
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            key, value = line.split("=", 1)
+            os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
+
+
+_load_env_file(ROOT / ".env")
+
 DATA_DIR = ROOT / "data"
 STORY_DIR = ROOT / "story"
 FRONTEND_DIR = ROOT / "frontend"

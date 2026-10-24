@@ -195,7 +195,7 @@ python scripts/validate_data.py
 ## How We Use Replit *(Required)*
 
 - **Development:** the team imports the GitHub repository into a shared Repl. GitHub stays the source of truth: changes go through branches and pull requests.
-- **AI assistance:** Replit Agent was used to configure the Replit environment and for some frontend code. This is declared in the Technical & Tools Declaration and logged in `docs/ai-tools-log.md`.
+- **AI assistance:** Replit Agent was used to configure the Replit environment and for some frontend code. Claude Code was used for much of the backend and frontend code. The CV reader can call Qwen3-8B (an open model we host on RunPod) for extra skill suggestions, which the code checks before showing. This is declared in the Technical & Tools Declaration and logged in `docs/ai-tools-log.md`.
 - **Hosting:** the app is deployed with Replit Deployments at the Live Demo link above.
 - **Secrets:** tokens and keys are stored in Replit Secrets, never in the code.
 

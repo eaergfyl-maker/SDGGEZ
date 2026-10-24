@@ -15,9 +15,9 @@ For every skill in data/skills.json the matcher looks for its `keywords` and `cv
 
 Every result carries the piece of the CV that triggered it, so the person can see why.
 
-Where the AI layer plugs in (Member 3, later): call the model separately, keep only skill ids
-that exist in data/skills.json and quotes that literally appear in the redacted text, then add
-them as level "possible" with source "ai". Keyword results stay as they are.
+The AI layer is in cv_ai.py: it asks a model separately, keeps only skill ids that exist in
+data/skills.json and quotes that literally appear in the redacted text, and returns them as
+level "possible" with source "ai". Keyword results stay as they are.
 """
 import re
 
@@ -26,7 +26,9 @@ WINDOW = 6                       # words: how close the words of a phrase must b
 SNIPPET = 45                     # characters of context on each side of the evidence
 NEGATIONS = {"no", "not", "without", "never", "lack", "lacking", "none"}
 # wanting or still learning a skill is not having it: "currently learning Python", "interested in EV"
-INTENT = {"learning", "interested", "hoping", "hope", "plan", "planning", "want", "aspiring", "aspire"}
+INTENT = {"learn", "learning", "interested", "hoping", "hope", "plan", "planning", "want", "aspiring",
+          "aspire"}
+QUALIFIER_WORDS = 5              # how many words before a phrase are checked for the above
 STOPWORDS = {"and", "of", "the", "for", "in", "to", "a", "an", "with", "on", "at", "by"}
 
 EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
@@ -78,7 +80,7 @@ def _snippet(text: str, start: int, end: int) -> str:
 
 def _qualifier(lower: str, start: int) -> str | None:
     """Why an exact mention should not count as having the skill, or None if it should."""
-    before = WORD.findall(lower[max(0, start - 40):start])[-3:]
+    before = WORD.findall(lower[max(0, start - 50):start])[-QUALIFIER_WORDS:]
     if any(w in NEGATIONS for w in before):
         return "mentioned after a negation such as 'no' or 'without'"
     if any(w in INTENT for w in before):

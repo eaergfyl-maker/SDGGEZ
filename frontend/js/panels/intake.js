@@ -11,6 +11,7 @@ const el = document.getElementById("intake");
 // Notes come from the API in English; show them in the chosen language.
 function noteText(note) {
   if (!note) return "";
+  if (note.includes("suggested by AI")) return t("cv.note.ai");
   if (note.includes("negation")) return t("cv.note.negation");
   if (note.includes("learned")) return t("cv.note.intent");
   if (note.includes("similar")) return t("cv.note.similar");
@@ -119,15 +120,41 @@ export async function renderIntake() {
       : `<b>${esc(r.name)}</b>`}: <q>${esc(r.evidence)}</q>${note ? ` <span class="muted">(${esc(note)})</span>` : ""}</li>`;
   };
 
+  // A ticked "possible" item ticks the same skill in the checklist (keyword and AI lists alike).
+  cvResult.addEventListener("change", (e) => {
+    const c = e.target.closest("input[data-skill]");
+    const b = c && box(c.dataset.skill);
+    if (b) b.checked = c.checked;
+  });
+
+  // AI suggestions are optional: only offered when the server has RunPod settings.
+  const aiOn = api.cvAiStatus().then((s) => s.enabled).catch(() => false);
+  let scanId = 0;  // ignore a slow AI reply that belongs to an earlier scan
+
+  const askAi = async (text, id) => {
+    if (!(await aiOn)) return;
+    cvResult.insertAdjacentHTML("beforeend", `<div id="cv-ai"><p><b>${esc(t("cv.ai.title"))}</b></p>
+      <p class="muted" aria-live="polite">${esc(t("cv.ai.waiting"))}</p></div>`);
+    const ai = cvResult.querySelector("#cv-ai");
+    let r;
+    try { r = await api.cvAi(text); } catch { r = { status: "error", possible: [] }; }
+    if (id !== scanId) return;
+    const msg = r.status !== "ok" ? t("cv.ai.error") : r.possible.length ? t("cv.ai.note") : t("cv.ai.none");
+    ai.innerHTML = `<p><b>${esc(t("cv.ai.title"))}</b></p><p class="muted">${esc(msg)}</p>` +
+      (r.possible.length ? `<ul class="cv-list">${r.possible.map((x) => line(x, true)).join("")}</ul>` : "");
+  };
+
   el.querySelector("#cv-scan").addEventListener("click", async () => {
     const text = cvText.value.trim();
     if (!text) { cvStatus.textContent = t("cv.empty"); return; }
+    const id = ++scanId;
     cvStatus.textContent = t("cv.reading");
     let r;
     try { r = await api.cvSkills(text); } catch {
       cvStatus.textContent = t("cv.error");
       return;
     }
+    if (id !== scanId) return;
     el.querySelectorAll("#skill-boxes input").forEach((b) => { b.checked = false; });
     r.found.forEach((x) => { const b = box(x.skill); if (b) b.checked = true; });
     const removed = r.redactions.emails + r.redactions.numbers;
@@ -137,8 +164,7 @@ export async function renderIntake() {
       (r.found.length ? `<p><b>${esc(t("cv.found"))}</b></p><ul class="cv-list">${r.found.map((x) => line(x, false)).join("")}</ul>` : "") +
       (r.possible.length ? `<p><b>${esc(t("cv.possible"))}</b></p><ul class="cv-list">${r.possible.map((x) => line(x, true)).join("")}</ul>` : "") +
       `<p class="muted">${esc(t("cv.review"))}</p>`;
-    cvResult.querySelectorAll("input[data-skill]").forEach((c) =>
-      c.addEventListener("change", () => { const b = box(c.dataset.skill); if (b) b.checked = c.checked; }));
+    askAi(text, id);
   });
 
   el.querySelector("#use-profile").addEventListener("click", () => {

@@ -26,4 +26,6 @@ export const api = {
   changes: () => get("changes"),
   cvSkills: (text) => post("cv/skills", { text }),
   cvSamples: () => get("cv/samples"),
+  cvAiStatus: () => get("cv/ai"),
+  cvAi: (text) => post("cv/ai", { text }),
 };

@@ -43,6 +43,11 @@ def test_negation_and_intent_are_not_counted_as_having_the_skill():
     assert ids(r, "possible") == {"sql", "excel"}
 
 
+def test_intent_a_few_words_back_still_counts():
+    r = match_cv("Want to learn how to use SQL for reports.", SKILLS)
+    assert ids(r, "found") == set() and ids(r, "possible") == {"sql"}
+
+
 def test_a_plain_mention_elsewhere_still_counts():
     r = match_cv("No SQL at my first job. Later I wrote SQL reports daily.", SKILLS)
     assert ids(r, "found") == {"sql"}
