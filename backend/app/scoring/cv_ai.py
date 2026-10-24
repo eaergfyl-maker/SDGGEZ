@@ -26,7 +26,7 @@ from .cv import match_cv, redact
 
 MODEL_CHARS = 12_000             # CV characters sent to the model; fits an 8192-token context
 MAX_TOKENS = 800                 # length of the model's reply
-TIMEOUT = 90                     # seconds in total, enough for a cold start with a cached model
+TIMEOUT = 180                    # seconds in total: a cold RunPod worker took over 90 s on 25 Oct
 POLL = 2                         # seconds between status checks while the job is queued
 API = "https://api.runpod.ai/v2/{endpoint}"
 NOTE = "suggested by AI; the quote was checked against your CV"

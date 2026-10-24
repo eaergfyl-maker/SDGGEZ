@@ -110,10 +110,6 @@ person makes them.
 ├── scripts/
 │   ├── validate_data.py         # Schema and cross-reference checks for data/
 │   └── probe_sources.py         # Checks each external data source responds as expected
-├── submission/                  # Required submission documents (to add)
-│   ├── SDC2026_TeamName_Preliminary.pdf      # Preliminary submission
-│   ├── SDC2026_TeamName_TechDeclaration.pdf  # Technology declaration
-│   └── SDC2026_TeamName_Replit_POU.pdf       # Replit proof of use
 ├── .env.example                 # Example environment variables
 ├── .gitignore
 ├── .replit                      # Replit run configuration
@@ -194,7 +190,7 @@ python scripts/validate_data.py
 - **Hosting:** the app is deployed with Replit Deployments at the Live Demo link above.
 - **Secrets:** tokens and keys are stored in Replit Secrets, never in the code.
 
-📄 Proof of use: [`submission/SDC2026_TeamName_Replit_POU.pdf`](submission/SDC2026_TeamName_Replit_POU.pdf)
+📄 Proof of use: the live deployment and Replit project linked above; screenshots are in `SDC2026_ICEMAN_TechDeclaration.pdf`, submitted on sdchack.my.
 
 ## How We Use RunPod
 
@@ -251,11 +247,11 @@ Role guides for each member are in [`docs/guides/`](docs/guides/).
 - [x] Team name, domain (Domain 1) and SDG track filled in
 - [x] Slide deck link added
 - [x] Demo video link added (5–7 minutes)
-- [x] Replit used, with proof of use in `submission/`
+- [x] Replit used, with proof of use (live URL, project link, screenshots) in the Technical & Tools Declaration
 - [x] RunPod endpoint running, and `RUNPOD_API_KEY` / `RUNPOD_ENDPOINT_ID` set in Replit Secrets
-- [x] Preliminary submission completed (`SDC2026_TeamName_Preliminary.pdf`)
-- [x] Technology declaration completed (`SDC2026_TeamName_TechDeclaration.pdf`), including Replit Agent and other AI tools
-- [x] Submission files renamed with your team name (replace `TeamName`)
+- [x] Preliminary submission completed (`SDC2026_ICEMAN_Preliminary.pdf`)
+- [x] Technology declaration completed (`SDC2026_ICEMAN_TechDeclaration.pdf`), including Replit Agent and other AI tools
+- [x] Submission files named with our team name (`SDC2026_ICEMAN_…`)
 - [x] "How to Run" steps verified
 - [x] No API keys or secrets committed to the repository
 - [x] Committee GitHub accounts added as collaborators and the repository made public
