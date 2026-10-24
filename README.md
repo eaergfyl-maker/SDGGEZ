@@ -1,8 +1,6 @@
 # Future-Ready RPG
 
-> A career skill tree for workers whose jobs AI is changing: it shows which skills are rising or
-> declining from real, dated data, matches people to future roles, and gives a step-by-step
-> reskilling path linked to the UN SDGs.
+> > A fantasy skill-tree game built on real, dated job-market data: pick a starting class, train skills to earn XP and SDG badges, and unlock the future roles AI is creating, each with an explainable match score and a learning path.
 
 ---
 
@@ -22,7 +20,6 @@
 | Resource          | Link                                           |
 | ----------------- | ---------------------------------------------- |
 | GitHub Repository | https://github.com/eaergfyl-maker/SDGGEZ       |
-| Replit Project    | https://replit.com/@jtjw07/SDGGEZ              |
 | Live Demo         | https://sdggez.replit.app                      |
 | RunPod Endpoint   | Serverless vLLM endpoint running Qwen3-8B (see [How We Use RunPod](#how-we-use-runpod-required)); the endpoint ID is kept in Replit Secrets |
 | Slide Deck        | https://cloudmails-my.sharepoint.com/:p:/g/personal/tp089363_mail_apu_edu_my/IQBRCcjYK1_GSbslUGWoXqdBAdCI1Or1P64309ZfQz3iT3Q?e=WtQQID  |
