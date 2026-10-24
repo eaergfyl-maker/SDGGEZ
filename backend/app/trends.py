@@ -7,6 +7,7 @@ committed); only if neither exists, data/mock_trends.json, clearly marked is_moc
 import json
 
 from . import config, data_loader, db
+from .scoring.momentum import low_data
 
 
 def latest_snapshot_trends():
@@ -42,6 +43,10 @@ def latest_snapshot_trends():
 
 
 SEED = config.DATA_DIR / "snapshot_seed.json"
+# The seed before the current one (kept by scripts/export_snapshot.py), so the app can show
+# what changed between two real snapshots even where there is no database (Replit).
+PREVIOUS = config.DATA_DIR / "snapshot_previous.json"
+SIGNALS = ("research", "demand")
 
 
 def seed_trends():
@@ -59,6 +64,32 @@ def seed_trends():
             for s in seed["skills"]
         },
     }
+
+
+def _read(path):
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+def seed_changes():
+    """Per-skill changes between the previous seed and the current one, in the same shape as
+    pipeline.diff_last_two, plus the two dates. None if either file is missing."""
+    old, new = _read(PREVIOUS), _read(SEED)
+    if not old or not new:
+        return None
+    before = {s["skill_id"]: s for s in old["skills"]}
+    changes = []
+    for s in new["skills"]:
+        o = before.get(s["skill_id"], {})
+        for signal in SIGNALS:
+            key = f"{signal}_growth"
+            a, b = o.get(key), s.get(key)
+            if a != b:
+                # reliable: both values exist and neither rests on too few postings or papers
+                reliable = (a is not None and b is not None
+                            and key not in low_data(o) and key not in low_data(s))
+                changes.append({"skill": s["skill_id"], "signal": signal, "old": a, "new": b,
+                                "reliable": reliable})
+    return {"changes": changes, "from": old["created_at"], "to": new["created_at"]}
 
 
 def get_trends():
