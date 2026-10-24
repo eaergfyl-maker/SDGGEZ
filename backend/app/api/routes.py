@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 
 from .. import config, data_loader, db, trends
 from ..ingest import pipeline
-from ..scoring import cv, cv_ai
+from ..scoring import chat, cv, cv_ai
 from ..scoring.momentum import direction, low_data, momentum
 from ..scoring.pathway import build_pathway
 from ..scoring.tree import build_tree, family_subset, infer_family
@@ -135,7 +135,10 @@ def get_tree(persona: str = "aisyah", scenario: Scenario = Scenario.moderate,
              family: str | None = Query(None, description=(
                  "career area id, 'all', or 'auto' (guess from the skills); "
                  "default: the persona's area, or 'auto' for a custom profile"))):
-    owned_ids = _owned(persona, owned)
+    return _tree_for(persona, scenario, _owned(persona, owned), family)
+
+
+def _tree_for(persona: str, scenario: Scenario, owned_ids: set[str], family: str | None) -> dict:
     families = data_loader.families()
     if family is None:
         p = data_loader.persona(persona)
@@ -179,6 +182,49 @@ def get_pathway(role: str, persona: str = "aisyah", owned: str | None = None,
         hours_per_week = p["hours_per_week"] if p else None
     return build_pathway(r, data_loader.skills(), data_loader.courses(), _owned(persona, owned),
                          hours_per_week)
+
+
+class ChatQuestion(BaseModel):
+    question: str = Field(min_length=1, max_length=chat.MAX_QUESTION)
+    persona: str = "aisyah"
+    owned: list[str] | None = Field(None, max_length=200)
+    scenario: Scenario = Scenario.moderate
+    family: str | None = None
+    role: str | None = None          # the role the user selected, if any
+    hours_per_week: float | None = Field(None, gt=0, le=80)
+    lang: str = Field("en", pattern="^(en|ms)$")
+
+
+@router.get("/chat")
+def chat_status():
+    """Whether the guide is switched on (RunPod settings present). Does not call the model."""
+    return {"enabled": cv_ai.enabled(), "model": cv_ai.model_name()}
+
+
+@router.post("/chat")
+def ask_guide(body: ChatQuestion):
+    """Answer a question about the user's own results, from facts the app computed.
+
+    The answer is withheld (status "unverified") if it contains a number that is not in those
+    facts. Nothing is stored or logged.
+    """
+    owned_ids = _owned(body.persona, ",".join(body.owned) if body.owned is not None else None)
+    tree = _tree_for(body.persona, body.scenario, owned_ids, body.family)
+    roles = sorted((n for n in tree["nodes"] if n["kind"] == "role"),
+                   key=lambda n: -(n.get("match") or {}).get("score", 0))
+    focus = next((n for n in roles if n["id"] == body.role), roles[0] if roles else None)
+    hours = body.hours_per_week
+    if hours is None:
+        p = data_loader.persona(body.persona)
+        hours = p["hours_per_week"] if p else None
+    path = None
+    if focus:
+        path = build_pathway(data_loader.roles_by_id()[focus["id"]], data_loader.skills(),
+                             data_loader.courses(), owned_ids, hours)
+    names = {s["id"]: s["name"] for s in data_loader.skills()}
+    facts = chat.build_facts(tree, path, names, hours)
+    return {**chat.answer(body.question, facts, body.lang),
+            "as_of": tree.get("as_of"), "focus_role": focus and (focus.get("full_name") or focus["name"])}
 
 
 @router.get("/story/{node_id}")

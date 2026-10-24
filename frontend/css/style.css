@@ -365,3 +365,13 @@ summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .guide { right: 16px; left: 16px; bottom: 12px; width: auto; max-height: 45vh; }
 }
 @media (prefers-reduced-motion: reduce) { .guide-focus { transition: none; } }
+
+/* Ask your guide */
+.chat-log { list-style: none; padding: 0; margin: 12px 0; display: grid; gap: 8px; }
+.chat-log li { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); line-height: 1.5; }
+.chat-q { background: var(--bg); }
+.chat-a small { display: block; margin-top: 6px; }
+.chat-text { white-space: pre-line; }
+#chat-form input { flex: 1 1 220px; min-width: 0; padding: 6px 10px; font: inherit; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; }
+.chat-suggest .chip { font-size: 13px; padding: 4px 10px; }

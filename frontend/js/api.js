@@ -29,4 +29,6 @@ export const api = {
   cvFile: (data) => post("cv/file", { data }),
   cvAiStatus: () => get("cv/ai"),
   cvAi: (text) => post("cv/ai", { text }),
+  chatStatus: () => get("chat"),
+  chat: (body) => post("chat", body),
 };
