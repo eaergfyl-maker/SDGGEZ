@@ -25,8 +25,21 @@ function bars(items) {
 function sourceDetail(s) {
   const src = s.components?.sources;
   if (!src) return `<span class="muted">${esc(tr("radar.mockSource"))}</span>`;
+  const c = s.components;
+  const pct = (v) => `${v > 0 ? "+" : ""}${v}%`;
+  const lines = [];
   const d = src.demand;
-  return `${esc(d.name)}: ${d.recent_postings} postings, from ${esc(d.recent_from)}. ${esc(d.caveat)}`;
+  if (d && c.demand_growth != null) {
+    lines.push(tr("radar.demand", { name: d.name, pct: pct(c.demand_growth), recent: d.mentions_recent,
+      total: d.recent_postings, from: d.recent_from, previous: d.mentions_previous }) + " " + d.caveat);
+  }
+  const r = src.research;
+  if (r && c.research_growth != null) {
+    lines.push(tr("radar.research", { pct: pct(c.research_growth), recent: r.papers_recent,
+      before: r.papers_year_ago, month: r.latest_month }));
+  }
+  if (s.low_data?.length) lines.push(tr("radar.lowData"));
+  return lines.map((l) => `<p class="muted">${esc(l)}</p>`).join("");
 }
 
 export async function renderRadar() {

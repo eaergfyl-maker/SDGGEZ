@@ -25,6 +25,15 @@ def test_research_growth_needs_enough_history():
     assert arxiv.research_growth({"2026-01": 5}) is None
 
 
+def test_research_growth_works_with_only_the_six_months_it_needs():
+    keys = [f"{y:04d}-{m:02d}" for y, m in arxiv.growth_months(date(2026, 10, 24))]
+    assert keys == ["2025-07", "2025-08", "2025-09", "2026-07", "2026-08", "2026-09"]
+    counts = dict(zip(keys, [10, 10, 10, 15, 15, 15]))
+    assert arxiv.research_growth(counts) == 50.0
+    del counts["2025-08"]
+    assert arxiv.research_growth(counts) is None
+
+
 def test_mentions_matches_whole_words():
     assert mentions.mentions("Experience with SQL required", ["sql"])
     assert not mentions.mentions("mysqlish", ["sql"])

@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from backend.app import config
+from backend.app import config, trends
 from backend.app.main import app
 
 
@@ -15,7 +15,16 @@ def test_health(client):
     assert client.get("/api/health").json() == {"ok": True}
 
 
-def test_trends_are_marked_mock_without_snapshot(client):
+def test_trends_use_the_committed_real_snapshot_without_a_database(client):
+    body = client.get("/api/trends").json()
+    assert body["is_mock"] is False and body["source"] == "snapshot"
+    with_demand = [s for s in body["skills"] if s["components"].get("demand_growth") is not None]
+    assert len(with_demand) >= 30
+    assert all(s["components"]["sources"]["demand"]["recent_postings"] > 0 for s in with_demand)
+
+
+def test_trends_are_marked_mock_without_any_snapshot(client, tmp_path, monkeypatch):
+    monkeypatch.setattr(trends, "SEED", tmp_path / "missing.json")
     body = client.get("/api/trends").json()
     assert body["is_mock"] is True
     assert {s["skill"] for s in body["skills"]} >= {"ai_tools", "prompting"}

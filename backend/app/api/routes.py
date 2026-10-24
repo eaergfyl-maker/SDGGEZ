@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 from .. import config, data_loader, db, trends
 from ..ingest import pipeline
 from ..scoring import cv, cv_ai
-from ..scoring.momentum import direction, momentum
+from ..scoring.momentum import direction, low_data, momentum
 from ..scoring.pathway import build_pathway
 from ..scoring.tree import build_tree, family_subset, infer_family
 
@@ -66,7 +66,7 @@ def get_trends(scenario: Scenario = Scenario.moderate):
         comp = t["trends"].get(s["id"], {})
         m = momentum(comp, scenario.value)
         items.append({"skill": s["id"], "name": s["name"], "momentum": m,
-                      "direction": direction(m), "components": comp})
+                      "direction": direction(m), "components": comp, "low_data": low_data(comp)})
     return {"scenario": scenario.value, "is_mock": t["is_mock"], "source": t["source"],
             "as_of": t["as_of"], "skills": items}
 
