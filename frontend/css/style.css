@@ -1,7 +1,3 @@
-/* Vintage Fantasy / Storybook Knight palette inspired by reference artwork.
-   Replaces dark/glow effects with matte parchment, muted sage green, and dark iron tones.
-   Typography: Mrs Eaves (Headings) & Bookman Old Style (Body text). */
-
 @font-face {
   font-family: "Mrs Eaves";
   src: local("Mrs Eaves"), local("MrsEavesSmallCaps"), local("Mrs Eaves OT");
@@ -37,7 +33,7 @@
   --hover: rgba(139, 26, 43, 0.08); /* Gentle crimson-tinged hover overlay */
   --shadow: rgba(42, 50, 54, 0.12); /* Soft clean shadow */
 
-  /* Standard D&D Typography Stack */
+  /* Standard D&D font */
   --heading-font: "Mrs Eaves", "Mrs Eaves Small Caps", "Palatino Linotype", Georgia, serif;
   --body-font: "Bookman Old Style", "Bookman", "Book Antiqua", Georgia, serif;
 }
