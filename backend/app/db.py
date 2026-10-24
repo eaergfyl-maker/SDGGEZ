@@ -1,4 +1,5 @@
 """SQLite storage for ingested data. Owner: Member 2."""
+import json
 import sqlite3
 from pathlib import Path
 
@@ -50,3 +51,32 @@ def connect(path: Path | None = None) -> sqlite3.Connection:
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
     return conn
+
+def load_seed_if_empty(conn: sqlite3.Connection, seed_path: Path | None = None) -> bool:
+    """If there are no snapshots yet, load data/snapshot_seed.json so a fresh database
+    (Replit, a teammate's machine) shows real numbers instead of mock data.
+    Returns True if the seed was loaded, False otherwise."""
+    seed_path = seed_path or (Path(__file__).resolve().parents[2] / "data" / "snapshot_seed.json")
+    if conn.execute("SELECT 1 FROM snapshots LIMIT 1").fetchone():
+        return False
+    if not seed_path.exists():
+        return False
+    seed = json.loads(seed_path.read_text(encoding="utf-8"))
+    snap_id = conn.execute(
+        "INSERT INTO snapshots (created_at, note) VALUES (?, ?)",
+        (seed["created_at"], (seed.get("note") or "") + " (seed)"),
+    ).lastrowid
+    for s in seed["skills"]:
+        conn.execute(
+            "INSERT INTO skill_trends VALUES (?, ?, ?, ?, ?, ?)",
+            (
+                snap_id,
+                s["skill_id"],
+                s["research_growth"],
+                s["demand_growth"],
+                s["outlook"],
+                json.dumps(s["sources"]),
+            ),
+        )
+    conn.commit()
+    return True

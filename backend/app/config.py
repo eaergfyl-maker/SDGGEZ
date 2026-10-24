@@ -19,6 +19,7 @@ def _load_env_file(path: Path) -> None:
 _load_env_file(ROOT / ".env")
 
 DATA_DIR = ROOT / "data"
+SEED_PATH = DATA_DIR / "snapshot_seed.json"
 STORY_DIR = ROOT / "story"
 FRONTEND_DIR = ROOT / "frontend"
 CACHE_DIR = ROOT / ".cache"
