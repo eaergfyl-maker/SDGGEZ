@@ -293,7 +293,18 @@ ol { padding-left: 20px; }
 /* Radar panel SVG styling */
 #radar, #radar svg { color: var(--text); }
 #radar svg text, #radar .lbl { fill: var(--text) !important; font-family: var(--body-font) !important; }
-#radar svg rect { fill: var(--accent) !important; }
+/* Radar bars: rising sage green, declining crimson, whatever class is chosen */
+.radar-bars { list-style: none; margin: 4px 0 12px; padding: 0; }
+.radar-row { display: grid; grid-template-columns: minmax(96px, 170px) 1fr 76px; align-items: center; gap: 10px; padding: 3px 0; font-size: 14px; }
+.radar-name { overflow-wrap: anywhere; }
+.radar-track { height: 14px; background: var(--hover); }
+.radar-bar { display: block; height: 100%; }
+.radar-bar.rising { background: var(--mastered); }
+.radar-bar.declining { background: var(--red-accent, #8b1a2b); }
+.radar-val { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.radar-val.rising { color: var(--mastered); }
+.radar-val.declining { color: var(--red-accent, #8b1a2b); }
+@media (max-width: 600px) { .radar-row { grid-template-columns: minmax(80px, 38%) 1fr 64px; gap: 6px; font-size: 13px; } }
 
 /* Intake picker polish */
 #intake div:has(> button > img) {

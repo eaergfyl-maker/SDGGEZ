@@ -6,20 +6,20 @@ import { t as tr } from "../i18n.js";
 
 const el = document.getElementById("radar");
 
+// One row per skill: name, a bar whose length is the size of the change (capped at 100%), and the
+// value. Rising and declining bars both grow to the right and differ by colour and arrow.
+// Plain HTML (not SVG) so the text stays readable on a phone.
 function bars(items) {
-  const row = (s, i) => {
-    const w = Math.min(Math.abs(s.momentum), 100) * 2.4;      // 100% = 240px
-    const x = s.momentum >= 0 ? 260 : 260 - w;
-    const cls = s.momentum >= 0 ? "rising" : "declining";
-    const arrow = s.momentum >= 0 ? "▲" : "▼";
-    return `<g transform="translate(0 ${i * 28})">
-      <text x="0" y="14" class="lbl">${esc(s.name)}</text>
-      <rect class="${cls}" x="${x}" y="2" width="${w}" height="16" rx="3"/>
-      <text x="${s.momentum >= 0 ? x + w + 6 : x - 6}" y="14"
-            text-anchor="${s.momentum >= 0 ? "start" : "end"}" class="lbl">
-        ${arrow} ${s.momentum > 0 ? "+" : ""}${s.momentum}%</text></g>`;
+  const row = (s) => {
+    const up = s.momentum >= 0;
+    const w = Math.max(Math.min(Math.abs(s.momentum), 100), 1);
+    return `<li class="radar-row">
+      <span class="radar-name">${esc(s.name)}</span>
+      <span class="radar-track"><span class="radar-bar ${up ? "rising" : "declining"}" style="width:${w}%"></span></span>
+      <span class="radar-val ${up ? "rising" : "declining"}"><span aria-hidden="true">${up ? "▲" : "▼"}</span>
+        ${s.momentum > 0 ? "+" : ""}${s.momentum}%</span></li>`;
   };
-  return `<svg viewBox="0 0 680 ${Math.max(items.length, 1) * 28}" width="100%">${items.map(row).join("")}</svg>`;
+  return `<ul class="radar-bars">${items.map(row).join("")}</ul>`;
 }
 
 function sourceDetail(s) {
