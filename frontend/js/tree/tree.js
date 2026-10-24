@@ -185,25 +185,25 @@ export function renderTree(tree) {
 }
 
 // [course] courses come from /api/pathway, which needs a role. Fetch it for each role in the
-// tree once per persona and keep the recommended (or first verified) course per skill.
-let skillCourses = {};
-let coursesFor = null;
+// tree and keep the recommended (or first verified) course per skill. A skill's course does
+// not depend on who is looking, so results are added up across classes and career areas.
+const skillCourses = {};
+const coursesLoaded = new Set();   // role ids already fetched
 
 async function loadCourses(tree) {
-  if (coursesFor === state.persona) return;
-  const persona = state.persona;
-  const roles = tree.nodes.filter((n) => n.kind === "role");
-  const results = await Promise.all(roles.map((r) => api.pathway(r.id, persona, state.owned).catch(() => null)));
-  const map = {};
-  for (const res of results) {
+  const roles = tree.nodes.filter((n) => n.kind === "role" && !coursesLoaded.has(n.id));
+  if (!roles.length) return;
+  // ask as if nothing is owned, so every skill on the role's path comes back with its courses
+  const results = await Promise.all(roles.map((r) => api.pathway(r.id, state.persona, new Set()).catch(() => null)));
+  results.forEach((res, i) => {
+    if (res) coursesLoaded.add(roles[i].id);
     for (const step of (res && res.steps) || []) {
-      const c = step.recommended || (step.courses || []).find((x) => x && x.verified !== false);
-      if (c && !map[step.skill]) map[step.skill] = c;
+      // `recommended` is a course id; the course objects are in `courses`
+      const c = (step.courses || []).find((x) => x && x.id === step.recommended)
+        || (step.courses || []).find((x) => x && x.verified !== false);
+      if (c && !skillCourses[step.skill]) skillCourses[step.skill] = c;
     }
-  }
-  if (state.persona !== persona) return; // persona changed while loading
-  skillCourses = map;
-  coursesFor = persona;
+  });
 }
 
 // [course] only a verified course with a real http(s) link is ever shown as a link

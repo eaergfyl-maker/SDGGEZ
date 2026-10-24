@@ -45,7 +45,7 @@ export async function renderPathway(roleId) {
     : "";
 
   const steps = p.steps.map((s, i) => `
-    <li class="step" data-courses='${JSON.stringify(s.courses)}'>
+    <li class="step" data-courses="${esc(JSON.stringify(s.courses))}">
       <label><input type="checkbox" checked class="step-toggle" />
         <b>${esc(s.name)}</b> <span class="muted">(untick if you already know this)</span></label>
       <ul>${s.courses.length ? s.courses.map(courseLine).join("") : `<li class='muted'>${esc(t("path.noCourse"))}</li>`}</ul>
