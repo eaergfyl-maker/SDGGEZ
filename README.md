@@ -1,11 +1,3 @@
-> [!IMPORTANT]
-> ## 📁 Submission Documents & Templates
-> **All required submission templates are in the Google Drive folder below. Download them before you start.**
->
-> ### 👉 [**OPEN THE GOOGLE DRIVE FOLDER**](https://drive.google.com/drive/folders/1xw7c2aN8N-at8hPEULzkcU76e_FFb0Ef) 👈
-
----
-
 # Future-Ready RPG
 
 > A career skill tree for workers whose jobs AI is changing: it shows which skills are rising or
@@ -33,7 +25,7 @@
 | Replit Project    | https://replit.com/@jtjw07/SDGGEZ              |
 | Live Demo         | https://sdggez.replit.app                      |
 | RunPod Endpoint   | Serverless vLLM endpoint running Qwen3-8B (see [How We Use RunPod](#how-we-use-runpod-required)); the endpoint ID is kept in Replit Secrets |
-| Slide Deck        | TBD                                            |
+| Slide Deck        | https://cloudmails-my.sharepoint.com/:p:/g/personal/tp089363_mail_apu_edu_my/IQBRCcjYK1_GSbslUGWoXqdBAdCI1Or1P64309ZfQz3iT3Q?e=WtQQID  |
 | Demo Video        | TBD                                            |
 
 ---
@@ -249,11 +241,11 @@ Running a language model needs a GPU, so it runs on RunPod; everything else runs
 
 | Name        | Role                | GitHub                                   |
 | ----------- | ------------------- | ---------------------------------------- |
-| TBD         | Lead: API, integration, deploy | TBD |
-| TBD         | Data ingestion      | TBD |
-| TBD         | Scoring and matching | TBD |
-| TBD         | Frontend: skill tree and game | TBD |
-| TBD         | Frontend: panels and content data | TBD |
+| Jayden Tan Jin Wei | Lead: API, integration, deploy | JDTJW |
+| Gavin Wong Yung  | Data ingestion  | mightywound |
+| Eashwar Singh Sidhu  | Scoring and matching | eaergfyl-maker |
+| Lucas Isaac Fong Tayag | Frontend: skill tree and game | lift77 |
+| Abdul Rahman Bin Rahmatullah | Frontend: panels and content data | amaninnit-hub |
 
 Role guides for each member are in [`docs/guides/`](docs/guides/).
 
