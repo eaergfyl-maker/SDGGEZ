@@ -18,7 +18,7 @@
 
 | Field                  | Details                                     |
 | ---------------------- | ------------------------------------------- |
-| **Team Name**          | TBD                                         |
+| **Team Name**          | ICEMAN                                      |
 | **Team Domain**        | Domain 1 — Aiversecity Future-Ready Workforce |
 | **SDG Track (1–17)**   | SDG 4 — Quality Education (targets 4.3, 4.4), with SDG 8 — Decent Work and Economic Growth (targets 8.2, 8.5) |
 | **Team Leader**        | TBD                                         |
