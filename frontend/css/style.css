@@ -404,3 +404,7 @@ button.sdg-tag[aria-expanded="true"] { background: var(--accent); border-color: 
 }
 .sdg-pop p { margin: 0 0 8px; }
 .sdg-pop-close { position: absolute; top: 4px; right: 4px; padding: 0 8px; font-size: 18px; line-height: 1.4; border-color: transparent; background: transparent; }
+
+/* What changed between snapshots (radar) */
+.radar-changes { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px; }
+.radar-changes ul { margin: 4px 0 8px; }
