@@ -39,6 +39,13 @@ def personas():
     return _read("personas")["personas"]
 
 
+def sample_cvs():
+    """Invented CVs in data/sample_cvs/ for the demo (never real people)."""
+    folder = config.DATA_DIR / "sample_cvs"
+    return [{"id": p.stem, "title": p.stem.replace("_", " ").capitalize(),
+             "text": p.read_text(encoding="utf-8")} for p in sorted(folder.glob("*.txt"))]
+
+
 def mock_trends():
     return _read("mock_trends")
 

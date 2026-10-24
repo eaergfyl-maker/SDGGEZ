@@ -1,4 +1,5 @@
 // Wires the panels together. Owner: Member 4.
+import { applyStatic, setLang } from "./i18n.js";
 import { on, state, loadOwned } from "./state.js";
 import { refreshTree } from "./tree/tree.js";
 import "./tree/refresh.js";
@@ -18,6 +19,13 @@ on("persona-changed", () => {
 });
 on("scenario-changed", () => renderRadar());
 on("role-selected", (roleId) => renderPathway(roleId));
+
+// language first, so every panel renders in it
+applyStatic();
+document.getElementById("lang")?.addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-lang]");
+  if (b) setLang(b.dataset.lang);
+});
 
 clearPathway();
 renderRadar();

@@ -13,6 +13,14 @@
       "arxiv_query": null,
       "sdg": [
         8
+      ],
+      "cv_terms": [
+        "communication",
+        "presentation skills",
+        "public speaking",
+        "written reports",
+        "stakeholder communication",
+        "presented to"
       ]
     },
     {
@@ -27,6 +35,13 @@
       "arxiv_query": null,
       "sdg": [
         8
+      ],
+      "cv_terms": [
+        "customer satisfaction",
+        "customer experience",
+        "rapport",
+        "de-escalation",
+        "patient and friendly"
       ]
     },
     {
@@ -43,6 +58,13 @@
       "arxiv_query": null,
       "sdg": [
         4
+      ],
+      "cv_terms": [
+        "spreadsheet",
+        "microsoft excel",
+        "ms excel",
+        "google sheet",
+        "pivot table"
       ]
     },
     {
@@ -60,6 +82,14 @@
       "arxiv_query": null,
       "sdg": [
         4
+      ],
+      "cv_terms": [
+        "analysed data",
+        "analyzed data",
+        "kpi",
+        "data reports",
+        "interpreting data",
+        "data-driven"
       ]
     },
     {
@@ -79,6 +109,14 @@
       "sdg": [
         4,
         9
+      ],
+      "cv_terms": [
+        "chatgpt",
+        "microsoft copilot",
+        "gemini",
+        "claude",
+        "ai-assisted",
+        "used ai"
       ]
     },
     {
@@ -95,6 +133,11 @@
       "arxiv_query": "all:\"prompt engineering\"",
       "sdg": [
         4
+      ],
+      "cv_terms": [
+        "writing prompts",
+        "prompt writing",
+        "prompt design"
       ]
     },
     {
@@ -110,6 +153,14 @@
       "arxiv_query": null,
       "sdg": [
         8
+      ],
+      "cv_terms": [
+        "customer enquiries",
+        "customer inquiries",
+        "call centre",
+        "call center",
+        "complaint handling",
+        "service tickets"
       ]
     },
     {
@@ -126,6 +177,12 @@
       "arxiv_query": null,
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "customer relationship management",
+        "crm system",
+        "freshworks",
+        "zoho"
       ]
     },
     {
@@ -144,6 +201,14 @@
       "sdg": [
         8,
         9
+      ],
+      "cv_terms": [
+        "it helpdesk",
+        "help desk",
+        "troubleshot",
+        "password resets",
+        "desktop support",
+        "hardware support"
       ]
     },
     {
@@ -162,6 +227,12 @@
       "arxiv_query": "all:\"conversational agent\"",
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "chatbot",
+        "chatbot testing",
+        "bot flows",
+        "conversation flows"
       ]
     },
     {
@@ -181,6 +252,13 @@
       "sdg": [
         8,
         9
+      ],
+      "cv_terms": [
+        "operations data",
+        "sla reporting",
+        "service level",
+        "workflow analysis",
+        "process analysis"
       ]
     },
     {
@@ -201,6 +279,13 @@
       "sdg": [
         8,
         9
+      ],
+      "cv_terms": [
+        "power automate",
+        "uipath",
+        "automation scripts",
+        "excel macros",
+        "vba"
       ]
     },
     {
@@ -220,6 +305,12 @@
       "sdg": [
         10,
         16
+      ],
+      "cv_terms": [
+        "ai ethics",
+        "ai governance",
+        "data privacy",
+        "pdpa"
       ]
     },
     {
@@ -235,6 +326,14 @@
       "arxiv_query": null,
       "sdg": [
         8
+      ],
+      "cv_terms": [
+        "reconciliation",
+        "bank reconciliation",
+        "invoicing",
+        "autocount",
+        "quickbooks",
+        "xero"
       ]
     },
     {
@@ -250,6 +349,12 @@
       "arxiv_query": null,
       "sdg": [
         4
+      ],
+      "cv_terms": [
+        "statistical",
+        "spss",
+        "descriptive statistics",
+        "regression"
       ]
     },
     {
@@ -268,6 +373,11 @@
       "sdg": [
         4,
         9
+      ],
+      "cv_terms": [
+        "sql server",
+        "database queries",
+        "writing queries"
       ]
     },
     {
@@ -287,6 +397,12 @@
       "arxiv_query": null,
       "sdg": [
         4
+      ],
+      "cv_terms": [
+        "looker studio",
+        "charts and dashboards",
+        "visualised",
+        "visualized"
       ]
     },
     {
@@ -304,6 +420,10 @@
       "sdg": [
         4,
         9
+      ],
+      "cv_terms": [
+        "numpy",
+        "python scripts"
       ]
     },
     {
@@ -322,6 +442,11 @@
       "arxiv_query": "all:\"machine learning\"",
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "predictive model",
+        "classification model",
+        "machine-learning"
       ]
     },
     {
@@ -342,6 +467,12 @@
       "sdg": [
         12,
         13
+      ],
+      "cv_terms": [
+        "sustainability report",
+        "carbon footprint",
+        "ghg emissions",
+        "bursa sustainability"
       ]
     },
     {
@@ -357,6 +488,12 @@
       "arxiv_query": null,
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "production line",
+        "assembly line",
+        "operated machines",
+        "machine setup"
       ]
     },
     {
@@ -372,6 +509,12 @@
       "arxiv_query": null,
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "quality inspection",
+        "inspected parts",
+        "defect checks",
+        "first article inspection"
       ]
     },
     {
@@ -387,6 +530,13 @@
       "arxiv_query": null,
       "sdg": [
         8
+      ],
+      "cv_terms": [
+        "dosh",
+        "ppe",
+        "safety procedures",
+        "safety briefing",
+        "lockout tagout"
       ]
     },
     {
@@ -404,6 +554,10 @@
       "arxiv_query": null,
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "ladder logic",
+        "plc programming"
       ]
     },
     {
@@ -422,6 +576,12 @@
       "sdg": [
         9,
         12
+      ],
+      "cv_terms": [
+        "continuous improvement",
+        "kaizen",
+        "5s",
+        "six sigma"
       ]
     },
     {
@@ -440,6 +600,11 @@
       "arxiv_query": null,
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "preventative maintenance",
+        "machine maintenance",
+        "breakdown repair"
       ]
     },
     {
@@ -458,6 +623,11 @@
       "arxiv_query": "all:\"industrial robot\"",
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "robotic arm",
+        "robot programming",
+        "cobot"
       ]
     },
     {
@@ -475,6 +645,11 @@
       "arxiv_query": "all:\"industrial internet of things\"",
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "sensor",
+        "arduino",
+        "raspberry pi"
       ]
     },
     {
@@ -494,6 +669,11 @@
       "sdg": [
         9,
         12
+      ],
+      "cv_terms": [
+        "control chart",
+        "cpk",
+        "statistical process control"
       ]
     },
     {
@@ -513,6 +693,11 @@
       "sdg": [
         9,
         12
+      ],
+      "cv_terms": [
+        "condition monitoring",
+        "vibration analysis",
+        "thermography"
       ]
     },
     {
@@ -532,6 +717,11 @@
       "sdg": [
         9,
         12
+      ],
+      "cv_terms": [
+        "vision system",
+        "machine vision",
+        "automated optical inspection"
       ]
     },
     {
@@ -547,6 +737,12 @@
       "arxiv_query": null,
       "sdg": [
         8
+      ],
+      "cv_terms": [
+        "wireman",
+        "electrical installation",
+        "rewiring",
+        "distribution board"
       ]
     },
     {
@@ -562,6 +758,12 @@
       "arxiv_query": null,
       "sdg": [
         9
+      ],
+      "cv_terms": [
+        "autocad",
+        "single line diagram",
+        "wiring diagram",
+        "blueprint"
       ]
     },
     {
@@ -581,6 +783,11 @@
       "sdg": [
         7,
         13
+      ],
+      "cv_terms": [
+        "solar panel",
+        "rooftop solar",
+        "pv installation"
       ]
     },
     {
@@ -599,6 +806,11 @@
       "sdg": [
         7,
         13
+      ],
+      "cv_terms": [
+        "energy saving",
+        "energy consumption",
+        "energy efficiency"
       ]
     },
     {
@@ -616,6 +828,10 @@
       "arxiv_query": null,
       "sdg": [
         7
+      ],
+      "cv_terms": [
+        "battery system",
+        "energy storage system"
       ]
     },
     {
@@ -635,6 +851,10 @@
       "sdg": [
         7,
         13
+      ],
+      "cv_terms": [
+        "pv system design",
+        "solar system design"
       ]
     },
     {
@@ -654,6 +874,11 @@
       "sdg": [
         7,
         13
+      ],
+      "cv_terms": [
+        "energy monitoring",
+        "smart meter",
+        "load profile"
       ]
     },
     {
@@ -673,6 +898,11 @@
       "sdg": [
         7,
         11
+      ],
+      "cv_terms": [
+        "ev charger",
+        "charging point",
+        "electric vehicle charging"
       ]
     }
   ]

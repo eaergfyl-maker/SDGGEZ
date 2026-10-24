@@ -1,0 +1,21 @@
+SAMPLE CANDIDATE A (invented for demonstration, not a real person)
+Email: sample.candidate.a@example.com | Phone: 012-345 6789
+
+PROFILE
+Customer service executive with 6 years at a telco call centre in Penang. Known for staying
+patient and friendly with upset callers and for keeping customer satisfaction scores high.
+
+EXPERIENCE
+Senior Customer Service Executive, 2020 - present
+- Handle around 60 customer enquiries a day by phone, chat and email.
+- Log and follow up service tickets in Zendesk until each case is closed.
+- Handled complaints from customers about billing and calmed difficult calls (de-escalation).
+- Prepare weekly call summaries in Microsoft Excel for the team lead.
+- Started using ChatGPT to draft reply templates, checked by a supervisor before use.
+
+Customer Service Executive, 2018 - 2020
+- Answered customer inquiries about prepaid plans; updated records in the CRM system.
+
+SKILLS
+Clear verbal and written communication, Excel, Zendesk, ChatGPT.
+No experience with SQL or programming yet.

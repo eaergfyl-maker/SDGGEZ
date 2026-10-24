@@ -3,6 +3,7 @@ import { api } from "../api.js";
 import { emit, state, saveOwned, clearOwned } from "../state.js";
 import { classFor } from "./classes.js";
 import { esc } from "../util.js";
+import { t } from "../i18n.js";
 
 const BASE_W = 680, NODE_W = 124, MIN_NODE_W = 70, NODE_GAP = 8;
 const NODE_H = 36, ROW_H = 90, PAD = 30;
@@ -28,7 +29,7 @@ export function progress(owned) {
 function setStatus(msg, retry = false) {
   const el = document.getElementById("tree-status");
   if (!el) return;
-  el.innerHTML = msg ? `${esc(msg)}${retry ? ' <button id="retry" type="button">Try again</button>' : ""}` : "";
+  el.innerHTML = msg ? `${esc(msg)}${retry ? ` <button id="retry" type="button">${esc(t("tree.retry"))}</button>` : ""}` : "";
 }
 
 // [polish] feedback after a training step: highlight what changed and announce it.
@@ -219,6 +220,7 @@ function fmt(v) {
 }
 
 // [scenario] one line per scenario. Wording is a draft: keep it in sync with docs/DECISIONS.md.
+// The text shown comes from i18n.js (scenario.note.*); this English copy is kept for reference.
 const SCENARIO_NOTES = {
   slow: "Slow: AI adoption is gradual, so most roles change little in the next few years.",
   moderate: "Moderate: AI adoption grows steadily and some tasks shift to AI-assisted work.",
@@ -226,7 +228,7 @@ const SCENARIO_NOTES = {
 };
 function showScenarioNote() {
   const el = document.getElementById("scenario-note");
-  if (el) el.textContent = `${SCENARIO_NOTES[state.scenario] || ""} These are estimates, not predictions.`;
+  if (el) el.textContent = `${t(`scenario.note.${state.scenario}`)} ${t("estimates")}`;
 }
 function markScenarioButtons() {
   document.querySelectorAll("#scenario button").forEach((b) => {
@@ -355,15 +357,15 @@ async function resetProgress() {
 }
 
 export async function refreshTree() {
-  setStatus(state.tree ? "" : "Loading your skill tree…");
+  setStatus(state.tree ? "" : t("tree.loading"));
   try {
     state.tree = await api.tree(state.persona, state.scenario, state.owned, state.family);
   } catch (err) {
     justTrained = null;
-    setStatus("Couldn't load the skill tree. Check that the server is running.", true);
+    setStatus(t("tree.error"), true);
     return;
   }
-  setStatus(state.tree.needs_family ? "Choose a career area above to see your skill tree." : "");
+  setStatus(state.tree.needs_family ? t("tree.needsArea") : "");
   renderTree(state.tree);
   emit("tree-updated", state.tree);
   await loadCourses(state.tree);

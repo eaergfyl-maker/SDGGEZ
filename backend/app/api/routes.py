@@ -8,9 +8,11 @@ from enum import Enum
 
 import yaml
 from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Path, Query
+from pydantic import BaseModel, Field
 
 from .. import config, data_loader, db, trends
 from ..ingest import pipeline
+from ..scoring import cv
 from ..scoring.momentum import direction, momentum
 from ..scoring.pathway import build_pathway
 from ..scoring.tree import build_tree, family_subset, infer_family
@@ -65,6 +67,26 @@ def get_trends(scenario: Scenario = Scenario.moderate):
                       "direction": direction(m), "components": comp})
     return {"scenario": scenario.value, "is_mock": t["is_mock"], "source": t["source"],
             "as_of": t["as_of"], "skills": items}
+
+
+class CVText(BaseModel):
+    text: str = Field(min_length=1, max_length=cv.MAX_CHARS)
+
+
+@router.post("/cv/skills")
+def cv_skills(body: CVText):
+    """Skills found in pasted CV text, each with the evidence that triggered it.
+
+    The text is processed in memory and never stored or logged. Emails and long numbers are
+    removed before matching. Use invented CVs only (see /api/cv/samples).
+    """
+    return cv.match_cv(body.text, data_loader.skills())
+
+
+@router.get("/cv/samples")
+def cv_samples():
+    """Invented sample CVs for trying the CV reader without real personal data."""
+    return data_loader.sample_cvs()
 
 
 @router.get("/families")
