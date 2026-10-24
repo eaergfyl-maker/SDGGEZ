@@ -41,13 +41,13 @@ export async function renderPathway(roleId) {
   lastPathway = p;
 
   const weeksLine = p.estimated_weeks != null
-    ? `<p class="muted">Estimated time: about ${p.estimated_weeks} week(s) at your study pace (estimate, not a guarantee).</p>`
+    ? `<p class="muted">${esc(t("path.estimatedWeeks", { weeks: p.estimated_weeks }))}</p>`
     : "";
 
   const steps = p.steps.map((s, i) => `
     <li class="step" data-courses="${esc(JSON.stringify(s.courses))}">
       <label><input type="checkbox" checked class="step-toggle" />
-        <b>${esc(s.name)}</b> <span class="muted">(untick if you already know this)</span></label>
+        <b>${esc(s.name)}</b> <span class="muted">${esc(t("path.untickHint"))}</span></label>
       <ul>${s.courses.length ? s.courses.map(courseLine).join("") : `<li class='muted'>${esc(t("path.noCourse"))}</li>`}</ul>
     </li>`);
 
@@ -55,7 +55,7 @@ export async function renderPathway(roleId) {
     ${weeksLine}
     <ol>${steps.join("") || `<li>${esc(t("path.allDone"))}</li>`}</ol>
     <p id="totals" class="muted"></p>
-    <button id="print-plan">Print or save my plan</button>`;
+      <button id="print-plan">${esc(t("path.printButton"))}</button>`;
 
   el.querySelectorAll(".step-toggle").forEach((box) => box.addEventListener("change", recomputeTotals));
   el.querySelector("#print-plan").addEventListener("click", () => window.print());
