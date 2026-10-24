@@ -21,8 +21,8 @@
 | **Team Name**          | ICEMAN                                      |
 | **Team Domain**        | Domain 1 — Aiversecity Future-Ready Workforce |
 | **SDG Track (1–17)**   | SDG 4 — Quality Education (targets 4.3, 4.4), with SDG 8 — Decent Work and Economic Growth (targets 8.2, 8.5) |
-| **Team Leader**        | TBD                                         |
-| **University**         | TBD                                         |
+| **Team Leader**        | Eashwar Singh Sidhu                         |
+| **University**         | Asia Pacific University                     |
 | **Number of Members**  | 5                                           |
 
 ## Links
@@ -30,10 +30,9 @@
 | Resource          | Link                                           |
 | ----------------- | ---------------------------------------------- |
 | GitHub Repository | https://github.com/eaergfyl-maker/SDGGEZ       |
-| Replit Project    | TBD                                            |
-| Live Demo         | TBD                                            |
+| Live Demo         | https://sdggez.replit.app/                     |
 | RunPod Endpoint   | Serverless vLLM endpoint running Qwen3-8B (see [How We Use RunPod](#how-we-use-runpod-required)); the endpoint ID is kept in Replit Secrets |
-| Slide Deck        | TBD                                            |
+| Slide Deck        | https://cloudmails-my.sharepoint.com/:p:/g/personal/tp089363_mail_apu_edu_my/IQBRCcjYK1_GSbslUGWoXqdBAdCI1Or1P64309ZfQz3iT3Q?e=WtQQID  |
 | Demo Video        | TBD                                            |
 
 ---
