@@ -23,7 +23,7 @@
 | Live Demo         | https://sdggez.replit.app                      |
 | RunPod Endpoint   | Serverless vLLM endpoint running Qwen3-8B (see [How We Use RunPod](#how-we-use-runpod-required)); the endpoint ID is kept in Replit Secrets |
 | Slide Deck        | https://cloudmails-my.sharepoint.com/:p:/g/personal/tp089363_mail_apu_edu_my/IQBRCcjYK1_GSbslUGWoXqdBAdCI1Or1P64309ZfQz3iT3Q?e=WtQQID  |
-| Demo Video        | TBD                                            |
+| Demo Video        | https://youtu.be/0YJ-Uk3pzz0 |
 
 ---
 
