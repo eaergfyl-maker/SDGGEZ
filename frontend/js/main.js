@@ -1,5 +1,6 @@
 // Wires the panels together. Owner: Member 4.
 import { applyStatic, setLang } from "./i18n.js";
+import { openGuideOnFirstVisit } from "./guide.js";
 import { on, state, loadOwned } from "./state.js";
 import { refreshTree } from "./tree/tree.js";
 import "./tree/refresh.js";
@@ -36,5 +37,5 @@ document.getElementById("lang")?.addEventListener("click", (e) => {
 
 clearPathway();
 renderRadar();
-renderIntake();
+renderIntake().then(openGuideOnFirstVisit);
 // renderChat();
