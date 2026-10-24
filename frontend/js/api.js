@@ -6,6 +6,14 @@ async function get(path, params = {}) {
   return res.json();
 }
 
+async function post(path, body) {
+  const res = await fetch(`/api/${path}`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error(`${path}: ${res.status}`);
+  return res.json();
+}
+
 export const api = {
   personas: () => get("personas"),
   sdgs: () => get("sdgs"),
@@ -16,4 +24,6 @@ export const api = {
   pathway: (role, persona, owned) => get("pathway", { role, persona, owned: owned && [...owned].join(",") }),
   story: (nodeId) => get(`story/${nodeId}`),
   changes: () => get("changes"),
+  cvSkills: (text) => post("cv/skills", { text }),
+  cvSamples: () => get("cv/samples"),
 };

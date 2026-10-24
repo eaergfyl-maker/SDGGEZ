@@ -35,3 +35,6 @@ These are adjustable assumptions, not measurements or predictions.
 Why the scale: in a fast world both growth and decline happen sooner, so the same signal means
 more. "Why 1.5?" The honest answer: it is a chosen assumption, shown to the user as a range,
 and anyone can change it in `backend/app/scoring/momentum.py`.
+| 2026-10-24 | Member 3 | CV reader is keyword-based (no AI): exact phrase = ticked; similar wording, negation ('no SQL') or intent ('learning Python') = possible, unticked; evidence shown for every result | Explainable and testable; the person confirms every tick |
+| 2026-10-24 | Member 3 | Skills gain an optional `cv_terms` list (CV-style wording), used only by the CV reader; job-posting ingestion still uses `keywords` | CVs and job adverts word skills differently |
+| 2026-10-24 | Member 3 | CV text is processed in memory, never stored or logged; emails and numbers with 9+ digits are removed first; four invented sample CVs in `data/sample_cvs/` | Brief forbids real CVs; demo and tests use invented ones |

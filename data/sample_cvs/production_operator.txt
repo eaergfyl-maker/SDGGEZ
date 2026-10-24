@@ -1,0 +1,19 @@
+SAMPLE CANDIDATE C (invented for demonstration, not a real person)
+Email: sample.candidate.c@example.com | Phone: 019-222 3333
+
+PROFILE
+Production operator at an electronics plant in Kulim with 5 years on SMT lines.
+
+EXPERIENCE
+Production Operator, 2021 - present
+- Operated machines on the SMT production line, including setup between product changes.
+- Visual inspection of boards and first article inspection before each new batch.
+- Recorded defect checks and helped the QC team trace recurring faults.
+- Follow DOSH safety procedures and wear full PPE; give the morning safety briefing.
+- Joined the plant's 5S and kaizen continuous improvement team.
+
+Assembly Line Operator, 2019 - 2021
+- Assembly line work for consumer electronics; basic machine maintenance.
+
+SKILLS
+Machine setup, quality inspection, workplace safety, teamwork and clear communication.

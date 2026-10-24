@@ -1,0 +1,20 @@
+SAMPLE CANDIDATE B (invented for demonstration, not a real person)
+Email: sample.candidate.b@example.com | Phone: +60 12 987 6543
+
+EDUCATION
+Bachelor of Accounting, 2024. Final-year project used SPSS for descriptive statistics on
+household spending survey data.
+
+EXPERIENCE
+Accounts Clerk, small trading company, 2024 - present
+- Bookkeeping for 300+ invoices a month: accounts payable and accounts receivable.
+- Monthly bank reconciliation and general ledger entries in AutoCount.
+- Built pivot tables in Excel to track overdue payments for the finance manager.
+- Presented a summary of late-payment trends to the directors each quarter.
+
+Internship, audit firm, 2023
+- Prepared working papers and checked invoicing records.
+
+SKILLS
+Spreadsheets (Excel, Google Sheets), statistical analysis, AutoCount, QuickBooks basics.
+Currently learning Python with an online course.
