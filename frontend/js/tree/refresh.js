@@ -4,16 +4,27 @@ import { refreshTree, setMoved, clearMoved } from "./tree.js";
 import { diffTrees } from "../diff.js";
 import { esc } from "../util.js";
 
-// Contract to confirm with Member 1: POST /api/refresh, protected by a token.
-// If the endpoint or the way the token is sent differs, change only these two lines.
+// POST /api/refresh, protected by the REFRESH_TOKEN secret sent in the X-Refresh-Token header.
+// The server starts the refresh in the background and answers 202 at once, so after that we
+// wait for a newer snapshot (its date changes) before showing what moved.
 const REFRESH_URL = "/api/refresh";
-const authHeaders = (token) => ({ Authorization: `Bearer ${token}` });
+const authHeaders = (token) => ({ "X-Refresh-Token": token });
+const WAIT_MS = 180000, POLL_MS = 5000;
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
 let token = null; // kept in memory only: never saved, never in the repo
 
 const btn = document.getElementById("refresh-data");
 const note = document.getElementById("refresh-note");
 const result = document.getElementById("refresh-result");
+
+// Only for the team: the button shows when the page is opened with ?admin, so judges and users
+// never meet a token prompt. (.row sets display:flex, which would override the hidden attribute.)
+const admin = new URLSearchParams(location.search).has("admin");
+if (!admin) {
+  const row = btn?.closest(".row");
+  if (row) row.style.display = "none";
+}
 
 const signed = (v) => (v == null ? "no data" : `${v > 0 ? "+" : ""}${v}%`);
 const plain = (v) => (v == null ? "no data" : `${v}%`);
@@ -60,7 +71,18 @@ async function run() {
     const res = await fetch(REFRESH_URL, { method: "POST", headers: authHeaders(token) });
     if (res.status === 401 || res.status === 403) { token = null; throw new Error("The refresh token was not accepted."); }
     if (res.status === 404) throw new Error("The refresh endpoint is not available yet.");
+    if (res.status === 429) throw new Error("A refresh ran in the last 30 minutes; try again later.");
     if (!res.ok) throw new Error(`The refresh failed (${res.status}).`);
+    // the fetch runs in the background on the server: wait until a newer snapshot appears
+    note.textContent = "Fetching new job data… this can take a minute or two.";
+    const start = Date.now();
+    let fresh = false;
+    while (Date.now() - start < WAIT_MS) {
+      await wait(POLL_MS);
+      const t = await fetch("/api/trends").then((r) => r.json()).catch(() => null);
+      if (t && t.as_of !== before.as_of) { fresh = true; break; }
+    }
+    if (!fresh) throw new Error("Still fetching on the server. Reload the page in a few minutes to see the new data.");
     await refreshTree();
     // refreshTree keeps the old tree if its request fails: never report "no change" in that case
     if (state.tree === before) throw new Error("Data refreshed, but the tree could not be reloaded.");
