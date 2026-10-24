@@ -32,7 +32,7 @@
 | GitHub Repository | https://github.com/eaergfyl-maker/SDGGEZ       |
 | Replit Project    | TBD                                            |
 | Live Demo         | TBD                                            |
-| RunPod Endpoint   | Not used: the project has no GPU workload (see [How We Use RunPod](#how-we-use-runpod-required)) |
+| RunPod Endpoint   | Serverless vLLM endpoint running Qwen3-8B (see [How We Use RunPod](#how-we-use-runpod-required)); the endpoint ID is kept in Replit Secrets |
 | Slide Deck        | TBD                                            |
 | Demo Video        | TBD                                            |
 
@@ -58,18 +58,23 @@ that shows its working, then builds a reskilling path from a catalogue of course
 ourselves. Three scenarios (AI moving slowly, moderately or fast) show a range instead of one
 prediction, and every role and skill links to an SDG target.
 
-All scoring is deterministic and explainable: no language model makes recommendations, and
-the app never invents jobs, courses or statistics. It supports career decisions; the person
-makes them.
+All scoring is deterministic and explainable: momentum, role matches and pathways are plain
+Python with a test for each rule, and no language model decides them. An open model (Qwen3-8B,
+which we host on RunPod) helps in two places only: it suggests extra skills from a pasted CV,
+and it explains a user's own results in a chat. Its output is checked in code before anyone sees
+it, so the app never invents jobs, courses or statistics. It supports career decisions; the
+person makes them.
 
 ### Key Features
 
-- **Skills profile** — pick a starting class (Bard, Wizard, Paladin, Druid), each a sample starting kit based on a synthetic persona's job and skills, or describe yourself by ticking skills or by pasting a CV, which fills the checklist with the evidence for each skill (invented CVs only; nothing is stored). The class comes from the skills.
+- **Skills profile** — pick a starting class (Bard, Wizard, Paladin, Druid), each a sample starting kit based on a synthetic persona's job and skills, or describe yourself by ticking skills or by pasting a CV or loading a .txt or Word file. Keyword rules tick the skills they find and show the evidence; the AI model then suggests skills the keywords missed, each with a quote from the CV, left unticked for the person to confirm (invented CVs only; nothing is stored). The class comes from the skills.
 - **Career areas** — 16 roles are grouped into four career areas so each tree stays readable. A starting class opens in its own area; for a custom profile the area is guessed from the ticked skills (shared skills like communication barely count), and the user can always switch.
 - **Live trend signals** — skill momentum from Arbeitnow and Remotive job postings and arXiv research counts, each shown with its source and date. Mock data is clearly labelled until a real snapshot exists.
 - **Future-role matching** — 16 roles, each based on an O\*NET occupation, with an importance-weighted match score, a skills gap, and a one-sentence explanation.
 - **Skill tree and reskilling path** — prerequisites unlock in order; the pathway lists verified courses with hours, cost and an estimated number of weeks.
 - **SDG mapping** — every skill and role is tagged to SDGs (4, 7, 8, 9, 10, 11, 12, 13, 16) with a target and a reason.
+- **Ask your guide** — a chat that explains the user's own results ("Why is this my best match?", "What should I learn first?"). The model answers only from facts the app computed for that user, and any answer containing a number that is not in those facts is withheld.
+- **How to use tour** — a step-by-step guide opens on the first visit and highlights each part of the page; the header button reopens it.
 - **Bahasa Malaysia** — an EN / BM toggle in the header switches the interface language. Skill, role and course names stay in English.
 - **Handling uncertainty** — slow, moderate and fast AI scenarios, with each role's outlook shown as a range.
 - **Living map** — refreshing the data creates a new snapshot, and the app shows what changed.
@@ -82,7 +87,7 @@ makes them.
 | Backend       | Python, FastAPI, Uvicorn, Pydantic |
 | Database      | SQLite                       |
 | Data sources  | Arbeitnow and Remotive job APIs, arXiv API, O\*NET 31.0 (occupation reference) |
-| AI / Compute  | Deterministic scoring in Python on Replit; no GPU workload, so RunPod is not used |
+| AI / Compute  | Deterministic scoring in Python on Replit; Qwen3-8B served with vLLM on a RunPod Serverless GPU endpoint for CV skill suggestions and the guide chat |
 | Hosting / Dev | Replit                       |
 | Tests / CI    | pytest, JSON Schema data validation, GitHub Actions |
 
@@ -149,7 +154,9 @@ User ──► Replit (FastAPI app: API + frontend)
 ### Option 1 — Run on Replit (Recommended)
 
 1. Open the Replit project (link above), or import this repository via **Create Repl → Import from GitHub**.
-2. Open the **Secrets** tab (🔒) and add the variables you need (see `.env.example`). None are required for the default demo:
+2. Open the **Secrets** tab (🔒) and add the variables you need (see `.env.example`). The app runs without any of them; the AI features appear only when the RunPod ones are set:
+   - `RUNPOD_API_KEY` and `RUNPOD_ENDPOINT_ID` — turn on the CV skill suggestions and the "Ask your guide" chat
+   - `RUNPOD_MODEL` — optional label for the model (default `Qwen/Qwen3-8B`)
    - `REFRESH_TOKEN` — protects the `/api/refresh` endpoint that fetches new data
    - `INGEST_CONTACT` — a team email sent in the User-Agent of outgoing data requests
 3. Click **Run**. Replit uses the `.replit` file to start `python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 5000`. Replit manages the Python environment, so don't create a virtual environment there.
@@ -195,7 +202,7 @@ python scripts/validate_data.py
 ## How We Use Replit *(Required)*
 
 - **Development:** the team imports the GitHub repository into a shared Repl. GitHub stays the source of truth: changes go through branches and pull requests.
-- **AI assistance:** Replit Agent was used to configure the Replit environment and for some frontend code. Claude Code was used for much of the backend and frontend code. The CV reader can call Qwen3-8B (an open model we host on RunPod) for extra skill suggestions, which the code checks before showing. This is declared in the Technical & Tools Declaration and logged in `docs/ai-tools-log.md`.
+- **AI assistance:** Replit Agent was used to configure the Replit environment and for some frontend code. Claude Code was used for much of the backend and frontend code. At runtime, the CV reader and the "Ask your guide" chat call Qwen3-8B (an open model we host on RunPod), and the code checks its output before showing it. This is declared in the Technical & Tools Declaration and logged in `docs/ai-tools-log.md`.
 - **Hosting:** the app is deployed with Replit Deployments at the Live Demo link above.
 - **Secrets:** tokens and keys are stored in Replit Secrets, never in the code.
 
@@ -203,10 +210,13 @@ python scripts/validate_data.py
 
 ## How We Use RunPod *(Required)*
 
-We do not use RunPod. The handbook (section 9.4) requires RunPod for work that needs a GPU:
-training, fine-tuning, or running a model that needs a GPU. Our scoring is deterministic Python
-that runs on Replit's CPU, and we do not train or host any model, so there is no GPU workload.
-If we add a GPU workload later, it will run on RunPod and this section will be updated.
+Running a language model needs a GPU, so it runs on RunPod; everything else runs on Replit.
+
+- **What runs there:** Qwen3-8B (open model, Apache 2.0) served with vLLM on a RunPod **Serverless** endpoint (24 GB GPU with 48 GB as a fallback, 8,192-token context). Workers scale to zero when idle, so we pay only while it answers.
+- **What it does:** (1) suggests skills a pasted CV shows but our keyword rules missed; (2) answers questions in "Ask your guide" about the user's own results.
+- **How we keep it honest:** the model only sees redacted text (emails and phone numbers removed) or facts the app computed. CV suggestions must use a real skill id and quote the CV word for word; chat answers are withheld if they contain a number that is not in the user's data. Nothing is stored or logged.
+- **How it connects:** the backend calls the endpoint's `/run` and `/status` API with keys from Replit Secrets (`backend/app/scoring/cv_ai.py`, `backend/app/scoring/chat.py`). If RunPod is off or slow, the rest of the app works unchanged.
+- **Check it:** `python -m scripts.try_cv_ai` sends an invented sample CV and prints what survives the checks (also a warm-up before a demo).
 
 ---
 
@@ -231,9 +241,8 @@ If we add a GPU workload later, it will run on RunPod and this section will be u
 
 - [ ] Add a Malaysian job-market data source
 - [ ] Grow the verified course catalogue, including programmes claimable through HRD Corp where the provider confirms eligibility
-- [ ] Commit a seed snapshot so every deployment starts with real data
 - [ ] Story scenes for each skill node
-- [ ] Bahasa Malaysia and Chinese language options
+- [ ] Chinese and Tamil language options
 - [ ] HR / team view with a workforce skills-gap heatmap
 
 ## Team
@@ -256,7 +265,7 @@ Role guides for each member are in [`docs/guides/`](docs/guides/).
 - [ ] Slide deck link added
 - [ ] Demo video link added (5–7 minutes)
 - [ ] Replit used, with proof of use in `submission/`
-- [ ] RunPod: not used (no GPU workload); confirmed acceptable with the organisers
+- [ ] RunPod endpoint running, and `RUNPOD_API_KEY` / `RUNPOD_ENDPOINT_ID` set in Replit Secrets
 - [ ] Preliminary submission completed (`SDC2026_TeamName_Preliminary.pdf`)
 - [ ] Technology declaration completed (`SDC2026_TeamName_TechDeclaration.pdf`), including Replit Agent and other AI tools
 - [ ] Submission files renamed with your team name (replace `TeamName`)

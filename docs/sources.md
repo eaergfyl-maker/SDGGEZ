@@ -100,3 +100,11 @@ Read: https://www.arbeitnow.com/api/job-board-api and https://www.arbeitnow.com/
 - Job data is mostly German and European, not Malaysian.
 - About one week of history, so windows are short.
 - The older window only holds postings still live today.
+
+| Qwen3-8B | Open language model (runtime) | https://huggingface.co/Qwen/Qwen3-8B | Apache 2.0 | 2026-10-24 | Served with vLLM (RunPod worker-vllm) on our own RunPod Serverless endpoint. Used for CV skill suggestions and the "Ask your guide" chat; output is checked in code before it is shown |
+
+| RunPod Serverless | GPU hosting | https://www.runpod.io/legal/terms-of-service | RunPod terms of service; paid per second of GPU time (event credit) | 2026-10-24 | Hosts the Qwen3-8B endpoint. Receives only redacted CV text or facts the app computed; nothing is stored by our app |
+
+| Dreamstime: "Brown seamless pattern, D&D dice" (image 259770746) | Image (page background) | https://www.dreamstime.com/brown-seamless-pattern-d-dice-board-games-image259770746 | Royalty-free licence through a Dreamstime free-trial download; credited in the footer. TBD: confirm the licensed file replaced the committed one, and that keeping it in a public repo is allowed | 2026-10-24 | `frontend/assets/background/dice.png` |
+
+| Class illustrations (Bard, Wizard, Paladin, Druid) | Images | (in repo) `frontend/assets/classes/*.svg` | TBD: lift77 to confirm whether self-made or from a source, and its licence | 2026-10-24 | Shown on the class selector, class card and character sheet |
