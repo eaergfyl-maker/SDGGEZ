@@ -78,13 +78,13 @@ export function setMoved(map) {
 }
 export function clearMoved() { moved = new Map(); }
 
-// [class] set to true once real character art exists as assets/classes/<class>.png
-// (bard, wizard, rogue, paladin, druid). Until then every class shows the placeholder.
-const USE_CLASS_ART = false;
+// [class] classes that have their own illustration in assets/classes/<class>.svg.
+// Any other class (rogue) shows the placeholder.
+const CLASS_ART = new Set(["bard", "wizard", "paladin", "druid"]);
 export const PLACEHOLDER_IMG = "assets/classes/placeholder.png";
 // image for a class key; used by the class card, the character sheet and the class selector
 export function classImage(key) {
-  return USE_CLASS_ART && key ? `assets/classes/${key}.png` : PLACEHOLDER_IMG;
+  return key && CLASS_ART.has(key) ? `assets/classes/${key}.svg` : PLACEHOLDER_IMG;
 }
 
 // [class] starting class from the skills the persona began with (fixed while you train)
@@ -102,7 +102,7 @@ function renderClassCard() {
   if (img && img.dataset.key !== c.key) {
     img.dataset.key = c.key;
     img.onerror = () => { img.onerror = null; img.src = PLACEHOLDER_IMG; }; // missing file: fall back
-    img.src = USE_CLASS_ART ? `assets/classes/${c.key}.png` : PLACEHOLDER_IMG;
+    img.src = classImage(c.key);
   }
 }
 
