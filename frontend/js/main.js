@@ -10,7 +10,9 @@ import "./tree/roles.js"; // Ranked roles component for Member 4
 import { renderIntake } from "./panels/intake.js";
 import { renderRadar } from "./panels/radar.js";
 import { renderChat } from "./panels/chat.js";
+import { renderPatchNotes } from "./panels/patch.js";
 import { clearPathway, renderPathway } from "./panels/pathway.js";
+import { clearSdg, initSdg } from "./panels/sdg.js";
 
 on("persona-changed", () => {
   // Clear selection and restore saved progress specifically for this persona/profile
@@ -22,6 +24,7 @@ on("persona-changed", () => {
     state.owned = new Set(state.startingSkills);
   }
   clearPathway();
+  clearSdg();
   refreshTree();
 });
 
@@ -36,6 +39,9 @@ document.getElementById("lang")?.addEventListener("click", (e) => {
 });
 
 clearPathway();
+clearSdg();
 renderRadar();
 renderIntake().then(openGuideOnFirstVisit);
 renderChat();
+renderPatchNotes();
+initSdg();
