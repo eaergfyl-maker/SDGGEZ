@@ -4,6 +4,7 @@ import { emit, state, saveOwned, clearOwned } from "../state.js";
 import { classFor } from "./classes.js";
 import { esc } from "../util.js";
 import { t } from "../i18n.js";
+import { sdgName, sdgTag } from "../sdg.js";
 
 const BASE_W = 680, NODE_W = 124, MIN_NODE_W = 70, NODE_GAP = 8;
 const NODE_H = 36, ROW_H = 90, PAD = 30;
@@ -61,7 +62,7 @@ function announce(tree, changed, level, sdgs) {
     const parts = [`Skill completed: ${done ? done.name : justTrained}.`];
     if (prevLevel !== null && level > prevLevel) parts.push(`You reached level ${level}.`);
     const fresh = [...sdgs].filter((g) => !(prevSdgs && prevSdgs.has(g))).sort((a, b) => a - b);
-    if (fresh.length) parts.push(`New SDG badge${fresh.length > 1 ? "s" : ""}: ${fresh.map((g) => `SDG ${g}`).join(", ")}.`);
+    if (fresh.length) parts.push(`New SDG badge${fresh.length > 1 ? "s" : ""}: ${fresh.map((g) => `SDG ${g} (${sdgName(g)})`).join(", ")}.`);
     const opened = changed.filter((n) => n.id !== justTrained && n.state === "available").map((n) => n.name);
     if (opened.length) parts.push(`Now available: ${opened.join(", ")}.`);
     el.textContent = parts.join(" ");
@@ -78,13 +79,13 @@ export function setMoved(map) {
 }
 export function clearMoved() { moved = new Map(); }
 
-// [class] set to true once real character art exists as assets/classes/<class>.png
-// (bard, wizard, rogue, paladin, druid). Until then every class shows the placeholder.
-const USE_CLASS_ART = false;
+// [class] classes that have their own illustration in assets/classes/<class>.svg.
+// A class without art, or no class yet, shows the placeholder.
+const CLASS_ART = new Set(["bard", "wizard", "paladin", "druid"]);
 export const PLACEHOLDER_IMG = "assets/classes/placeholder.png";
 // image for a class key; used by the class card, the character sheet and the class selector
 export function classImage(key) {
-  return USE_CLASS_ART && key ? `assets/classes/${key}.png` : PLACEHOLDER_IMG;
+  return key && CLASS_ART.has(key) ? `assets/classes/${key}.svg` : PLACEHOLDER_IMG;
 }
 
 // [class] starting class from the skills the persona began with (fixed while you train)
@@ -93,6 +94,8 @@ function renderClassCard() {
   if (!card) return;
   const c = classFor(state.startingSkills || []);
   card.hidden = !c;
+  // highlight colour follows the class (see body[data-class] rules in style.css)
+  if (c) document.body.dataset.class = c.key; else delete document.body.dataset.class;
   if (!c) return;
   document.getElementById("class-name").textContent = c.name;
   document.getElementById("class-title").textContent = c.title;
@@ -102,7 +105,7 @@ function renderClassCard() {
   if (img && img.dataset.key !== c.key) {
     img.dataset.key = c.key;
     img.onerror = () => { img.onerror = null; img.src = PLACEHOLDER_IMG; }; // missing file: fall back
-    img.src = USE_CLASS_ART ? `assets/classes/${c.key}.png` : PLACEHOLDER_IMG;
+    img.src = classImage(c.key);
   }
 }
 
@@ -182,25 +185,25 @@ export function renderTree(tree) {
 }
 
 // [course] courses come from /api/pathway, which needs a role. Fetch it for each role in the
-// tree once per persona and keep the recommended (or first verified) course per skill.
-let skillCourses = {};
-let coursesFor = null;
+// tree and keep the recommended (or first verified) course per skill. A skill's course does
+// not depend on who is looking, so results are added up across classes and career areas.
+const skillCourses = {};
+const coursesLoaded = new Set();   // role ids already fetched
 
 async function loadCourses(tree) {
-  if (coursesFor === state.persona) return;
-  const persona = state.persona;
-  const roles = tree.nodes.filter((n) => n.kind === "role");
-  const results = await Promise.all(roles.map((r) => api.pathway(r.id, persona, state.owned).catch(() => null)));
-  const map = {};
-  for (const res of results) {
+  const roles = tree.nodes.filter((n) => n.kind === "role" && !coursesLoaded.has(n.id));
+  if (!roles.length) return;
+  // ask as if nothing is owned, so every skill on the role's path comes back with its courses
+  const results = await Promise.all(roles.map((r) => api.pathway(r.id, state.persona, new Set()).catch(() => null)));
+  results.forEach((res, i) => {
+    if (res) coursesLoaded.add(roles[i].id);
     for (const step of (res && res.steps) || []) {
-      const c = step.recommended || (step.courses || []).find((x) => x && x.verified !== false);
-      if (c && !map[step.skill]) map[step.skill] = c;
+      // `recommended` is a course id; the course objects are in `courses`
+      const c = (step.courses || []).find((x) => x && x.id === step.recommended)
+        || (step.courses || []).find((x) => x && x.verified !== false);
+      if (c && !skillCourses[step.skill]) skillCourses[step.skill] = c;
     }
-  }
-  if (state.persona !== persona) return; // persona changed while loading
-  skillCourses = map;
-  coursesFor = persona;
+  });
 }
 
 // [course] only a verified course with a real http(s) link is ever shown as a link
@@ -311,7 +314,7 @@ function roleHtml(node) {
 
 async function showDetail(node) {
   const el = document.getElementById("detail");
-  const tags = node.sdg.map((g) => `<span class="tag">SDG ${g}</span>`).join("");
+  const tags = node.sdg.map(sdgTag).join("");
   let html = `<h2>${esc(node.full_name || node.name)}</h2>${tags}`;
 
   if (node.kind === "skill") {

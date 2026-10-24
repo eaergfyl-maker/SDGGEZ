@@ -21,7 +21,7 @@ JOB_SOURCES = (("arbeitnow", arbeitnow), ("remotive", remotive))
 def run(conn, refresh_arxiv: bool = False, refresh_jobs: bool = True, note: str = "") -> int:
     skills = data_loader.skills()
     if refresh_arxiv:
-        arxiv.fetch_monthly_counts(conn, skills)
+        arxiv.fetch_monthly_counts(conn, skills, months=arxiv.growth_months())
     if refresh_jobs:
         for name, source in JOB_SOURCES:
             try:
@@ -40,9 +40,12 @@ def run(conn, refresh_arxiv: bool = False, refresh_jobs: bool = True, note: str 
         research = arxiv.research_growth(counts)
         demand, demand_details = mentions.demand_growth(
             conn, s["keywords"], window_days=config.DEMAND_WINDOW_DAYS)
+        totals = arxiv.window_totals(counts)
         sources = {
-            "research": {"name": "arXiv API", "months": len(counts),
-                         "latest_month": max(counts) if counts else None},
+            "research": {"name": "arXiv API", "query": s.get("arxiv_query"), "months": len(counts),
+                         "latest_month": max(counts) if counts else None,
+                         "papers_recent": totals[0] if totals else None,
+                         "papers_year_ago": totals[1] if totals else None},
             "demand": {"name": "Arbeitnow + Remotive job postings",
                        "caveat": ("mostly German/European postings; about one week of history; the older window "
                                   "only holds postings still live today"),

@@ -4,6 +4,7 @@ import { state, on, saveName, loadName, clearAllSaved } from "../state.js";
 import { classFor } from "./classes.js";
 import { progress, XP_PER_LEVEL, classImage, refreshTree } from "./tree.js";
 import { esc } from "../util.js";
+import { sdgTag } from "../sdg.js";
 
 const nameInput = document.getElementById("profile-name");
 const body = document.getElementById("profile-body");
@@ -35,7 +36,7 @@ function render() {
 
   body.innerHTML = `
     <div class="class-card">
-      <img class="class-img" src="${esc(classImage(c && c.key))}" alt="" width="96" height="96">
+      <img class="class-img" src="${esc(classImage(c && c.key))}" alt="" width="96" height="128">
       <div>
         <p><b class="char-name">${esc(label)}</b>${c ? ` the ${esc(c.name)}` : ""}</p>
         ${c ? `<p class="muted">${esc(c.title)}</p>` : ""}
@@ -46,7 +47,7 @@ function render() {
     <h3>Starting skills (${starting.length})</h3>${chips(starting)}
     <h3>Trained skills (${trained.length})</h3>${chips(trained, "✓ ")}
     <h3>SDG badges (${sdgs.length})</h3>
-    ${sdgs.length ? sdgs.map((g) => `<span class="tag">SDG ${g}</span>`).join("") : `<p class="muted">None yet.</p>`}
+    ${sdgs.length ? sdgs.map(sdgTag).join("") : `<p class="muted">None yet.</p>`}
     ${role ? `<h3>Current quest</h3><p>${esc(role.full_name || role.name)}${role.match ? ` · match ${esc(role.match.score)}%` : ""}</p>` : ""}
     <p class="muted">Viewing the ${esc(state.scenario)} AI scenario. Outlooks are estimates, not predictions.</p>`;
 }

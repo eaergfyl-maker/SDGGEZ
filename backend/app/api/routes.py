@@ -1,6 +1,8 @@
 """HTTP API. Owner: Member 1. Response shapes here are shared contracts with the frontend;
 change them only after noting it in docs/DECISIONS.md.
 """
+import base64
+import binascii
 import os
 import sqlite3
 from datetime import datetime, timedelta, timezone
@@ -12,8 +14,8 @@ from pydantic import BaseModel, Field
 
 from .. import config, data_loader, db, trends
 from ..ingest import pipeline
-from ..scoring import cv, cv_ai
-from ..scoring.momentum import direction, momentum
+from ..scoring import chat, cv, cv_ai
+from ..scoring.momentum import direction, low_data, momentum
 from ..scoring.pathway import build_pathway
 from ..scoring.tree import build_tree, family_subset, infer_family
 
@@ -64,7 +66,7 @@ def get_trends(scenario: Scenario = Scenario.moderate):
         comp = t["trends"].get(s["id"], {})
         m = momentum(comp, scenario.value)
         items.append({"skill": s["id"], "name": s["name"], "momentum": m,
-                      "direction": direction(m), "components": comp})
+                      "direction": direction(m), "components": comp, "low_data": low_data(comp)})
     return {"scenario": scenario.value, "is_mock": t["is_mock"], "source": t["source"],
             "as_of": t["as_of"], "skills": items}
 
@@ -81,6 +83,23 @@ def cv_skills(body: CVText):
     removed before matching. Use invented CVs only (see /api/cv/samples).
     """
     return cv.match_cv(body.text, data_loader.skills())
+
+
+class CVFile(BaseModel):
+    data: str = Field(min_length=1, max_length=cv.MAX_FILE_BYTES * 4 // 3 + 4)  # base64 of a .docx
+
+
+@router.post("/cv/file")
+def cv_file(body: CVFile):
+    """Text of an uploaded Word .docx CV, for the person to review before matching.
+
+    Nothing is stored or logged; the text goes back to the browser only.
+    """
+    try:
+        text = cv.docx_text(base64.b64decode(body.data, validate=True))
+    except (ValueError, binascii.Error):
+        raise HTTPException(422, "Could not read this file. Save it as .docx or paste the text.")
+    return {"text": text[:cv.MAX_CHARS], "truncated": len(text) > cv.MAX_CHARS}
 
 
 @router.get("/cv/ai")
@@ -116,7 +135,10 @@ def get_tree(persona: str = "aisyah", scenario: Scenario = Scenario.moderate,
              family: str | None = Query(None, description=(
                  "career area id, 'all', or 'auto' (guess from the skills); "
                  "default: the persona's area, or 'auto' for a custom profile"))):
-    owned_ids = _owned(persona, owned)
+    return _tree_for(persona, scenario, _owned(persona, owned), family)
+
+
+def _tree_for(persona: str, scenario: Scenario, owned_ids: set[str], family: str | None) -> dict:
     families = data_loader.families()
     if family is None:
         p = data_loader.persona(persona)
@@ -160,6 +182,49 @@ def get_pathway(role: str, persona: str = "aisyah", owned: str | None = None,
         hours_per_week = p["hours_per_week"] if p else None
     return build_pathway(r, data_loader.skills(), data_loader.courses(), _owned(persona, owned),
                          hours_per_week)
+
+
+class ChatQuestion(BaseModel):
+    question: str = Field(min_length=1, max_length=chat.MAX_QUESTION)
+    persona: str = "aisyah"
+    owned: list[str] | None = Field(None, max_length=200)
+    scenario: Scenario = Scenario.moderate
+    family: str | None = None
+    role: str | None = None          # the role the user selected, if any
+    hours_per_week: float | None = Field(None, gt=0, le=80)
+    lang: str = Field("en", pattern="^(en|ms)$")
+
+
+@router.get("/chat")
+def chat_status():
+    """Whether the guide is switched on (RunPod settings present). Does not call the model."""
+    return {"enabled": cv_ai.enabled(), "model": cv_ai.model_name()}
+
+
+@router.post("/chat")
+def ask_guide(body: ChatQuestion):
+    """Answer a question about the user's own results, from facts the app computed.
+
+    The answer is withheld (status "unverified") if it contains a number that is not in those
+    facts. Nothing is stored or logged.
+    """
+    owned_ids = _owned(body.persona, ",".join(body.owned) if body.owned is not None else None)
+    tree = _tree_for(body.persona, body.scenario, owned_ids, body.family)
+    roles = sorted((n for n in tree["nodes"] if n["kind"] == "role"),
+                   key=lambda n: -(n.get("match") or {}).get("score", 0))
+    focus = next((n for n in roles if n["id"] == body.role), roles[0] if roles else None)
+    hours = body.hours_per_week
+    if hours is None:
+        p = data_loader.persona(body.persona)
+        hours = p["hours_per_week"] if p else None
+    path = None
+    if focus:
+        path = build_pathway(data_loader.roles_by_id()[focus["id"]], data_loader.skills(),
+                             data_loader.courses(), owned_ids, hours)
+    names = {s["id"]: s["name"] for s in data_loader.skills()}
+    facts = chat.build_facts(tree, path, names, hours)
+    return {**chat.answer(body.question, facts, body.lang),
+            "as_of": tree.get("as_of"), "focus_role": focus and (focus.get("full_name") or focus["name"])}
 
 
 @router.get("/story/{node_id}")

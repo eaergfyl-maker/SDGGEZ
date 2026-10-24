@@ -222,3 +222,10 @@ def test_close_call_is_flagged_and_order_is_stable():
 
 def test_tie_across_every_area_asks_instead_of_guessing():
     assert guess({"ledger", "solder", "weld"})["family"] is None
+
+
+def test_research_from_a_handful_of_papers_is_low_data():
+    comp = {"research_growth": -87.5, "demand_growth": 10,
+            "sources": {"research": {"papers_recent": 1, "papers_year_ago": 8}}}
+    assert low_data(comp) == ["research_growth"]
+    assert momentum(comp) == 10.0

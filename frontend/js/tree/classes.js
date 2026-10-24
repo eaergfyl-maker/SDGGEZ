@@ -5,23 +5,22 @@
 export const CLASSES = {
   bard: { name: "Bard", title: "The Silver Tongue" },
   wizard: { name: "Wizard", title: "The Data Archmage" },
-  rogue: { name: "Rogue", title: "The Shadow Tactician" },
   paladin: { name: "Paladin", title: "The System Shield" },
   druid: { name: "Druid", title: "The Grid Keeper" },
 };
 
 // Fixed order: also used to break ties, so the same skills always give the same class.
-const ORDER = ["bard", "wizard", "rogue", "paladin", "druid"];
+const ORDER = ["bard", "wizard", "paladin", "druid"];
 
 // Every skill id in data/skills.json belongs to exactly one class.
 const GROUPS = {
   bard: ["communication", "empathy", "case_handling", "crm_tools"],
   wizard: ["spreadsheets", "data_literacy", "statistics", "sql", "data_viz", "python_basics",
-    "ml_basics", "bookkeeping", "ops_analytics", "esg_reporting"],
-  rogue: ["tech_support", "ai_tools", "prompting", "chatbot_qa", "process_automation", "responsible_ai"],
+    "ml_basics", "bookkeeping", "ops_analytics", "esg_reporting",
+    "ai_tools", "prompting", "chatbot_qa", "process_automation", "responsible_ai"],
   paladin: ["machine_operation", "quality_checks", "safety_procedures", "plc_basics", "lean_methods",
     "preventive_maintenance", "robotics_ops", "sensor_iot", "spc_quality", "predictive_maintenance",
-    "machine_vision_qc"],
+    "machine_vision_qc", "tech_support"],
   druid: ["electrical_wiring", "technical_drawing", "solar_pv_install", "energy_auditing",
     "battery_storage", "pv_system_design", "energy_monitoring", "ev_charging"],
 };

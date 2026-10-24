@@ -44,7 +44,7 @@ export async function renderIntake() {
       <div class="row">
         <label for="cv-sample" class="muted">${esc(t("cv.try"))}</label>
         <select id="cv-sample"><option value="">${esc(t("cv.choose"))}</option></select>
-        <input type="file" id="cv-file" accept=".txt,text/plain" aria-label="${esc(t("cv.fileAria"))}">
+        <input type="file" id="cv-file" accept=".txt,.docx,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" aria-label="${esc(t("cv.fileAria"))}">
       </div>
       <textarea id="cv-text" rows="6" maxlength="20000" aria-label="${esc(t("cv.textAria"))}"></textarea>
       <div class="row">
@@ -101,16 +101,32 @@ export async function renderIntake() {
     });
   }).catch(() => {});
 
-  el.querySelector("#cv-file").addEventListener("change", (e) => {
-    const file = e.target.files[0];
+  // .txt is read in the browser; .docx is sent to the server, which returns its text to review.
+  el.querySelector("#cv-file").addEventListener("change", async (e) => {
+    const input = e.target;
+    const file = input.files[0];
+    input.value = "";  // so choosing the same file again still triggers a change
     if (!file) return;
-    if (!/\.txt$/i.test(file.name) && file.type !== "text/plain") {
-      cvStatus.textContent = t("cv.onlyTxt");
-      return;
+    cvText.value = "";
+    cvResult.innerHTML = "";
+    try {
+      if (/\.txt$/i.test(file.name) || file.type === "text/plain") {
+        cvText.value = (await file.text()).slice(0, 20000);
+      } else if (/\.docx$/i.test(file.name)) {
+        if (file.size > 2_000_000) throw new Error("too big");
+        cvStatus.textContent = t("cv.loading");
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        let bin = "";
+        for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+        cvText.value = (await api.cvFile(btoa(bin))).text;
+      } else {
+        cvStatus.textContent = t("cv.fileType", { name: file.name });
+        return;
+      }
+      cvStatus.textContent = cvText.value.trim() ? t("cv.loaded", { name: file.name }) : t("cv.fileEmpty");
+    } catch {
+      cvStatus.textContent = t("cv.fileError", { name: file.name });
     }
-    const reader = new FileReader();
-    reader.onload = () => { cvText.value = String(reader.result).slice(0, 20000); cvStatus.textContent = ""; };
-    reader.readAsText(file);
   });
 
   const line = (r, checkable) => {

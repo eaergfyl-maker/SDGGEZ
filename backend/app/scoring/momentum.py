@@ -18,6 +18,9 @@ COMPONENT_CAP = 100.0
 # Below this many postings mentioning the skill (in either window), demand growth is noise:
 # 3 mentions vs 1 mention reads as +200%. We drop the component and flag it as low data.
 MIN_MENTIONS = 20
+# Same idea for research: 8 papers vs 1 paper reads as -87%. Below this many arXiv papers in
+# either 3-month window, research growth is dropped and flagged as low data.
+MIN_PAPERS = 30
 
 SCENARIOS = {
     "slow": {"research_growth": 0.2, "demand_growth": 0.5, "outlook": 0.3, "scale": 0.6},
@@ -28,12 +31,16 @@ SCENARIOS = {
 
 def low_data(components: dict) -> list[str]:
     """Components we have a value for but too small a sample to trust."""
-    demand = (components.get("sources") or {}).get("demand") or {}
-    counts = (demand.get("mentions_recent"), demand.get("mentions_previous"))
-    if components.get("demand_growth") is not None and any(
-            c is not None and c < MIN_MENTIONS for c in counts):
-        return ["demand_growth"]
-    return []
+    sources = components.get("sources") or {}
+    checks = (("demand_growth", "demand", ("mentions_recent", "mentions_previous"), MIN_MENTIONS),
+              ("research_growth", "research", ("papers_recent", "papers_year_ago"), MIN_PAPERS))
+    low = []
+    for key, src, fields, minimum in checks:
+        detail = sources.get(src) or {}
+        if components.get(key) is not None and any(
+                detail.get(f) is not None and detail[f] < minimum for f in fields):
+            low.append(key)
+    return low
 
 
 def usable(components: dict) -> dict[str, float]:
